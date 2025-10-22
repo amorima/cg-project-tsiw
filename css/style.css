@@ -1,0 +1,23 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background-image: url("../assets/img/bg.jpg"); /* Atribuição: https://www.freepik.com/free-vector/pixel-art-rural-landscape-background_49685499.htm */
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 15vh;
+}
+
+.logo {
+  max-width: 300px;
+  height: auto;
+}
