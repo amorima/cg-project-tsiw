@@ -4,6 +4,37 @@ body {
   margin: 0;
 }
 
+/* Estiloda barra de scroll */
+::-webkit-scrollbar {
+  width: 16px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: rgba(34, 68, 34, 0.6);
+  border: 2px solid #2d5a2d;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #4a8f4a 0%, #2d5a2d 100%);
+  border: 2px solid #2d5a2d;
+  border-right: 2px solid #1a3a1a;
+  border-bottom: 2px solid #1a3a1a;
+  border-left: 2px solid #6bb66b;
+  border-top: 2px solid #6bb66b;
+  box-shadow: inset -1px -1px 0 rgba(0, 0, 0, 0.3),
+    inset 1px 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #5fa55f 0%, #3d7a3d 100%);
+}
+
+/* Scrollbar para Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #4a8f4a rgba(34, 68, 34, 0.6);
+}
+
 body {
   background-image: url("../assets/img/bg.jpg"); /* Atribuição: https://www.freepik.com/free-vector/pixel-art-rural-landscape-background_49685499.htm */
   background-size: cover;
