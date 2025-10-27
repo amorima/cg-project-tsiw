@@ -158,7 +158,7 @@ export default class Player {
         ctx.save();
         if (this.facing < 0) { ctx.translate(dx + dw / 2, 0); ctx.scale(-1, 1); ctx.translate(-(dx + dw / 2), 0); }
         ctx.imageSmoothingEnabled = false;
-        ctx.drawImage(this.sheet.image, sx, sy, sw, sh, dx, dy, dw, dh);
+        ctx.drawImage(this.sheet.image, sx, sy, sw, sh, dx, dy, dw, dh); 
         ctx.restore();
     }
 }
