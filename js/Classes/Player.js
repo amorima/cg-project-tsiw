@@ -22,6 +22,7 @@ export default class Player {
             idle:  { frames: [0, 1],                    fps: 4,  loop: true  },
             walk:  { frames: [8,9,10,11],               fps: 8,  loop: true  },
             run:   { frames: [12,13,14,15],             fps: 12, loop: true  },
+            push:  { frames: [16,17,18,19],             fps: 4,  loop: false  },
             jump:  { frames: [24,25,26,27,28,29,30,31], fps: 10, loop: false },
             sit:   { frames: [40,41],                   fps: 2,  loop: true  },
             attack:{ frames: [4,5],                     fps: 10, loop: false },
@@ -35,6 +36,7 @@ export default class Player {
         this.maxSpeedX = 300;
         this.jumpImpulse = -450;
         this.onGround = false;
+        this.isPushing = false;
 
         // INVENTORYS
         this.colected = []
@@ -60,6 +62,7 @@ export default class Player {
         this.prevPos.set(this.pos);
         const wasOnGround = this.onGround;
         this.onGround = false;
+        this.isPushing = false;
 
         // handleInput + integrate merged
         const left = !!input['ArrowLeft'], right = !!input['ArrowRight'];
@@ -103,6 +106,7 @@ export default class Player {
         const nonLoopingActive = anim && !anim.loop && this.frameIndex < anim.frames.length - 1;
         if (!nonLoopingActive) {
             if (!this.onGround) this.setAnimation('jump');
+            else if (this.isPushing) this.setAnimation('push');
             else if (Math.abs(this.vel.x) > 100) this.setAnimation('run');
             else if (Math.abs(this.vel.x) > 10) this.setAnimation('walk');
             else this.setAnimation('idle');
@@ -149,7 +153,12 @@ export default class Player {
         const oX = Math.min(oL, oR), oY = Math.min(oT, oB);
 
         if (oX < oY) {
-            box.push(this.vel.x * 0.5);
+            // Horizontal collision - player is pushing
+            const pushForce = this.vel.x * 0.5;
+            if (Math.abs(pushForce) > 10) {
+                this.isPushing = true;
+            }
+            box.push(pushForce);
             this.pos.x += oL < oR ? -oL : oR;
             this.vel.x *= 0.3;
         } else {
