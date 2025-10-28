@@ -1,5 +1,5 @@
 import Vector from './Vector.js';
-const GRAVITY = 1200, DRAG = 6.0, GROUND_Y = 600;
+const GRAVITY = 1200, DRAG = 8.0, GROUND_Y = 600;
 export default class Box {
     constructor(x = 0, y = 0, width = 40, height = 40) {
         this.pos = new Vector(x, y);
@@ -8,6 +8,11 @@ export default class Box {
         this.height = height;
         this.onGround = false;
         this.beingPushed = false;
+        this.tileSize = 16;
+    }
+
+    static setTileset(image) {
+        Box.sharedTileset = image;
     }
 
     update(dt, platforms = [], boxes = []) {
@@ -94,9 +99,25 @@ export default class Box {
         return { x: this.pos.x - this.width / 2, y: this.pos.y - this.height / 2, w: this.width, h: this.height };
     }
 
-    render(ctx, color = '#D2691E') {
+    render(ctx) {
+        const tileset = Box.sharedTileset;
         const { x, y, w, h } = this.getAABB();
-        ctx.fillStyle = color;
-        ctx.fillRect(x, y, w, h);
+
+        if (!tileset) {
+            // Fallback to colored rectangle
+            ctx.fillStyle = '#D2691E';
+            ctx.fillRect(x, y, w, h);
+            return;
+        }
+
+        ctx.imageSmoothingEnabled = false;
+        const ts = this.tileSize;
+        // Tile 8 of row 4 = index 7 + (3 * 16) = 55
+        const tileIndex = 55;
+        const sx = (tileIndex % 16) * ts;
+        const sy = Math.floor(tileIndex / 16) * ts;
+
+        // Draw single tile scaled to box size
+        ctx.drawImage(tileset, sx, sy, ts, ts, x, y, w, h);
     }
 }

@@ -14,9 +14,16 @@ const keys = {'ArrowUp': false, 'ArrowDown': false, 'ArrowLeft': false, 'ArrowRi
 const player = new Player();
 await player.loadSprite('../assets/img/Player.png');
 
+// Load tileset for platforms and boxes
+const tileset = new Image();
+tileset.src = '../assets/img/Ground.png'; // Update path as needed
+Platform.setTileset(tileset);
+Box.setTileset(tileset);
+
 const platforms = [
     new Platform(110,550, 200 ,8 , {vx:20, maxX:200, minX: 25}),
-    new Platform(400,550, 200 ,8)
+    new Platform(600,550, 200 ,8 , {type: 'oneway'}),
+    new Platform(400,550, 200 ,800)
 ];
 const residuos = [
     new Residuo(50, 500, 30, 30)
