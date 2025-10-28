@@ -1,6 +1,7 @@
 import Platform from './Classes/Platform.js';
 import Player from './Classes/Player.js';
 import Residuo from './Classes/Residuos.js';
+import Box from './Classes/Box.js';
 
 // Canvas Elements
 const canvas = document.querySelector("#game");
@@ -14,10 +15,15 @@ const player = new Player();
 await player.loadSprite('../assets/img/Player.png');
 
 const platforms = [
-    new Platform(50,550, 200 ,8 , {vx:20, maxX:200, minX: 25})
+    new Platform(110,550, 200 ,8 , {vx:20, maxX:200, minX: 25}),
+    new Platform(400,550, 200 ,8)
 ];
 const residuos = [
-    new Residuo(50, 550, 30, 30)
+    new Residuo(50, 500, 30, 30)
+];
+const boxes = [
+    new Box(300, 400, 40, 40),
+    new Box(450, 500, 40, 40)
 ]
 // Event Loop
 let last = performance.now();
@@ -31,10 +37,14 @@ function loop (now) {
         p.update(dt);
         p.render(ctx);
     });
+    boxes.forEach(b => {
+        b.update(dt, platforms, boxes);
+        b.render(ctx);
+    });
     residuos.forEach(r => {
-        r.render(ctx);
-    })
-    player.update(dt, keys, platforms, residuos);
+        if (!r.collected) r.render(ctx);
+    });
+    player.update(dt, keys, platforms, residuos, boxes);
     player.render(ctx);
 
     requestAnimationFrame(loop);

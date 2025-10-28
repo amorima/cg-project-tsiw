@@ -55,7 +55,7 @@ export default class Player {
         if (reset) { this.frameIndex = 0; this.frameTimer = 0; }
     }
 
-    update(dt, input = {}, platforms = [], residuos = []) {
+    update(dt, input = {}, platforms = [], residuos = [], boxes = []) {
         if (dt <= 0) return;
         this.prevPos.set(this.pos);
         const wasOnGround = this.onGround;
@@ -90,6 +90,9 @@ export default class Player {
 
         if (platforms && platforms.length) {
             for (const p of platforms) this.resolvePlatformCollision(p, dt);
+        }
+        if (boxes && boxes.length) {
+            for (const b of boxes) this.resolveBoxCollision(b);
         }
         if(residuos && residuos.length){
             for (const r of residuos) this.itemColision(r);
@@ -133,6 +136,26 @@ export default class Player {
         } else {
             if (oT < oB) { this.pos.y = p.y - this.height / 2; this.vel.y = 0; this.onGround = true; }
             else { this.pos.y = p.y + p.h + this.height / 2; this.vel.y = 0; }
+        }
+    }
+
+    resolveBoxCollision(box) {
+        const hb = this.getHitbox();
+        const b = box.getAABB();
+        if (!(hb.x < b.x + b.w && hb.x + hb.w > b.x && hb.y < b.y + b.h && hb.y + hb.h > b.y)) return;
+
+        const oL = hb.x + hb.w - b.x, oR = b.x + b.w - hb.x;
+        const oT = hb.y + hb.h - b.y, oB = b.y + b.h - hb.y;
+        const oX = Math.min(oL, oR), oY = Math.min(oT, oB);
+
+        if (oX < oY) {
+            box.push(this.vel.x * 0.5);
+            this.pos.x += oL < oR ? -oL : oR;
+            this.vel.x *= 0.3;
+        } else {
+            this.pos.y += oT < oB ? -oT : oB;
+            this.vel.y = 0;
+            if (oT < oB) this.onGround = true;
         }
     }
 
