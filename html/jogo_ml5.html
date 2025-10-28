@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="authors"
+      content="António Manuel Cruz Barreto Amorim; Gabriel de Sousa Paiva"
+    />
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/jogo_ml5.css" />
+    <title>ARCADIA - Jogo ML5</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://unpkg.com/ml5@latest/dist/ml5.min.js"></script>
+  </head>
+  <body>
+    <div class="clouds">
+      <img
+        class="cloud cloud-1"
+        src="../assets/img/clouds/1.png"
+        alt="Nuvem 1"
+      />
+      <img
+        class="cloud cloud-2"
+        src="../assets/img/clouds/2.png"
+        alt="Nuvem 2"
+      />
+      <img
+        class="cloud cloud-3"
+        src="../assets/img/clouds/3.png"
+        alt="Nuvem 3"
+      />
+      <img
+        class="cloud cloud-4"
+        src="../assets/img/clouds/4.png"
+        alt="Nuvem 4"
+      />
+    </div>
+
+    <a href="../index.html" class="back-button">← VOLTAR</a>
+
+    <div id="gameContainer">
+      <video id="videoCanvas" autoplay playsinline></video>
+    </div>
+
+    <footer class="arcade-footer">
+      © 2025 - ARCADIA - ESMAD - IPP - COMPUTAÇÃO GRÁFICA
+    </footer>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/jogo_ml5.js"></script>
+  </body>
+</html>
