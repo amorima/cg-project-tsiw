@@ -16,7 +16,6 @@ export default class Platform {
     update(dt) {
         if (!dt) return;
         
-        // Reverse direction at boundaries
         if ((this.vx > 0 && this.x >= this.maxX) || (this.vx < 0 && this.x <= this.minX)) {
             this.vx = -this.vx;
         }
@@ -36,7 +35,6 @@ export default class Platform {
         return this.type === 'oneway';
     }
 
-    // ADDED: Essential for game.js rendering
     render(ctx, color = '#8B4513') {
         ctx.fillStyle = this.type === 'oneway' ? 'rgba(139, 69, 19, 0.5)' : color;
         ctx.fillRect(this.x, this.y, this.w, this.h);

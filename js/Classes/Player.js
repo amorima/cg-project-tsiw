@@ -35,6 +35,9 @@ export default class Player {
         this.maxSpeedX = 300;
         this.jumpImpulse = -450;
         this.onGround = false;
+
+        // INVENTORYS
+        this.colected = []
     }
 
     loadSprite(src) {
@@ -52,7 +55,7 @@ export default class Player {
         if (reset) { this.frameIndex = 0; this.frameTimer = 0; }
     }
 
-    update(dt, input = {}, platforms = []) {
+    update(dt, input = {}, platforms = [], residuos = []) {
         if (dt <= 0) return;
         this.prevPos.set(this.pos);
         const wasOnGround = this.onGround;
@@ -87,6 +90,9 @@ export default class Player {
 
         if (platforms && platforms.length) {
             for (const p of platforms) this.resolvePlatformCollision(p, dt);
+        }
+        if(residuos && residuos.length){
+            for (const r of residuos) this.itemColision(r);
         }
 
         // choose animation
@@ -128,6 +134,15 @@ export default class Player {
             if (oT < oB) { this.pos.y = p.y - this.height / 2; this.vel.y = 0; this.onGround = true; }
             else { this.pos.y = p.y + p.h + this.height / 2; this.vel.y = 0; }
         }
+    }
+
+    itemColision(item){
+        if (item.collected) return;
+        const hb = this.getHitbox();
+        const i = item.getAABB();
+        if (!(hb.x < i.x + i.w && hb.x + hb.w > i.x && hb.y < i.y + i.h && hb.y + hb.h > i.y)) return;
+        item.collect();
+        this.colected.push({...item});
     }
 
     _updateAnimation(dt) {
