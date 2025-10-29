@@ -51,7 +51,8 @@ export default class Player {
     }
 
     setAnimation(name, reset = true) {
-        if (this.currentAnim === name || !this.animations[name]) return;
+        if (this.currentAnim === name) return; // Don't restart same animation
+        if (!this.animations[name]) return;
         this.currentAnim = name;
         if (reset) { this.frameIndex = 0; this.frameTimer = 0; }
     }
@@ -104,7 +105,11 @@ export default class Player {
         const anim = this.animations[this.currentAnim];
         const nonLoopingActive = anim && !anim.loop && this.frameIndex < anim.frames.length - 1;
         if (!nonLoopingActive) {
-            if (!this.onGround) this.setAnimation('jump');
+            // Priority: jump > push > run > walk > idle
+            if (!this.onGround) {
+                // Keep jump animation while in air
+                if (this.currentAnim !== 'jump') this.setAnimation('jump', false);
+            }
             else if (this.isPushing) this.setAnimation('push');
             else if (Math.abs(this.vel.x) > 100) this.setAnimation('run');
             else if (Math.abs(this.vel.x) > 10) this.setAnimation('walk');
