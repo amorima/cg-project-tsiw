@@ -41,32 +41,57 @@
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/hand-pose-detection"></script>
   </head>
   <body>
-    <div class="clouds">
-      <img
-        class="cloud cloud-1"
-        src="../assets/img/clouds/1.png"
-        alt="Nuvem 1"
-      />
-      <img
-        class="cloud cloud-2"
-        src="../assets/img/clouds/2.png"
-        alt="Nuvem 2"
-      />
-      <img
-        class="cloud cloud-3"
-        src="../assets/img/clouds/3.png"
-        alt="Nuvem 3"
-      />
-      <img
-        class="cloud cloud-4"
-        src="../assets/img/clouds/4.png"
-        alt="Nuvem 4"
-      />
-    </div>
-
     <a href="../index.html" class="back-button">← VOLTAR</a>
 
     <div id="gameContainer">
+      <div class="clouds">
+        <img
+          class="cloud cloud-1"
+          src="../assets/img/clouds/1.png"
+          alt="Nuvem 1"
+        />
+        <img
+          class="cloud cloud-2"
+          src="../assets/img/clouds/2.png"
+          alt="Nuvem 2"
+        />
+        <img
+          class="cloud cloud-3"
+          src="../assets/img/clouds/3.png"
+          alt="Nuvem 3"
+        />
+        <img
+          class="cloud cloud-4"
+          src="../assets/img/clouds/4.png"
+          alt="Nuvem 4"
+        />
+      </div>
+      <div class="ecopontos-container">
+        <img
+          class="ecoponto ecoponto-azul"
+          src="../assets/img/ecopontos/azul.png"
+          alt="Ecoponto Azul"
+          data-type="azul"
+        />
+        <img
+          class="ecoponto ecoponto-amarelo"
+          src="../assets/img/ecopontos/amarelo.png"
+          alt="Ecoponto Amarelo"
+          data-type="amarelo"
+        />
+        <img
+          class="ecoponto ecoponto-verde"
+          src="../assets/img/ecopontos/verde.png"
+          alt="Ecoponto Verde"
+          data-type="verde"
+        />
+        <img
+          class="ecoponto ecoponto-cinzento"
+          src="../assets/img/ecopontos/cinzento.png"
+          alt="Ecoponto Cinzento"
+          data-type="cinzento"
+        />
+      </div>
       <video id="videoCanvas" autoplay playsinline></video>
       <canvas id="handCanvas"></canvas>
     </div>
