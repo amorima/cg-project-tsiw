@@ -10,6 +10,12 @@ const W = canvas.width;
 const H = canvas.height;
 const keys = {'ArrowUp': false, 'ArrowDown': false, 'ArrowLeft': false, 'ArrowRight': false,' ':false, 'x':false, 'z':false};
 
+// === GRID SYSTEM ===
+const GRID_COLS = 48;  // 48 columns
+const GRID_ROWS = 28;  // 28 rows
+const GRID_SIZE = 48;  // Each grid cell is 24x24 pixels (800/d48 ≈ 16.67, 600/28 ≈ 21.43, using 24 for clean division)
+ // 96x96 grid for easier platform alignment
+
 // === DEBUG MODE ===
 let DEBUG_MODE = false;
 keys['d'] = false; // Toggle debug with 'd' key
@@ -47,7 +53,13 @@ const camera = {
 };
 
 // Game Creation
-const player = new Player(100, 500);
+const MUSIC = new Audio('../assets/audio/time_for_adventure.mp3');
+MUSIC.loop = true;
+MUSIC.play()
+// Player starts at grid-aligned position (96 = 4 grid cells, 504 = 21 grid cells)
+const player = new Player(96, 504);
+await player.loadAudio('../assets/audio/jump.wav', 'jump');
+await player.loadAudio('../assets/audio/power_up.wav', 'power_up');
 await player.loadSprite('../assets/img/Player.png');
 
 // Load tileset for platforms and boxes
@@ -158,62 +170,62 @@ const platforms = [
 
 const residuos = [
     // === SECTION 1 (0-800) ===
-    new Residuo(48, 524, 24, 24),
-    new Residuo(280, 524, 24, 24),
-    new Residuo(520, 524, 24, 24),
-    new Residuo(700, 524, 24, 24),
-    new Residuo(170, 428, 24, 24),
-    new Residuo(620, 428, 24, 24),
-    new Residuo(30, 332, 24, 24),
-    new Residuo(315, 356, 24, 24),
-    new Residuo(590, 308, 24, 24),
-    new Residuo(740, 380, 24, 24),
-    new Residuo(150, 236, 24, 24),
-    new Residuo(510, 212, 24, 24),
-    new Residuo(720, 260, 24, 24),
-    new Residuo(200, 92, 24, 24),
-    new Residuo(540, 116, 24, 24),
-    new Residuo(380, 140, 24, 24),
-    new Residuo(390, 452, 24, 24),
-    new Residuo(24, 140, 24, 24),
+    new Residuo(48, 528, 24, 24, 'PLASTIC'),
+    new Residuo(288, 528, 24, 24, 'PAPER'),
+    new Residuo(528, 528, 24, 24, 'GLASS'),
+    new Residuo(696, 528, 24, 24, 'INDEFERENCIADO'),
+    new Residuo(168, 432, 24, 24, 'PLASTIC'),
+    new Residuo(624, 432, 24, 24, 'PAPER'),
+    new Residuo(24, 336, 24, 24, 'GLASS'),
+    new Residuo(312, 360, 24, 24, 'INDEFERENCIADO'),
+    new Residuo(600, 312, 24, 24, 'PLASTIC'),
+    new Residuo(744, 384, 24, 24, 'PAPER'),
+    new Residuo(144, 240, 24, 24, 'GLASS'),
+    new Residuo(504, 216, 24, 24, 'INDEFERENCIADO'),
+    new Residuo(720, 264, 24, 24, 'PLASTIC'),
+    new Residuo(192, 96, 24, 24, 'PAPER'),
+    new Residuo(528, 120, 24, 24, 'GLASS'),
+    new Residuo(384, 144, 24, 24, 'INDEFERENCIADO'),
+    new Residuo(384, 456, 24, 24, 'PLASTIC'),
+    new Residuo(24, 144, 24, 24, 'PAPER'),
     
     // === SECTION 2 (800-1600) ===
-    new Residuo(900, 524, 24, 24),
-    new Residuo(1100, 524, 24, 24),
-    new Residuo(1400, 524, 24, 24),
-    new Residuo(890, 476, 24, 24),
-    new Residuo(990, 428, 24, 24),
-    new Residuo(1090, 380, 24, 24),
-    new Residuo(1190, 332, 24, 24),
-    new Residuo(880, 356, 24, 24),
-    new Residuo(1100, 308, 24, 24),
-    new Residuo(1370, 356, 24, 24),
-    new Residuo(930, 212, 24, 24),
-    new Residuo(1170, 164, 24, 24),
-    new Residuo(1430, 236, 24, 24),
-    new Residuo(980, 92, 24, 24),
-    new Residuo(1300, 116, 24, 24),
-    new Residuo(1250, 140, 24, 24),
+    new Residuo(888, 528, 24, 24, 'GLASS'),
+    new Residuo(1104, 528, 24, 24, 'INDEFERENCIADO'),
+    new Residuo(1392, 528, 24, 24, 'PLASTIC'),
+    new Residuo(888, 480, 24, 24, 'PAPER'),
+    new Residuo(984, 432, 24, 24, 'GLASS'),
+    new Residuo(1080, 384, 24, 24, 'INDEFERENCIADO'),
+    new Residuo(1176, 336, 24, 24, 'PLASTIC'),
+    new Residuo(888, 360, 24, 24, 'PAPER'),
+    new Residuo(1104, 312, 24, 24, 'GLASS'),
+    new Residuo(1368, 360, 24, 24, 'INDEFERENCIADO'),
+    new Residuo(936, 216, 24, 24, 'PLASTIC'),
+    new Residuo(1176, 168, 24, 24, 'PAPER'),
+    new Residuo(1416, 240, 24, 24, 'GLASS'),
+    new Residuo(984, 96, 24, 24, 'INDEFERENCIADO'),
+    new Residuo(1296, 120, 24, 24, 'PLASTIC'),
+    new Residuo(1248, 144, 24, 24, 'PAPER'),
     
     // === SECTION 3 (1600-2400) ===
-    new Residuo(1700, 524, 24, 24),
-    new Residuo(1900, 524, 24, 24),
-    new Residuo(2100, 524, 24, 24),
-    new Residuo(2300, 524, 24, 24),
-    new Residuo(1690, 428, 24, 24),
-    new Residuo(1840, 380, 24, 24),
-    new Residuo(1990, 332, 24, 24),
-    new Residuo(2140, 428, 24, 24),
-    new Residuo(2290, 476, 24, 24),
-    new Residuo(1750, 308, 24, 24),
-    new Residuo(1990, 260, 24, 24),
-    new Residuo(2190, 308, 24, 24),
-    new Residuo(1800, 164, 24, 24),
-    new Residuo(2070, 116, 24, 24),
-    new Residuo(2300, 164, 24, 24),
-    new Residuo(1780, 92, 24, 24),
-    new Residuo(2100, 68, 24, 24),
-    new Residuo(2180, 140, 24, 24),
+    new Residuo(1704, 528, 24, 24, 'GLASS'),
+    new Residuo(1896, 528, 24, 24, 'INDEFERENCIADO'),
+    new Residuo(2088, 528, 24, 24, 'PLASTIC'),
+    new Residuo(2304, 528, 24, 24, 'PAPER'),
+    new Residuo(1680, 432, 24, 24, 'GLASS'),
+    new Residuo(1848, 384, 24, 24, 'INDEFERENCIADO'),
+    new Residuo(1992, 336, 24, 24, 'PLASTIC'),
+    new Residuo(2136, 432, 24, 24, 'PAPER'),
+    new Residuo(2304, 480, 24, 24, 'GLASS'),
+    new Residuo(1752, 312, 24, 24, 'INDEFERENCIADO'),
+    new Residuo(1992, 264, 24, 24, 'PLASTIC'),
+    new Residuo(2184, 312, 24, 24, 'PAPER'),
+    new Residuo(1800, 168, 24, 24, 'GLASS'),
+    new Residuo(2064, 120, 24, 24, 'INDEFERENCIADO'),
+    new Residuo(2304, 168, 24, 24, 'PLASTIC'),
+    new Residuo(1776, 96, 24, 24, 'PAPER'),
+    new Residuo(2088, 72, 24, 24, 'GLASS'),
+    new Residuo(2184, 144, 24, 24, 'INDEFERENCIADO'),
 ];
 
 const boxes = [
@@ -285,7 +297,8 @@ function loop (now) {
         p.render(ctx);
     });
     residuos.forEach(r => {
-        if (!r.collected) r.render(ctx);
+        r.update(dt);
+        r.render(ctx);
     });
     boxes.forEach(b => {
         b.update(dt, platforms, boxes);
@@ -323,14 +336,37 @@ function loop (now) {
             ctx.strokeRect(aabb.x, aabb.y, aabb.w, aabb.h);
         });
         
-        // Draw residuo hitboxes (cyan)
+        // Draw residuo hitboxes (cyan) with type labels
         ctx.strokeStyle = '#00FFFF';
         residuos.forEach(r => {
-            if (!r.collected) {
+            if (!r.collected || r.popUpTimer < r.popUpDuration) {
                 const aabb = r.getAABB();
                 ctx.strokeRect(aabb.x, aabb.y, aabb.w, aabb.h);
+                // Label residuo type
+                ctx.fillStyle = r.type.color;
+                ctx.font = '8px monospace';
+                ctx.fillText(r.type.name.substring(0, 4), aabb.x + 2, aabb.y + 10);
             }
         });
+        
+        // Draw grid lines
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+        ctx.lineWidth = 1;
+        // Vertical lines
+        for (let x = 0; x <= camera.worldWidth; x += GRID_SIZE) {
+            ctx.beginPath();
+            ctx.moveTo(x, 0);
+            ctx.lineTo(x, camera.worldHeight);
+            ctx.stroke();
+        }
+        // Horizontal lines
+        for (let y = 0; y <= camera.worldHeight; y += GRID_SIZE) {
+            ctx.beginPath();
+            ctx.moveTo(0, y);
+            ctx.lineTo(camera.worldWidth, y);
+            ctx.stroke();
+        }
+        ctx.lineWidth = 2;
         
         // Draw player hitbox (red)
         ctx.strokeStyle = '#FF0000';
@@ -356,11 +392,22 @@ function loop (now) {
         ctx.fillStyle = '#FFFFFF';
         ctx.font = '12px monospace';
         ctx.fillText(`DEBUG MODE (Press 'D' to toggle)`, 10, 20);
-        ctx.fillText(`Player Pos: (${Math.round(player.pos.x)}, ${Math.round(player.pos.y)})`, 10, 35);
-        ctx.fillText(`Player Vel: (${Math.round(player.vel.x)}, ${Math.round(player.vel.y)})`, 10, 50);
-        ctx.fillText(`On Ground: ${player.onGround}`, 10, 65);
-        ctx.fillText(`Collected: ${player.colected.length}/${residuos.length}`, 10, 80);
-        ctx.fillText(`Camera X: ${Math.round(camera.x)}`, 10, 95);
+        ctx.fillText(`Grid: ${GRID_COLS}x${GRID_ROWS} (${GRID_SIZE}px cells)`, 10, 35);
+        ctx.fillText(`Player Pos: (${Math.round(player.pos.x)}, ${Math.round(player.pos.y)}) Grid: (${Math.floor(player.pos.x/GRID_SIZE)}, ${Math.floor(player.pos.y/GRID_SIZE)})`, 10, 50);
+        ctx.fillText(`Player Vel: (${Math.round(player.vel.x)}, ${Math.round(player.vel.y)})`, 10, 65);
+        ctx.fillText(`On Ground: ${player.onGround}`, 10, 80);
+        
+        // Count residuos by type
+        const typeCounts = { plastic: 0, paper: 0, glass: 0, indeferenciado: 0 };
+        residuos.forEach(r => {
+            if (r.collected && r.popUpTimer >= r.popUpDuration) {
+                typeCounts[r.type.name]++;
+            }
+        });
+        ctx.fillText(`Collected: ${player.colected.length}/${residuos.length}`, 10, 95);
+        ctx.fillText(`  Plastic: ${typeCounts.plastic} Paper: ${typeCounts.paper}`, 10, 110);
+        ctx.fillText(`  Glass: ${typeCounts.glass} Indeferenciado: ${typeCounts.indeferenciado}`, 10, 125);
+        ctx.fillText(`Camera X: ${Math.round(camera.x)}`, 10, 140);
     }
 
     requestAnimationFrame(loop);

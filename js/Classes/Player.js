@@ -30,12 +30,17 @@ export default class Player {
         this.frameIndex = 0;
         this.frameTimer = 0;
 
+        // AUDIO
+        this.sounds = {}
+
         // MOVEMENT CONFIG
         this.moveForce = 1500;
         this.maxSpeedX = 300;
         this.jumpImpulse = -500;
         this.onGround = false;
         this.isPushing = false;
+        this.jumpCooldown = 0;
+        this.jumpCooldownTime = 0.30; // 150ms delay after landing
 
         // INVENTORYS
         this.colected = []
@@ -45,9 +50,31 @@ export default class Player {
         return new Promise((resolve, reject) => {
             const img = new Image();
             img.onload = () => { this.sheet.image = img; this.sheet.loaded = true; resolve(img); };
-            img.onerror = reject;
+            img.onerror = (e) => reject(e);
             img.src = src;
         });
+    }
+    
+    loadAudio(src, key = 'default') {
+        return new Promise((resolve, reject) => {
+            const audio = new Audio();
+            audio.preload = 'auto';
+            audio.addEventListener('canplaythrough', () => {
+                this.sounds[key] = audio;
+                resolve(audio);
+            }, { once: true });
+            audio.addEventListener('error', (e) => reject(e), { once: true });
+            audio.src = src;
+            audio.load();
+        });
+    }
+
+    playSound(key, volume = 1.0, restart = true) {
+        if (!this.sounds[key]) return;
+        const audio = this.sounds[key];
+        if (restart) audio.currentTime = 0;
+        audio.volume = Math.max(0, Math.min(1, volume));
+        audio.play().catch(e => console.warn(`Failed to play sound "${key}":`, e));
     }
 
     setAnimation(name, reset = true) {
@@ -64,6 +91,9 @@ export default class Player {
         this.onGround = false;
         this.isPushing = false;
 
+        // Update jump cooldown
+        if (this.jumpCooldown > 0) this.jumpCooldown -= dt;
+
         // handleInput + integrate merged
         const left = !!input['ArrowLeft'], right = !!input['ArrowRight'];
         const jump = !!input['ArrowUp'] || !!input[' '];
@@ -73,7 +103,14 @@ export default class Player {
         this.acc.y = GRAVITY;
         if (left) this.facing = -1;
         if (right) this.facing = 1;
-        if (jump && wasOnGround) { this.vel.y = this.jumpImpulse; this.setAnimation('jump', true); }
+        
+        // Jump with cooldown check
+        if (jump && wasOnGround && this.jumpCooldown <= 0) {
+            this.vel.y = this.jumpImpulse;
+            this.setAnimation('jump', true);
+            this.playSound('jump', 0.2);
+            this.jumpCooldown = this.jumpCooldownTime;
+        }
         if (attack) this.setAnimation('attack', true);
 
         this.vel.x += this.acc.x * dt;
@@ -179,6 +216,7 @@ export default class Player {
         if (!(hb.x < i.x + i.w && hb.x + hb.w > i.x && hb.y < i.y + i.h && hb.y + hb.h > i.y)) return;
         item.collect();
         this.colected.push({...item});
+        this.playSound('power_up', 0.6);
     }
 
     _updateAnimation(dt) {
