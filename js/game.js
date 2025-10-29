@@ -21,9 +21,9 @@ Platform.setTileset(tileset);
 Box.setTileset(tileset);
 
 const platforms = [
-    new Platform(110,550, 200 ,8 , {vx:20, maxX:200, minX: 25}),
-    new Platform(600,550, 200 ,8 , {type: 'oneway'}),
-    new Platform(400,550, 200 ,800)
+    new Platform(110,550, 208 ,8 , {vx:20, maxX:200, minX: 25}),
+    new Platform(600,550, 208 ,8 , {type: 'oneway'}),
+    new Platform(400,550, 208 ,800)
 ];
 const residuos = [
     new Residuo(50, 500, 30, 30)
