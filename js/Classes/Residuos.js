@@ -11,7 +11,7 @@ export default class Residuos {
         return { x: this.pos.x, y: this.pos.y, w: this.w, h: this.h };
     }
 
-    render(ctx, color = '#8B4513') {
+    render(ctx, color = 'yellow') {
         if (this.collected) return;
         ctx.fillStyle = color;
         ctx.fillRect(this.pos.x, this.pos.y, this.w, this.h);

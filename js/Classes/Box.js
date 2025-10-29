@@ -1,7 +1,7 @@
 import Vector from './Vector.js';
 const GRAVITY = 1200, DRAG = 8.0, GROUND_Y = 600;
 export default class Box {
-    constructor(x = 0, y = 0, width = 40, height = 40) {
+    constructor(x = 0, y = 0, width = 48, height = 48) {
         this.pos = new Vector(x, y);
         this.vel = new Vector(0, 0);
         this.width = width;

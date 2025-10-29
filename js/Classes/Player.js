@@ -5,7 +5,7 @@ import Vector from './Vector.js'
 const DRAG = 6.0, GRAVITY = 1200, GROUND_Y = 600;
 
 export default class Player {
-    constructor(x = 50, y = 50, width = 20, height = 40, sprite = null) {
+    constructor(x = 50, y = 50, width = 32, height = 56, sprite = null) {
         // PLAYER MOVEMENT 
         this.pos = new Vector(x, y);
         this.prevPos = this.pos.clone();
@@ -13,7 +13,7 @@ export default class Player {
         this.acc = new Vector(0, 0);
 
         // VISUAL
-        this.sheet = { tileW: 24, tileH: 24, cols: 8, rows: 6, scale: 2, image: null, loaded: false };
+        this.sheet = { tileW: 24, tileH: 24, cols: 8, rows: 6, scale: 2.5, image: null, loaded: false };
         this.width = width || this.sheet.tileW * this.sheet.scale;
         this.height = height || this.sheet.tileH * this.sheet.scale;
         this.sprite = sprite;
@@ -25,7 +25,6 @@ export default class Player {
             push:  { frames: [16,17,18,19],             fps: 4,  loop: false  },
             jump:  { frames: [24,25,26,27,28,29,30,31], fps: 10, loop: false },
             sit:   { frames: [40,41],                   fps: 2,  loop: true  },
-            attack:{ frames: [4,5],                     fps: 10, loop: false },
         };
         this.currentAnim = 'idle';
         this.frameIndex = 0;
@@ -34,7 +33,7 @@ export default class Player {
         // MOVEMENT CONFIG
         this.moveForce = 1500;
         this.maxSpeedX = 300;
-        this.jumpImpulse = -450;
+        this.jumpImpulse = -500;
         this.onGround = false;
         this.isPushing = false;
 
@@ -116,7 +115,7 @@ export default class Player {
     }
 
     getHitbox() {
-        return { x: this.pos.x - this.width / 2, y: this.pos.y - this.height / 2, w: this.width, h: this.height };
+        return { x: this.pos.x - this.width / 2, y: this.pos.y - this.height / 2  + 10 , w: this.width, h: this.height -10 };
     }
 
     resolvePlatformCollision(platform, dt) {
@@ -187,7 +186,6 @@ export default class Player {
             this.frameIndex++;
             if (this.frameIndex >= anim.frames.length) {
                 this.frameIndex = anim.loop ? 0 : anim.frames.length - 1;
-                if (!anim.loop && this.currentAnim === 'attack') this.setAnimation('idle', true);
             }
         }
     }

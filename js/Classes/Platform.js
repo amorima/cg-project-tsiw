@@ -11,7 +11,8 @@ export default class Platform {
         this.maxX = maxX || x;
         this.minY = minY || y;
         this.maxY = maxY || y;
-        this.tileSize = 16;
+        this.sourceTileSize = 16;
+        this.displayTileSize = 48;
         this.tileset = null;
     }
 
@@ -51,29 +52,28 @@ export default class Platform {
         }
 
         ctx.imageSmoothingEnabled = false;
-        const ts = this.tileSize;
-        const tilesX = Math.ceil(this.w / ts);
-        const tilesY = Math.ceil(this.h / ts);
+        const srcSize = this.sourceTileSize;
+        const dstSize = this.displayTileSize;
+        const tilesX = Math.ceil(this.w / dstSize);
+        const tilesY = Math.ceil(this.h / dstSize);
 
         if (this.type === 'oneway') {
-            // Semi-solid platforms: tiles 10-12 of row 1 (indices 9-11)
+            // Semi-solid platforms: use top-left 8x8 of tile 10, tiled 2x1 per display tile
+            const tileIndex = 9; // Tile 10 (index 9)
+            const sx = (tileIndex % 16) * srcSize;
+            const sy = Math.floor(tileIndex / 16) * srcSize;
+            
             for (let i = 0; i < tilesX; i++) {
-                const tileIndex = i === 0 ? 9 : (i === tilesX - 1 ? 11 : 10);
-                const sx = (tileIndex % 16) * ts;
-                const sy = Math.floor(tileIndex / 16) * ts;
-                ctx.drawImage(tileset, sx, sy, ts, ts, this.x + i * ts, this.y, ts, ts);
+                // Draw two 8x8 tiles side by side in the top row only
+                ctx.drawImage(tileset, sx, sy, 8, 8, this.x + i * dstSize, this.y, 24, 24);
+                ctx.drawImage(tileset, sx, sy, 8, 8, this.x + i * dstSize + 24, this.y, 24, 24);
             }
         } else {
             // Solid platforms: tile 0 (row 1) for top, tile 16 (row 2) for fill
             for (let j = 0; j < tilesY; j++) {
                 for (let i = 0; i < tilesX; i++) {
-                    if (j === 0) {
-                        // Top layer: first tile of row 1
-                        ctx.drawImage(tileset, 0, 0, ts, ts, this.x + i * ts, this.y + j * ts, ts, ts);
-                    } else {
-                        // Fill layers: first tile of row 2
-                        ctx.drawImage(tileset, 0, ts, ts, ts, this.x + i * ts, this.y + j * ts, ts, ts);
-                    }
+                    const sy = j === 0 ? 0 : srcSize;
+                    ctx.drawImage(tileset, 0, sy, srcSize, srcSize, this.x + i * dstSize, this.y + j * dstSize, dstSize, dstSize);
                 }
             }
         }
