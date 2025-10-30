@@ -5,17 +5,19 @@ import Vector from './Vector.js'
 const DRAG = 6.0, GRAVITY = 1200, GROUND_Y = 600;
 
 export default class Player {
-    constructor(x = 50, y = 50, width = 32, height = 56, sprite = null) {
-        // PLAYER MOVEMENT 
-        this.pos = new Vector(x, y);
+    static GRID_SIZE = 48; // Grid cell size in pixels
+    
+    constructor(gridX = 2, gridY = 10.5, gridW = 0.67, gridH = 1.17, sprite = null) {
+        // Convert grid coordinates to pixels
+        this.pos = new Vector(gridX * Player.GRID_SIZE, gridY * Player.GRID_SIZE);
         this.prevPos = this.pos.clone();
         this.vel = new Vector(0, 0);
         this.acc = new Vector(0, 0);
 
         // VISUAL
         this.sheet = { tileW: 24, tileH: 24, cols: 8, rows: 6, scale: 2.5, image: null, loaded: false };
-        this.width = width || this.sheet.tileW * this.sheet.scale;
-        this.height = height || this.sheet.tileH * this.sheet.scale;
+        this.width = gridW * Player.GRID_SIZE || this.sheet.tileW * this.sheet.scale;
+        this.height = gridH * Player.GRID_SIZE || this.sheet.tileH * this.sheet.scale;
         this.sprite = sprite;
         this.facing = 1;
         this.animations = {

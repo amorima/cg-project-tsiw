@@ -1,10 +1,13 @@
 import Vector from './Vector.js';
 
 export default class Goal {
-    constructor(x = 0, y = 0, width = 48, height = 72) {
-        this.pos = new Vector(x, y);
-        this.w = width;
-        this.h = height;
+    static GRID_SIZE = 48; // Grid cell size in pixels
+    
+    constructor(gridX = 0, gridY = 0, gridW = 1, gridH = 1.5) {
+        // Convert grid coordinates to pixels
+        this.pos = new Vector(gridX * Goal.GRID_SIZE, gridY * Goal.GRID_SIZE);
+        this.w = gridW * Goal.GRID_SIZE;
+        this.h = gridH * Goal.GRID_SIZE;
         this.isActive = false;
         this.animationTimer = 0;
         this.pulseSpeed = 2; // Pulse animation speed

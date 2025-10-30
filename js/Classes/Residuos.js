@@ -9,6 +9,7 @@ export default class Residuos {
     };
 
     static imagesLoaded = false;
+    static GRID_SIZE = 48; // Grid cell size in pixels
 
     static async loadImages() {
         if (this.imagesLoaded) return;
@@ -29,10 +30,13 @@ export default class Residuos {
         this.imagesLoaded = true;
     }
 
-    constructor(x = 0, y = 0, width = 24, height = 24, type = 'PLASTIC'){
-        this.pos = new Vector(x, y);
-        this.w = width;
-        this.h = height;
+    constructor(gridX = 0, gridY = 0, gridW = 0.67, gridH = 0.67, type = 'PLASTIC'){
+        // Convert grid coordinates to pixels
+        const pixelX = gridX * Residuos.GRID_SIZE;
+        const pixelY = gridY * Residuos.GRID_SIZE;
+        this.pos = new Vector(pixelX, pixelY);
+        this.w = gridW * Residuos.GRID_SIZE;
+        this.h = gridH * Residuos.GRID_SIZE;
         this.collected = false;
         this.type = Residuos.TYPES[type] || Residuos.TYPES.PLASTIC;
         
@@ -40,7 +44,7 @@ export default class Residuos {
         this.popUpTimer = 0;
         this.popUpDuration = 0.6; // seconds
         this.popUpDistance = 40;   // pixels to move up
-        this.originalY = y;
+        this.originalY = pixelY;
     }
 
     getAABB() {

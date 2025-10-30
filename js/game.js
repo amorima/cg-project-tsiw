@@ -57,7 +57,7 @@ const MUSIC = new Audio('../assets/audio/time_for_adventure.mp3');
 MUSIC.loop = true;
 MUSIC.play()
 
-const player = new Player(96, 504);
+const player = new Player(2, 10.5); // Grid coordinates: x=2, y=10.5 -> pixels: x=96, y=504
 await player.loadAudio('../assets/audio/jump.wav', 'jump');
 await player.loadAudio('../assets/audio/power_up.wav', 'power_up');
 await player.loadSprite('../assets/img/Player.png');
@@ -74,128 +74,128 @@ Box.setTileset(tileset);
 const platforms = [
     // === SECTION 1: STARTING AREA (0-800) ===
     // Ground layer
-    new Platform(0, 552, 384, 40),
-    new Platform(432, 552, 384, 40),
+    new Platform(0, 11.5, 8, 0.83),
+    new Platform(9, 11.5, 8, 0.83),
     
     // Lower platforms
-    new Platform(144, 456, 144, 40),
-    new Platform(528, 456, 192, 40),
+    new Platform(3, 9.5, 3, 0.83),
+    new Platform(11, 9.5, 4, 0.83),
     
     // Mid platforms
-    new Platform(0, 360, 96, 40),
-    new Platform(240, 360, 192, 40),
-    new Platform(528, 336, 144, 40),
-    new Platform(720, 408, 96, 40),
+    new Platform(0, 7.5, 2, 0.83),
+    new Platform(5, 7.5, 4, 0.83),
+    new Platform(11, 7.5, 3, 0.83),
+    new Platform(15, 8.5, 2, 0.83),
     
     // High platforms
-    new Platform(96, 264, 144, 40),
-    new Platform(432, 240, 192, 40),
-    new Platform(672, 288, 144, 40),
+    new Platform(2, 5.5, 3, 0.83),
+    new Platform(9, 5.5, 4, 0.83),
+    new Platform(14, 6.5, 3, 0.83),
     
     // Moving platform
-    new Platform(288, 168, 96, 40, {vx: 80, maxX: 480, minX: 96}),
+    new Platform(6, 3.5, 2, 0.83, {vx: 80, maxGridX: 10, minGridX: 2}),
     
     // One-way platforms
-    new Platform(144, 120, 144, 24, {type: 'oneway'}),
-    new Platform(480, 144, 144, 24, {type: 'oneway'}),
-    new Platform(336, 480, 96, 24, {type: 'oneway'}),
+    new Platform(3, 2.5, 3, 0.5, {type: 'oneway'}),
+    new Platform(10, 2.5, 3, 0.5, {type: 'oneway'}),
+    new Platform(7, 9.5, 2, 0.5, {type: 'oneway'}),
     
     // Walls
-    new Platform(0, 600, 48, 240),
-    new Platform(768, 336, 48, 240),
+    new Platform(0, 12.5, 1, 5),
+    new Platform(16, 7.5, 1, 5),
     
     // === SECTION 2: MIDDLE AREA (800-1600) ===
     // Ground continuation
-    new Platform(816, 552, 384, 40),
-    new Platform(1248, 552, 336, 40),
+    new Platform(17, 11.5, 8, 0.83),
+    new Platform(26, 11.5, 7, 0.83),
     
     // Staircase section
-    new Platform(864, 504, 96, 40),
-    new Platform(960, 456, 96, 40),
-    new Platform(1056, 408, 96, 40),
-    new Platform(1152, 360, 96, 40),
+    new Platform(18, 10.5, 2, 0.83),
+    new Platform(20, 9.5, 2, 0.83),
+    new Platform(22, 8.5, 2, 0.83),
+    new Platform(24, 7.5, 2, 0.83),
     
     // Mid platforms
-    new Platform(816, 384, 144, 40),
-    new Platform(1008, 336, 192, 40),
-    new Platform(1296, 384, 144, 40),
-    new Platform(1488, 432, 96, 40),
+    new Platform(17, 8.5, 3, 0.83),
+    new Platform(21, 7.5, 4, 0.83),
+    new Platform(27, 8.5, 3, 0.83),
+    new Platform(31, 9.5, 2, 0.83),
     
     // High platforms
-    new Platform(864, 240, 144, 40),
-    new Platform(1104, 192, 192, 40),
-    new Platform(1392, 264, 144, 40),
+    new Platform(18, 5.5, 3, 0.83),
+    new Platform(23, 4.5, 4, 0.83),
+    new Platform(29, 5.5, 3, 0.83),
     
     // Moving platform
-    new Platform(1200, 168, 96, 40, {vx: 60, maxX: 1392, minX: 1008}),
+    new Platform(25, 3.5, 2, 0.83, {vx: 60, maxGridX: 29, minGridX: 21}),
     
     // One-way platforms
-    new Platform(912, 120, 144, 24, {type: 'oneway'}),
-    new Platform(1248, 144, 144, 24, {type: 'oneway'}),
-    new Platform(1440, 480, 96, 24, {type: 'oneway'}),
+    new Platform(19, 2.5, 3, 0.5, {type: 'oneway'}),
+    new Platform(26, 2.5, 3, 0.5, {type: 'oneway'}),
+    new Platform(30, 10.5, 2, 0.5, {type: 'oneway'}),
     
     // Tower
-    new Platform(1584, 336, 48, 240),
+    new Platform(33, 7.5, 1, 5),
     
     // === SECTION 3: END AREA (1600-2016) ===
     // Ground
-    new Platform(1632, 552, 384, 40),
+    new Platform(34, 11.5, 8, 0.83),
     
     // Challenge platforms (gaps)
-    new Platform(1680, 456, 96, 40),
-    new Platform(1824, 408, 96, 40),
-    new Platform(1968, 360, 48, 40),
+    new Platform(35, 9.5, 2, 0.83),
+    new Platform(38, 8.5, 2, 0.83),
+    new Platform(41, 7.5, 1, 0.83),
     
     // Final area platforms
-    new Platform(1680, 336, 192, 40),
-    new Platform(1920, 288, 96, 40),
+    new Platform(35, 7.5, 4, 0.83),
+    new Platform(40, 6.5, 2, 0.83),
     
     // High secret area
-    new Platform(1776, 192, 144, 40),
-    new Platform(1968, 144, 48, 40),
+    new Platform(37, 4.5, 3, 0.83),
+    new Platform(41, 3.5, 1, 0.83),
     
     // Moving platform
-    new Platform(1872, 168, 96, 40, {vx: 70, maxX: 1968, minX: 1680}),
+    new Platform(39, 3.5, 2, 0.83, {vx: 70, maxGridX: 41, minGridX: 35}),
     
     // One-way platforms
-    new Platform(1728, 120, 144, 24, {type: 'oneway'}),
-    new Platform(1920, 96, 96, 24, {type: 'oneway'}),
-    new Platform(1680, 480, 144, 24, {type: 'oneway'}),
+    new Platform(36, 2.5, 3, 0.5, {type: 'oneway'}),
+    new Platform(40, 1.5, 2, 0.5, {type: 'oneway'}),
+    new Platform(35, 9.5, 3, 0.5, {type: 'oneway'}),
     
     // End wall
-    new Platform(1968, 240, 48, 336),
+    new Platform(41, 5.5, 1, 7),
 ];
 
 // === RESIDUO SPAWN SYSTEM ===
 
-// 80 possible residuo positions (chosen to not overlap with platforms)
+// 80 possible residuo positions in grid coordinates (chosen to not overlap with platforms)
 const possibleResiduoPositions = [
     // Section 1 (0-800) - 30 positions
-    { x: 50, y: 520 }, { x: 100, y: 520 }, { x: 200, y: 520 }, { x: 250, y: 520 },
-    { x: 300, y: 520 }, { x: 350, y: 520 }, { x: 500, y: 520 }, { x: 550, y: 520 },
-    { x: 650, y: 520 }, { x: 700, y: 520 }, { x: 100, y: 420 }, { x: 200, y: 420 },
-    { x: 250, y: 420 }, { x: 550, y: 420 }, { x: 650, y: 420 }, { x: 50, y: 330 },
-    { x: 260, y: 330 }, { x: 350, y: 330 }, { x: 550, y: 300 }, { x: 600, y: 300 },
-    { x: 700, y: 250 }, { x: 750, y: 250 }, { x: 120, y: 230 }, { x: 180, y: 230 },
-    { x: 450, y: 210 }, { x: 520, y: 210 }, { x: 700, y: 380 }, { x: 360, y: 480 },
-    { x: 480, y: 330 }, { x: 620, y: 380 },
+    { x: 1, y: 10.8 }, { x: 2, y: 10.8 }, { x: 4.2, y: 10.8 }, { x: 5.2, y: 10.8 },
+    { x: 6.2, y: 10.8 }, { x: 7.3, y: 10.8 }, { x: 10.4, y: 10.8 }, { x: 11.5, y: 10.8 },
+    { x: 13.5, y: 10.8 }, { x: 14.6, y: 10.8 }, { x: 2.1, y: 8.75 }, { x: 4.2, y: 8.75 },
+    { x: 5.2, y: 8.75 }, { x: 11.5, y: 8.75 }, { x: 13.5, y: 8.75 }, { x: 1, y: 6.9 },
+    { x: 5.4, y: 6.9 }, { x: 7.3, y: 6.9 }, { x: 11.5, y: 6.25 }, { x: 12.5, y: 6.25 },
+    { x: 14.6, y: 5.2 }, { x: 15.6, y: 5.2 }, { x: 2.5, y: 4.8 }, { x: 3.75, y: 4.8 },
+    { x: 9.4, y: 4.4 }, { x: 10.8, y: 4.4 }, { x: 14.6, y: 7.9 }, { x: 7.5, y: 10 },
+    { x: 10, y: 6.9 }, { x: 12.9, y: 7.9 },
     
     // Section 2 (800-1600) - 30 positions
-    { x: 850, y: 520 }, { x: 900, y: 520 }, { x: 950, y: 520 }, { x: 1050, y: 520 },
-    { x: 1100, y: 520 }, { x: 1200, y: 520 }, { x: 1270, y: 520 }, { x: 1320, y: 520 },
-    { x: 1380, y: 520 }, { x: 1450, y: 520 }, { x: 1520, y: 520 }, { x: 900, y: 470 },
-    { x: 1000, y: 470 }, { x: 1450, y: 470 }, { x: 1000, y: 420 }, { x: 1450, y: 400 },
-    { x: 1080, y: 370 }, { x: 1180, y: 370 }, { x: 850, y: 350 }, { x: 930, y: 350 },
-    { x: 1030, y: 300 }, { x: 1130, y: 300 }, { x: 1180, y: 300 }, { x: 1320, y: 350 },
-    { x: 1380, y: 350 }, { x: 1420, y: 350 }, { x: 890, y: 210 }, { x: 950, y: 210 },
-    { x: 1130, y: 160 }, { x: 1200, y: 160 },
+    { x: 17.7, y: 10.8 }, { x: 18.75, y: 10.8 }, { x: 19.8, y: 10.8 }, { x: 21.9, y: 10.8 },
+    { x: 22.9, y: 10.8 }, { x: 25, y: 10.8 }, { x: 26.5, y: 10.8 }, { x: 27.5, y: 10.8 },
+    { x: 28.75, y: 10.8 }, { x: 30.2, y: 10.8 }, { x: 31.7, y: 10.8 }, { x: 18.75, y: 9.8 },
+    { x: 20.8, y: 9.8 }, { x: 30.2, y: 9.8 }, { x: 20.8, y: 8.75 }, { x: 30.2, y: 8.3 },
+    { x: 22.5, y: 7.7 }, { x: 24.6, y: 7.7 }, { x: 17.7, y: 7.3 }, { x: 19.4, y: 7.3 },
+    { x: 21.5, y: 6.25 }, { x: 23.5, y: 6.25 }, { x: 24.6, y: 6.25 }, { x: 27.5, y: 7.3 },
+    { x: 28.75, y: 7.3 }, { x: 29.6, y: 7.3 }, { x: 18.5, y: 4.4 }, { x: 19.8, y: 4.4 },
+    { x: 23.5, y: 3.3 }, { x: 25, y: 3.3 },
     
     // Section 3 (1600-2016) - 20 positions
-    { x: 1650, y: 520 }, { x: 1700, y: 520 }, { x: 1800, y: 520 }, { x: 1870, y: 520 },
-    { x: 1930, y: 520 }, { x: 1700, y: 420 }, { x: 1750, y: 420 }, { x: 1850, y: 470 },
-    { x: 1900, y: 470 }, { x: 1700, y: 300 }, { x: 1800, y: 300 }, { x: 1700, y: 380 },
-    { x: 1730, y: 300 }, { x: 1850, y: 380 }, { x: 1930, y: 330 }, { x: 1800, y: 250 },
-    { x: 1850, y: 250 }, { x: 1930, y: 250 }, { x: 1800, y: 160 }, { x: 1900, y: 160 }
+    { x: 34.4, y: 10.8 }, { x: 35.4, y: 10.8 }, { x: 37.5, y: 10.8 }, { x: 39, y: 10.8 },
+    { x: 40.2, y: 10.8 }, { x: 35.4, y: 8.75 }, { x: 36.5, y: 8.75 }, { x: 38.5, y: 9.8 },
+    { x: 39.6, y: 9.8 }, { x: 35.4, y: 6.25 }, { x: 37.5, y: 6.25 }, { x: 35.4, y: 7.9 },
+    { x: 36, y: 6.25 }, { x: 38.5, y: 7.9 }, { x: 40.2, y: 6.9 }, { x: 37.5, y: 5.2 },
+    { x: 38.5, y: 5.2 }, { x: 40.2, y: 5.2 }, { x: 37.5, y: 3.3 }, { x: 39.6, y: 3.3 }
 ];
 
 // Function to randomly select 24 positions with at least one of each type
@@ -215,14 +215,14 @@ function spawnRandomResiduos() {
     // Ensure at least one of each type
     for (let i = 0; i < types.length; i++) {
         const pos = selectedPositions[i];
-        residuos.push(new Residuo(pos.x, pos.y, 32, 32, types[i]));
+        residuos.push(new Residuo(pos.x, pos.y, 0.67, 0.67, types[i])); // Using grid coordinates
     }
     
     // Fill remaining with random types
     for (let i = types.length; i < selectedPositions.length; i++) {
         const pos = selectedPositions[i];
         const randomType = types[Math.floor(Math.random() * types.length)];
-        residuos.push(new Residuo(pos.x, pos.y, 32, 32, randomType));
+        residuos.push(new Residuo(pos.x, pos.y, 0.67, 0.67, randomType)); // Using grid coordinates
     }
     
     return residuos;
@@ -233,51 +233,51 @@ const residuos = spawnRandomResiduos();
 console.log(`Spawned ${residuos.length} residuos`);
 
 // Create Goal at the start of the level
-const goal = new Goal(0, 480, 48, 72);
+const goal = new Goal(0, 10, 1, 1.5); // Grid: x=0, y=10, w=1, h=1.5 -> pixels: x=0, y=480, w=48, h=72
 
 const boxes = [
     // === SECTION 1 (0-800) ===
-    new Box(144, 528, 48, 48),
-    new Box(384, 528, 48, 48),
-    new Box(624, 528, 48, 48),
-    new Box(192, 432, 48, 48),
-    new Box(624, 432, 48, 48),
-    new Box(672, 312, 48, 48),
-    new Box(672, 264, 48, 48),
-    new Box(288, 336, 48, 48),
-    new Box(144, 240, 48, 48),
-    new Box(480, 216, 48, 48),
-    new Box(768, 528, 48, 48),
-    new Box(768, 480, 48, 48),
-    new Box(768, 432, 48, 48),
+    new Box(3, 11, 1, 1),
+    new Box(8, 11, 1, 1),
+    new Box(13, 11, 1, 1),
+    new Box(4, 9, 1, 1),
+    new Box(13, 9, 1, 1),
+    new Box(14, 6.5, 1, 1),
+    new Box(14, 5.5, 1, 1),
+    new Box(6, 7, 1, 1),
+    new Box(3, 5, 1, 1),
+    new Box(10, 4.5, 1, 1),
+    new Box(16, 11, 1, 1),
+    new Box(16, 10, 1, 1),
+    new Box(16, 9, 1, 1),
     
     // === SECTION 2 (800-1600) ===
-    new Box(864, 528, 48, 48),
-    new Box(1152, 528, 48, 48),
-    new Box(1392, 528, 48, 48),
-    new Box(1008, 480, 48, 48),
-    new Box(1104, 432, 48, 48),
-    new Box(912, 360, 48, 48),
-    new Box(1104, 312, 48, 48),
-    new Box(1344, 360, 48, 48),
-    new Box(960, 216, 48, 48),
-    new Box(1200, 168, 48, 48),
-    new Box(1440, 240, 48, 48),
-    new Box(1584, 528, 48, 48),
-    new Box(1584, 480, 48, 48),
+    new Box(18, 11, 1, 1),
+    new Box(24, 11, 1, 1),
+    new Box(29, 11, 1, 1),
+    new Box(21, 10, 1, 1),
+    new Box(23, 9, 1, 1),
+    new Box(19, 7.5, 1, 1),
+    new Box(23, 6.5, 1, 1),
+    new Box(28, 7.5, 1, 1),
+    new Box(20, 4.5, 1, 1),
+    new Box(25, 3.5, 1, 1),
+    new Box(30, 5, 1, 1),
+    new Box(33, 11, 1, 1),
+    new Box(33, 10, 1, 1),
     
     // === SECTION 3 (1600-2016) ===
-    new Box(1680, 528, 48, 48),
-    new Box(1920, 528, 48, 48),
-    new Box(1776, 432, 48, 48),
-    new Box(1920, 384, 48, 48),
-    new Box(1776, 312, 48, 48),
-    new Box(1968, 264, 48, 48),
-    new Box(1824, 168, 48, 48),
-    new Box(1968, 120, 48, 48),
-    new Box(1968, 528, 48, 48),
-    new Box(1968, 480, 48, 48),
-    new Box(1968, 432, 48, 48),
+    new Box(35, 11, 1, 1),
+    new Box(40, 11, 1, 1),
+    new Box(37, 9, 1, 1),
+    new Box(40, 8, 1, 1),
+    new Box(37, 6.5, 1, 1),
+    new Box(41, 5.5, 1, 1),
+    new Box(38, 3.5, 1, 1),
+    new Box(41, 2.5, 1, 1),
+    new Box(41, 11, 1, 1),
+    new Box(41, 10, 1, 1),
+    new Box(41, 9, 1, 1),
 ];
 
 // Event Loop

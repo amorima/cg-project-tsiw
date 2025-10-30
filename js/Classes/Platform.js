@@ -1,16 +1,20 @@
 export default class Platform {
-    constructor(x, y, w, h, { type = 'solid', vx = 0, vy = 0, minX = 0, maxX = 0, minY = 0, maxY = 0 } = {}) {
-        this.x = x;
-        this.y = y;
-        this.w = Math.max(1, w);
-        this.h = Math.max(1, h);
+    static GRID_SIZE = 48; // Grid cell size in pixels
+    
+    constructor(gridX, gridY, gridW, gridH, { type = 'solid', vx = 0, vy = 0, minGridX = 0, maxGridX = 0, minGridY = 0, maxGridY = 0 } = {}) {
+        // Convert grid coordinates to pixels
+        this.x = gridX * Platform.GRID_SIZE;
+        this.y = gridY * Platform.GRID_SIZE;
+        this.w = Math.max(1, gridW * Platform.GRID_SIZE);
+        this.h = Math.max(1, gridH * Platform.GRID_SIZE);
         this.type = type; // 'solid' | 'oneway'
         this.vx = vx;
         this.vy = vy;
-        this.minX = minX || x;
-        this.maxX = maxX || x;
-        this.minY = minY || y;
-        this.maxY = maxY || y;
+        // Convert min/max grid coordinates to pixels
+        this.minX = minGridX ? minGridX * Platform.GRID_SIZE : this.x;
+        this.maxX = maxGridX ? maxGridX * Platform.GRID_SIZE : this.x;
+        this.minY = minGridY ? minGridY * Platform.GRID_SIZE : this.y;
+        this.maxY = maxGridY ? maxGridY * Platform.GRID_SIZE : this.y;
         this.sourceTileSize = 16;
         this.displayTileSize = 48;
         this.tileset = null;

@@ -1,11 +1,14 @@
 import Vector from './Vector.js';
 const GRAVITY = 1200, DRAG = 8.0, GROUND_Y = 600;
 export default class Box {
-    constructor(x = 0, y = 0, width = 48, height = 48) {
-        this.pos = new Vector(x, y);
+    static GRID_SIZE = 48; // Grid cell size in pixels
+    
+    constructor(gridX = 0, gridY = 0, gridW = 1, gridH = 1) {
+        // Convert grid coordinates to pixels
+        this.pos = new Vector(gridX * Box.GRID_SIZE, gridY * Box.GRID_SIZE);
         this.vel = new Vector(0, 0);
-        this.width = width;
-        this.height = height;
+        this.width = gridW * Box.GRID_SIZE;
+        this.height = gridH * Box.GRID_SIZE;
         this.onGround = false;
         this.beingPushed = false;
         this.tileSize = 16;
