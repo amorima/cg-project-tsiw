@@ -120,6 +120,16 @@ export default class Player {
         this.pos.x += this.vel.x * dt;
         this.pos.y += this.vel.y * dt;
 
+        // Clamp player position to world boundaries
+        const halfWidth = this.width / 2;
+        if (this.pos.x - halfWidth < 0) {
+            this.pos.x = halfWidth;
+            this.vel.x = 0;
+        } else if (this.pos.x + halfWidth > 2016) {
+            this.pos.x = 2016 - halfWidth;
+            this.vel.x = 0;
+        }
+
         // ground constraint inline
         const halfH = this.height / 2;
         if (this.pos.y + halfH >= GROUND_Y) {

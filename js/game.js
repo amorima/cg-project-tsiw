@@ -27,7 +27,7 @@ const camera = {
     deadZoneX: W * 0.3,        // Player can move 30% from center before camera moves
     deadZoneWidth: W * 0.4,    // Dead zone is 40% of screen width
     smoothness: 0.1,           // Camera lerp factor (lower = smoother)
-    worldWidth: 2400,          // Total world width (3x canvas width)
+    worldWidth: 2016,          // Total world width (matches right boundary)
     worldHeight: H,
     
     update(targetX) {
@@ -72,26 +72,26 @@ Box.setTileset(tileset);
 const platforms = [
     // === SECTION 1: STARTING AREA (0-800) ===
     // Ground layer
-    new Platform(0, 552, 336, 48),
-    new Platform(480, 552, 320, 48),
+    new Platform(0, 552, 384, 40),
+    new Platform(432, 552, 384, 40),
     
     // Lower platforms
-    new Platform(120, 456, 144, 48),
-    new Platform(560, 456, 144, 48),
+    new Platform(144, 456, 144, 40),
+    new Platform(528, 456, 192, 40),
     
     // Mid platforms
-    new Platform(0, 360, 96, 48),
-    new Platform(240, 384, 192, 48),
-    new Platform(528, 336, 144, 48),
-    new Platform(704, 408, 96, 48),
+    new Platform(0, 360, 96, 40),
+    new Platform(240, 360, 192, 40),
+    new Platform(528, 336, 144, 40),
+    new Platform(720, 408, 96, 40),
     
     // High platforms
-    new Platform(96, 264, 144, 48),
-    new Platform(432, 240, 192, 48),
-    new Platform(672, 288, 128, 48),
+    new Platform(96, 264, 144, 40),
+    new Platform(432, 240, 192, 40),
+    new Platform(672, 288, 144, 40),
     
     // Moving platform
-    new Platform(288, 168, 96, 48, {vx: 80, maxX: 480, minX: 96}),
+    new Platform(288, 168, 96, 40, {vx: 80, maxX: 480, minX: 96}),
     
     // One-way platforms
     new Platform(144, 120, 144, 24, {type: 'oneway'}),
@@ -99,73 +99,69 @@ const platforms = [
     new Platform(336, 480, 96, 24, {type: 'oneway'}),
     
     // Walls
-    new Platform(0, 168, 48, 192),
-    new Platform(752, 336, 48, 216),
+    new Platform(0, 600, 48, 240),
+    new Platform(768, 336, 48, 240),
     
     // === SECTION 2: MIDDLE AREA (800-1600) ===
     // Ground continuation
-    new Platform(800, 552, 400, 48),
-    new Platform(1280, 552, 320, 48),
+    new Platform(816, 552, 384, 40),
+    new Platform(1248, 552, 336, 40),
     
     // Staircase section
-    new Platform(850, 504, 96, 48),
-    new Platform(950, 456, 96, 48),
-    new Platform(1050, 408, 96, 48),
-    new Platform(1150, 360, 96, 48),
+    new Platform(864, 504, 96, 40),
+    new Platform(960, 456, 96, 40),
+    new Platform(1056, 408, 96, 40),
+    new Platform(1152, 360, 96, 40),
     
     // Mid platforms
-    new Platform(820, 384, 144, 48),
-    new Platform(1020, 336, 192, 48),
-    new Platform(1300, 384, 144, 48),
-    new Platform(1500, 432, 96, 48),
+    new Platform(816, 384, 144, 40),
+    new Platform(1008, 336, 192, 40),
+    new Platform(1296, 384, 144, 40),
+    new Platform(1488, 432, 96, 40),
     
     // High platforms
-    new Platform(880, 240, 144, 48),
-    new Platform(1100, 192, 192, 48),
-    new Platform(1380, 264, 144, 48),
+    new Platform(864, 240, 144, 40),
+    new Platform(1104, 192, 192, 40),
+    new Platform(1392, 264, 144, 40),
     
     // Moving platform
-    new Platform(1200, 168, 96, 48, {vx: 60, maxX: 1400, minX: 1000}),
+    new Platform(1200, 168, 96, 40, {vx: 60, maxX: 1392, minX: 1008}),
     
     // One-way platforms
-    new Platform(920, 120, 144, 24, {type: 'oneway'}),
-    new Platform(1250, 144, 144, 24, {type: 'oneway'}),
+    new Platform(912, 120, 144, 24, {type: 'oneway'}),
+    new Platform(1248, 144, 144, 24, {type: 'oneway'}),
     new Platform(1440, 480, 96, 24, {type: 'oneway'}),
     
     // Tower
-    new Platform(1560, 360, 48, 192),
+    new Platform(1584, 336, 48, 240),
     
-    // === SECTION 3: END AREA (1600-2400) ===
+    // === SECTION 3: END AREA (1600-2016) ===
     // Ground
-    new Platform(1600, 552, 800, 48),
+    new Platform(1632, 552, 384, 40),
     
     // Challenge platforms (gaps)
-    new Platform(1650, 456, 96, 48),
-    new Platform(1800, 408, 96, 48),
-    new Platform(1950, 360, 96, 48),
-    new Platform(2100, 456, 96, 48),
-    new Platform(2250, 504, 96, 48),
+    new Platform(1680, 456, 96, 40),
+    new Platform(1824, 408, 96, 40),
+    new Platform(1968, 360, 48, 40),
     
     // Final area platforms
-    new Platform(1680, 336, 192, 48),
-    new Platform(1920, 288, 144, 48),
-    new Platform(2120, 336, 192, 48),
+    new Platform(1680, 336, 192, 40),
+    new Platform(1920, 288, 96, 40),
     
     // High secret area
-    new Platform(1750, 192, 144, 48),
-    new Platform(2000, 144, 192, 48),
-    new Platform(2250, 192, 144, 48),
+    new Platform(1776, 192, 144, 40),
+    new Platform(1968, 144, 48, 40),
     
     // Moving platform
-    new Platform(2080, 168, 96, 48, {vx: 70, maxX: 2300, minX: 1900}),
+    new Platform(1872, 168, 96, 40, {vx: 70, maxX: 1968, minX: 1680}),
     
     // One-way platforms
-    new Platform(1720, 120, 144, 24, {type: 'oneway'}),
-    new Platform(2040, 96, 144, 24, {type: 'oneway'}),
-    new Platform(2160, 480, 144, 24, {type: 'oneway'}),
+    new Platform(1728, 120, 144, 24, {type: 'oneway'}),
+    new Platform(1920, 96, 96, 24, {type: 'oneway'}),
+    new Platform(1680, 480, 144, 24, {type: 'oneway'}),
     
     // End wall
-    new Platform(2352, 240, 48, 312),
+    new Platform(1968, 240, 48, 336),
 ];
 
 const residuos = [
@@ -230,51 +226,47 @@ const residuos = [
 
 const boxes = [
     // === SECTION 1 (0-800) ===
-    new Box(160, 528, 48, 48),
-    new Box(380, 528, 48, 48),
-    new Box(640, 528, 48, 48),
-    new Box(200, 432, 48, 48),
-    new Box(600, 432, 48, 48),
-    new Box(680, 312, 48, 48),
-    new Box(680, 264, 48, 48),
-    new Box(300, 360, 48, 48),
-    new Box(130, 240, 48, 48),
-    new Box(500, 216, 48, 48),
-    new Box(776, 528, 48, 48),
-    new Box(776, 480, 48, 48),
-    new Box(776, 432, 48, 48),
+    new Box(144, 528, 48, 48),
+    new Box(384, 528, 48, 48),
+    new Box(624, 528, 48, 48),
+    new Box(192, 432, 48, 48),
+    new Box(624, 432, 48, 48),
+    new Box(672, 312, 48, 48),
+    new Box(672, 264, 48, 48),
+    new Box(288, 336, 48, 48),
+    new Box(144, 240, 48, 48),
+    new Box(480, 216, 48, 48),
+    new Box(768, 528, 48, 48),
+    new Box(768, 480, 48, 48),
+    new Box(768, 432, 48, 48),
     
     // === SECTION 2 (800-1600) ===
-    new Box(900, 528, 48, 48),
-    new Box(1150, 528, 48, 48),
-    new Box(1400, 528, 48, 48),
-    new Box(1000, 480, 48, 48),
-    new Box(1100, 432, 48, 48),
-    new Box(900, 360, 48, 48),
-    new Box(1100, 312, 48, 48),
-    new Box(1350, 360, 48, 48),
-    new Box(950, 216, 48, 48),
-    new Box(1180, 168, 48, 48),
-    new Box(1450, 240, 48, 48),
+    new Box(864, 528, 48, 48),
+    new Box(1152, 528, 48, 48),
+    new Box(1392, 528, 48, 48),
+    new Box(1008, 480, 48, 48),
+    new Box(1104, 432, 48, 48),
+    new Box(912, 360, 48, 48),
+    new Box(1104, 312, 48, 48),
+    new Box(1344, 360, 48, 48),
+    new Box(960, 216, 48, 48),
+    new Box(1200, 168, 48, 48),
+    new Box(1440, 240, 48, 48),
     new Box(1584, 528, 48, 48),
     new Box(1584, 480, 48, 48),
     
-    // === SECTION 3 (1600-2400) ===
-    new Box(1700, 528, 48, 48),
-    new Box(1950, 528, 48, 48),
-    new Box(2200, 528, 48, 48),
-    new Box(1750, 432, 48, 48),
-    new Box(1900, 384, 48, 48),
-    new Box(2050, 432, 48, 48),
-    new Box(1750, 312, 48, 48),
-    new Box(2000, 264, 48, 48),
-    new Box(2200, 312, 48, 48),
-    new Box(1820, 168, 48, 48),
-    new Box(2080, 120, 48, 48),
-    new Box(2320, 168, 48, 48),
-    new Box(2300, 528, 48, 48),
-    new Box(2300, 480, 48, 48),
-    new Box(2300, 432, 48, 48),
+    // === SECTION 3 (1600-2016) ===
+    new Box(1680, 528, 48, 48),
+    new Box(1920, 528, 48, 48),
+    new Box(1776, 432, 48, 48),
+    new Box(1920, 384, 48, 48),
+    new Box(1776, 312, 48, 48),
+    new Box(1968, 264, 48, 48),
+    new Box(1824, 168, 48, 48),
+    new Box(1968, 120, 48, 48),
+    new Box(1968, 528, 48, 48),
+    new Box(1968, 480, 48, 48),
+    new Box(1968, 432, 48, 48),
 ];
 
 // Event Loop
@@ -362,8 +354,8 @@ function loop (now) {
         // Horizontal lines
         for (let y = 0; y <= camera.worldHeight; y += GRID_SIZE) {
             ctx.beginPath();
-            ctx.moveTo(0, y);
-            ctx.lineTo(camera.worldWidth, y);
+            ctx.moveTo(0, y-24);
+            ctx.lineTo(camera.worldWidth, y-24);
             ctx.stroke();
         }
         ctx.lineWidth = 2;
