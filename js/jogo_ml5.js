@@ -71,8 +71,8 @@ async function initHandDetection() {
   const detectorConfig = {
     runtime: "mediapipe",
     solutionPath: "https://cdn.jsdelivr.net/npm/@mediapipe/hands",
-    maxHands: 1,
-    modelType: "lite",
+    maxHands: 2,
+    modelType: "full",
   };
 
   handDetector = await handPoseDetection.createDetector(model, detectorConfig);
