@@ -25,6 +25,10 @@ const RESIDUOS_CONFIG = {
 
 let residuosAtivos = [];
 let residuoSelecionado = null;
+let residuoAgarrado = null;
+let ecopontoSelecionado = null;
+let pontuacao = 0;
+let posicaoOriginal = null;
 
 async function setup() {
   video = document.getElementById("videoCanvas");
@@ -67,8 +71,8 @@ async function initHandDetection() {
   const detectorConfig = {
     runtime: "mediapipe",
     solutionPath: "https://cdn.jsdelivr.net/npm/@mediapipe/hands",
-    maxHands: 2,
-    modelType: "full",
+    maxHands: 1,
+    modelType: "lite",
   };
 
   handDetector = await handPoseDetection.createDetector(model, detectorConfig);
@@ -93,14 +97,14 @@ function drawHands() {
 
       const indicadorPonta = keypoints[8];
       const indicadorX =
-        canvas.width - (indicadorPonta.x / 1280) * canvas.width;
-      const indicadorY = (indicadorPonta.y / 720) * canvas.height;
+        canvas.width - (indicadorPonta.x / video.videoWidth) * canvas.width;
+      const indicadorY = (indicadorPonta.y / video.videoHeight) * canvas.height;
 
-      verificarColisaoResiduos(indicadorX, indicadorY);
+      const dedosJuntos = verificarDedosJuntos(keypoints);
 
       keypoints.forEach((point, index) => {
-        const x = canvas.width - (point.x / 1280) * canvas.width;
-        const y = (point.y / 720) * canvas.height;
+        const x = canvas.width - (point.x / video.videoWidth) * canvas.width;
+        const y = (point.y / video.videoHeight) * canvas.height;
         const z = point.z || 0;
 
         const size = 8 + z * 0.5;
@@ -117,13 +121,31 @@ function drawHands() {
           ctx.font = "14px Arial";
           ctx.fillStyle = "#a8d5a8";
           ctx.fillText(`z: ${z.toFixed(2)}`, x + 10, y - 10);
+
+          if (residuoAgarrado) {
+            moverResiduoAgarrado(x, y);
+            verificarColisaoEcopontos(x, y);
+
+            if (!dedosJuntos) {
+              largarResiduo(x, y);
+            }
+          }
         }
       });
 
       drawConnections(keypoints);
+
+      if (!residuoAgarrado) {
+        verificarColisaoResiduos(indicadorX, indicadorY);
+
+        if (dedosJuntos && residuoSelecionado) {
+          agarrarResiduo();
+        }
+      }
     });
   } else {
     limparSelecao();
+    limparEcopontoSelecionado();
   }
 }
 
@@ -161,10 +183,10 @@ function drawConnections(keypoints) {
     const startPoint = keypoints[start];
     const endPoint = keypoints[end];
 
-    const x1 = canvas.width - (startPoint.x / 1280) * canvas.width;
-    const y1 = (startPoint.y / 720) * canvas.height;
-    const x2 = canvas.width - (endPoint.x / 1280) * canvas.width;
-    const y2 = (endPoint.y / 720) * canvas.height;
+    const x1 = canvas.width - (startPoint.x / video.videoWidth) * canvas.width;
+    const y1 = (startPoint.y / video.videoHeight) * canvas.height;
+    const x2 = canvas.width - (endPoint.x / video.videoWidth) * canvas.width;
+    const y2 = (endPoint.y / video.videoHeight) * canvas.height;
 
     ctx.beginPath();
     ctx.moveTo(x1, y1);
@@ -178,6 +200,8 @@ function verificarColisaoResiduos(handX, handY) {
   let menorDistancia = Infinity;
 
   residuosAtivos.forEach((residuo) => {
+    if (residuo.elemento.classList.contains("grabbed")) return;
+
     const rect = residuo.elemento.getBoundingClientRect();
     const residuoX = rect.left + rect.width / 2;
     const residuoY = rect.top + rect.height / 2;
@@ -204,10 +228,171 @@ function verificarColisaoResiduos(handX, handY) {
   }
 }
 
+function verificarDedosJuntos(keypoints) {
+  const polegar = keypoints[4];
+  const indicador = keypoints[8];
+  const medio = keypoints[12];
+  const anelar = keypoints[16];
+  const mindinho = keypoints[20];
+
+  const pontas = [indicador, medio, anelar, mindinho];
+
+  let todasProximas = true;
+  pontas.forEach((ponta) => {
+    const distancia = Math.sqrt(
+      Math.pow(polegar.x - ponta.x, 2) + Math.pow(polegar.y - ponta.y, 2)
+    );
+
+    if (distancia > 80) {
+      todasProximas = false;
+    }
+  });
+
+  return todasProximas;
+}
+
+function agarrarResiduo() {
+  if (!residuoSelecionado) return;
+
+  residuoAgarrado = residuoSelecionado;
+  residuoAgarrado.elemento.classList.remove("highlighted");
+  residuoAgarrado.elemento.classList.add("grabbed");
+
+  const rect = residuoAgarrado.elemento.getBoundingClientRect();
+  posicaoOriginal = {
+    left: residuoAgarrado.elemento.style.left,
+    bottom: residuoAgarrado.elemento.style.bottom,
+    top: residuoAgarrado.elemento.style.top,
+  };
+
+  residuoSelecionado = null;
+}
+
+function moverResiduoAgarrado(handX, handY) {
+  if (!residuoAgarrado) return;
+
+  const elemento = residuoAgarrado.elemento;
+
+  elemento.style.left = `${handX}px`;
+  elemento.style.top = `${handY}px`;
+  elemento.style.bottom = "auto";
+  elemento.style.transform = "translate(-50%, -50%)";
+}
+
+function verificarColisaoEcopontos(handX, handY) {
+  const ecopontos = document.querySelectorAll(".ecoponto");
+  let ecopontoMaisProximo = null;
+  let menorDistancia = Infinity;
+
+  ecopontos.forEach((ecoponto) => {
+    const rect = ecoponto.getBoundingClientRect();
+    const ecopontoX = rect.left + rect.width / 2;
+    const ecopontoY = rect.top + rect.height / 2;
+
+    const distancia = Math.sqrt(
+      Math.pow(handX - ecopontoX, 2) + Math.pow(handY - ecopontoY, 2)
+    );
+
+    const raioColisao = 150;
+
+    if (distancia < raioColisao && distancia < menorDistancia) {
+      menorDistancia = distancia;
+      ecopontoMaisProximo = {
+        elemento: ecoponto,
+        tipo: ecoponto.dataset.type,
+      };
+    }
+  });
+
+  if (ecopontoMaisProximo !== ecopontoSelecionado) {
+    limparEcopontoSelecionado();
+
+    if (ecopontoMaisProximo) {
+      ecopontoMaisProximo.elemento.classList.add("highlighted");
+      ecopontoSelecionado = ecopontoMaisProximo;
+    }
+  }
+}
+
+function largarResiduo(handX, handY) {
+  if (!residuoAgarrado) return;
+
+  const residuo = residuoAgarrado;
+
+  if (ecopontoSelecionado) {
+    const ecopontoCerto = residuo.ecoponto === ecopontoSelecionado.tipo;
+
+    residuo.elemento.classList.remove("grabbed");
+    residuo.elemento.classList.add("fadeout");
+
+    const ecopontoRect = ecopontoSelecionado.elemento.getBoundingClientRect();
+    const targetX = ecopontoRect.left + ecopontoRect.width / 2;
+    const targetY = ecopontoRect.top + ecopontoRect.height;
+
+    residuo.elemento.style.transition =
+      "left 0.3s ease, top 0.3s ease, opacity 0.5s ease, transform 0.5s ease";
+    residuo.elemento.style.left = `${targetX}px`;
+    residuo.elemento.style.top = `${targetY}px`;
+
+    if (ecopontoCerto) {
+      adicionarPontos(5);
+    } else {
+      adicionarPontos(-10);
+    }
+
+    setTimeout(() => {
+      residuo.elemento.remove();
+      residuosAtivos = residuosAtivos.filter((r) => r !== residuo);
+    }, 500);
+
+    residuoAgarrado = null;
+    posicaoOriginal = null;
+    limparEcopontoSelecionado();
+  } else {
+    residuo.elemento.classList.remove("grabbed");
+
+    if (posicaoOriginal) {
+      residuo.elemento.style.transition = "left 0.3s ease, top 0.3s ease";
+      residuo.elemento.style.left = posicaoOriginal.left;
+      residuo.elemento.style.top = posicaoOriginal.top || "auto";
+      residuo.elemento.style.bottom = posicaoOriginal.bottom;
+
+      setTimeout(() => {
+        residuo.elemento.style.transition = "";
+      }, 300);
+    }
+
+    residuoAgarrado = null;
+    posicaoOriginal = null;
+  }
+}
+
+function adicionarPontos(pontos) {
+  pontuacao += pontos;
+  const pontuacaoElemento = document.querySelector("#pontuacao .pontos");
+  pontuacaoElemento.textContent = pontuacao;
+
+  if (pontos > 0) {
+    pontuacaoElemento.style.color = "#6bc56b";
+  } else {
+    pontuacaoElemento.style.color = "#ff4444";
+    setTimeout(() => {
+      pontuacaoElemento.style.color = "#6bc56b";
+    }, 500);
+  }
+}
+
 function limparSelecao() {
   if (residuoSelecionado) {
     residuoSelecionado.elemento.classList.remove("highlighted");
     residuoSelecionado = null;
+  }
+}
+
+function limparEcopontoSelecionado() {
+  if (ecopontoSelecionado) {
+    ecopontoSelecionado.elemento.classList.remove("highlighted");
+    ecopontoSelecionado = null;
   }
 }
 
