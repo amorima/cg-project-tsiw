@@ -258,13 +258,14 @@ function agarrarResiduo() {
   residuoAgarrado.elemento.classList.remove("highlighted");
   residuoAgarrado.elemento.classList.add("grabbed");
 
-  const rect = residuoAgarrado.elemento.getBoundingClientRect();
   posicaoOriginal = {
     left: residuoAgarrado.elemento.style.left,
     bottom: residuoAgarrado.elemento.style.bottom,
     top: residuoAgarrado.elemento.style.top,
+    position: residuoAgarrado.elemento.style.position || "absolute",
   };
 
+  residuoAgarrado.elemento.style.position = "fixed";
   residuoSelecionado = null;
 }
 
@@ -272,9 +273,10 @@ function moverResiduoAgarrado(handX, handY) {
   if (!residuoAgarrado) return;
 
   const elemento = residuoAgarrado.elemento;
+  const canvasRect = canvas.getBoundingClientRect();
 
-  elemento.style.left = `${handX}px`;
-  elemento.style.top = `${handY}px`;
+  elemento.style.left = `${canvasRect.left + handX}px`;
+  elemento.style.top = `${canvasRect.top + handY}px`;
   elemento.style.bottom = "auto";
   elemento.style.transform = "translate(-50%, -50%)";
 }
@@ -329,6 +331,7 @@ function largarResiduo(handX, handY) {
     const targetX = ecopontoRect.left + ecopontoRect.width / 2;
     const targetY = ecopontoRect.top + ecopontoRect.height;
 
+    residuo.elemento.style.position = "absolute";
     residuo.elemento.style.transition =
       "left 0.3s ease, top 0.3s ease, opacity 0.5s ease, transform 0.5s ease";
     residuo.elemento.style.left = `${targetX}px`;
@@ -352,6 +355,7 @@ function largarResiduo(handX, handY) {
     residuo.elemento.classList.remove("grabbed");
 
     if (posicaoOriginal) {
+      residuo.elemento.style.position = "absolute";
       residuo.elemento.style.transition = "left 0.3s ease, top 0.3s ease";
       residuo.elemento.style.left = posicaoOriginal.left;
       residuo.elemento.style.top = posicaoOriginal.top || "auto";
