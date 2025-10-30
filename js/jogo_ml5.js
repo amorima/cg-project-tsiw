@@ -16,7 +16,7 @@ const RESIDUOS_CONFIG = {
     sound: "../assets/sound/vidro.mp3",
   },
   plastico: {
-    img: "../assets/img/residuos/plástico.png",
+    img: "../assets/img/residuos/plastico.png",
     ecoponto: "amarelo",
     sound: "../assets/sound/plastico.mp3",
   },
