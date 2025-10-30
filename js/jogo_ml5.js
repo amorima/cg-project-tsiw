@@ -109,19 +109,16 @@ function drawHands() {
 
         const size = 8 + z * 0.5;
 
-        ctx.beginPath();
-        ctx.arc(x, y, size, 0, 2 * Math.PI);
+        ctx.imageSmoothingEnabled = false;
+
         ctx.fillStyle = `hsl(${120 + z * 10}, 80%, 60%)`;
-        ctx.fill();
+        ctx.fillRect(x - size / 2, y - size / 2, size, size);
+
         ctx.strokeStyle = "#4a9d4a";
         ctx.lineWidth = 2;
-        ctx.stroke();
+        ctx.strokeRect(x - size / 2, y - size / 2, size, size);
 
         if (index === 8) {
-          ctx.font = "14px Arial";
-          ctx.fillStyle = "#a8d5a8";
-          ctx.fillText(`z: ${z.toFixed(2)}`, x + 10, y - 10);
-
           if (residuoAgarrado) {
             moverResiduoAgarrado(x, y);
             verificarColisaoEcopontos(x, y);
@@ -177,7 +174,7 @@ function drawConnections(keypoints) {
   ];
 
   ctx.strokeStyle = "#4a9d4a";
-  ctx.lineWidth = 2;
+  ctx.lineWidth = 3;
 
   connections.forEach(([start, end]) => {
     const startPoint = keypoints[start];
@@ -188,9 +185,10 @@ function drawConnections(keypoints) {
     const x2 = canvas.width - (endPoint.x / video.videoWidth) * canvas.width;
     const y2 = (endPoint.y / video.videoHeight) * canvas.height;
 
+    ctx.imageSmoothingEnabled = false;
     ctx.beginPath();
-    ctx.moveTo(x1, y1);
-    ctx.lineTo(x2, y2);
+    ctx.moveTo(Math.round(x1), Math.round(y1));
+    ctx.lineTo(Math.round(x2), Math.round(y2));
     ctx.stroke();
   });
 }
