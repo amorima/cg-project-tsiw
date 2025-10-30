@@ -1,3 +1,4 @@
+/* Contentor principal do jogo que ocupa todo o ecrã */
 #gameContainer {
   position: fixed;
   top: 0;
@@ -6,51 +7,60 @@
   height: 100vh;
   margin: 0;
   padding: 0;
-  overflow: hidden;
+  overflow: hidden; /* Impede scrollbars indesejadas */
   z-index: 10;
 }
 
+/* Contentor das nuvens animadas dentro do jogo */
 #gameContainer .clouds {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  height: 33.33vh;
+  height: 33.33vh; /* Ocupam o terço superior do ecrã */
   overflow: hidden;
-  pointer-events: none;
+  pointer-events: none; /* As nuvens não bloqueiam cliques */
   z-index: 1;
 }
 
+/* Preview da webcam no canto superior direito */
 #videoCanvas {
   position: absolute;
   top: 20px;
   right: 20px;
   width: 320px;
   height: 180px;
-  border: 3px solid #4a9d4a;
+  border: 3px solid #4a9d4a; /* Borda verde a condizer com o tema */
   border-radius: 10px;
-  box-shadow: 0 0 20px rgba(74, 157, 74, 0.5);
+  box-shadow: 0 0 20px rgba(74, 157, 74, 0.5); /* Brilho verde suave */
   z-index: 0;
-  transform: scaleX(-1);
+  transform: scaleX(
+    -1
+  ); /* Espelhar horizontalmente para movimento mais natural */
 }
 
+/* Contentor dos 4 ecopontos na parte inferior */
 .ecopontos-container {
   position: absolute;
   bottom: 250px;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-50%); /* Centrar horizontalmente */
   display: flex;
-  gap: 60px;
+  gap: 60px; /* Espaço entre cada ecoponto */
   z-index: 30;
 }
 
+/* Estilo de cada ecoponto individual */
 .ecoponto {
   width: 280px;
   height: auto;
-  transition: transform 0.3s ease;
-  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3));
+  transition: transform 0.3s ease; /* Animação suave ao destacar */
+  filter: drop-shadow(
+    0 10px 20px rgba(0, 0, 0, 0.3)
+  ); /* Sombra para dar profundidade */
 }
 
+/* Canvas transparente por cima de tudo onde desenhamos as mãos */
 #handCanvas {
   position: absolute;
   top: 0;
@@ -61,95 +71,84 @@
   z-index: 40;
 }
 
-#status {
-  margin-top: 1rem;
-  padding: 1rem 2rem;
-  background: rgba(74, 157, 74, 0.2);
-  border: 2px solid #4a9d4a;
-  border-radius: 8px;
-  font-size: 1.2rem;
-  color: #a8d5a8;
-}
-
-.game-info {
-  text-align: center;
-  margin-bottom: 2rem;
-  color: #a8d5a8;
-}
-
-.game-info h1 {
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
-}
-
+/* Contentor onde aparecem os resíduos no terço inferior do ecrã */
 #residuosContainer {
   position: absolute;
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 33.33vh;
-  z-index: 35;
-  pointer-events: none;
+  height: 33.33vh; /* Terço inferior */
+  z-index: 35; /* Por cima dos ecopontos mas por baixo do canvas das mãos */
+  pointer-events: none; /* O contentor não bloqueia cliques */
 }
 
+/* Estilo de cada resíduo individual */
 .residuo {
   position: absolute;
   width: auto;
   height: 80px;
-  pointer-events: auto;
+  pointer-events: auto; /* Os resíduos podem ser clicados/interagidos */
   transition: transform 0.2s ease;
   filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
 }
 
+/* O resíduo de lixo é ligeiramente maior porque a imagem é maior */
 .residuo[data-tipo="lixo"] {
   height: 100px;
 }
 
+/* Efeito hover para aumentar ligeiramente quando passamos por cima */
 .residuo:hover {
   transform: scale(1.1);
 }
 
+/* Quando a mão está perto do resíduo, destacamos com brilho amarelo */
 .residuo.highlighted {
   filter: drop-shadow(0 0 20px rgba(255, 255, 0, 0.8))
     drop-shadow(0 0 40px rgba(255, 255, 0, 0.6))
     drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
-  transform: scale(1.15);
-  transition: all 0.1s ease;
+  transform: scale(1.15); /* Aumentamos um pouco mais */
+  transition: all 0.1s ease; /* Transição rápida para resposta imediata */
 }
 
+/* Quando agarramos o resíduo */
 .residuo.grabbed {
-  z-index: 36;
-  pointer-events: none;
-  transition: none;
+  z-index: 36; /* Fica por cima dos outros resíduos */
+  pointer-events: none; /* Não podemos interagir com ele enquanto está agarrado */
+  transition: none; /* Sem transições para seguir a mão em tempo real */
 }
 
+/* Animação de desaparecimento quando colocamos no ecoponto */
 .residuo.fadeout {
   opacity: 0;
-  transform: scale(0.5);
+  transform: scale(0.5); /* Encolhe enquanto desaparece */
   transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
+/* Quando estamos perto de um ecoponto com um resíduo, destacamos o ecoponto */
 .ecoponto.highlighted {
   filter: drop-shadow(0 0 30px rgba(74, 157, 74, 0.9))
     drop-shadow(0 0 60px rgba(74, 157, 74, 0.7))
     drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3));
-  transform: scale(1.1);
+  transform: scale(1.1); /* Aumenta ligeiramente */
   transition: all 0.2s ease;
 }
 
+/* Painel de pontuação no canto superior esquerdo */
 #pontuacao {
   position: absolute;
   top: 20px;
   left: 20px;
-  background: rgba(26, 26, 26, 0.95);
+  background: rgba(26, 26, 26, 0.95); /* Fundo escuro semitransparente */
   border: 3px solid #4a9d4a;
   border-radius: 10px;
   padding: 20px 30px;
-  z-index: 100;
+  z-index: 100; /* Por cima de tudo */
   box-shadow: 0 0 20px rgba(74, 157, 74, 0.5);
   font-family: "Pixelify Sans", sans-serif;
 }
 
+/* Título do painel de pontuação */
 #pontuacao h3 {
   color: #a8d5a8;
   font-size: 1.3rem;
@@ -159,15 +158,17 @@
   letter-spacing: 2px;
 }
 
+/* O número da pontuação */
 #pontuacao .pontos {
   color: #6bc56b;
   font-size: 2.5rem;
   font-weight: bold;
   margin: 0;
   font-family: "Pixelify Sans", sans-serif;
-  text-shadow: 0 0 10px rgba(107, 197, 107, 0.5);
+  text-shadow: 0 0 10px rgba(107, 197, 107, 0.5); /* Brilho verde */
 }
 
+/* === MODAL DO MODO PROGRAMADOR === */
 .dev-modal {
   display: none;
   position: fixed;
@@ -175,16 +176,18 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.8); /* Fundo escuro semitransparente */
   z-index: 1000;
   justify-content: center;
   align-items: center;
 }
 
+/* Quando está ativo, mostramos com flexbox para centrar */
 .dev-modal.active {
   display: flex;
 }
 
+/* Caixa do modal */
 .dev-modal-content {
   background: #1a1a1a;
   border: 2px solid #4a9d4a;
@@ -194,6 +197,7 @@
   width: 90%;
 }
 
+/* Título do modal */
 .dev-modal-content h2 {
   color: #a8d5a8;
   font-size: 1.4rem;
@@ -201,10 +205,12 @@
   text-align: center;
 }
 
+/* Esconder o parágrafo de descrição (não é necessário) */
 .dev-modal-content p {
   display: none;
 }
 
+/* Cada linha de input (label + campo) */
 .dev-input-group {
   display: flex;
   justify-content: space-between;
@@ -212,12 +218,14 @@
   margin-bottom: 10px;
 }
 
+/* Label de cada tipo de resíduo */
 .dev-input-group label {
   color: #a8d5a8;
   font-size: 1rem;
   flex: 1;
 }
 
+/* Campo de input para os números */
 .dev-input-group input {
   background: #0a0a0a;
   border: 1px solid #4a9d4a;
@@ -230,17 +238,20 @@
   text-align: center;
 }
 
+/* Quando o campo está focado */
 .dev-input-group input:focus {
   outline: none;
-  border-color: #6bc56b;
+  border-color: #6bc56b; /* Borda mais clara */
 }
 
+/* Contentor dos botões do modal */
 .dev-modal-buttons {
   display: flex;
   gap: 10px;
   margin-top: 15px;
 }
 
+/* Estilo base dos botões */
 .dev-modal-buttons button {
   flex: 1;
   padding: 8px 15px;
@@ -252,6 +263,7 @@
   transition: all 0.2s ease;
 }
 
+/* Botão de aplicar (verde) */
 .dev-modal-buttons #devApply {
   background: #4a9d4a;
   color: #0a0a0a;
@@ -261,6 +273,7 @@
   background: #5bb05b;
 }
 
+/* Botão de fechar (escuro) */
 .dev-modal-buttons #devClose {
   background: #0a0a0a;
   color: #a8d5a8;
@@ -270,6 +283,7 @@
   background: #1a1a1a;
 }
 
+/* Botão de limpar storage (vermelho) */
 .dev-modal-buttons #devClearStorage {
   background: #8b0000;
   color: #fff;
@@ -279,6 +293,7 @@
   background: #a00000;
 }
 
+/* === MODAL DE INSTRUÇÕES === */
 .instrucoes-modal {
   display: none;
   position: fixed;
@@ -286,8 +301,8 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.9);
-  z-index: 2000;
+  background: rgba(0, 0, 0, 0.9); /* Fundo mais escuro que o modal de dev */
+  z-index: 2000; /* Por cima do modal de dev */
   justify-content: center;
   align-items: center;
 }
@@ -296,16 +311,18 @@
   display: flex;
 }
 
+/* Caixa do modal de instruções */
 .instrucoes-modal-content {
   background: #1a1a1a;
-  border: 4px solid #4a9d4a;
+  border: 4px solid #4a9d4a; /* Borda mais grossa */
   border-radius: 12px;
   padding: 30px;
   max-width: 600px;
   width: 90%;
-  box-shadow: 0 0 30px rgba(74, 157, 74, 0.6);
+  box-shadow: 0 0 30px rgba(74, 157, 74, 0.6); /* Brilho verde mais forte */
 }
 
+/* Título grande e vistoso */
 .instrucoes-modal-content h2 {
   color: #6bc56b;
   font-size: 2rem;
@@ -317,11 +334,12 @@
   text-shadow: 0 0 10px rgba(107, 197, 107, 0.5);
 }
 
+/* Texto das instruções */
 .instrucoes-texto {
   color: #a8d5a8;
   font-family: "Pixelify Sans", sans-serif;
   font-size: 1.1rem;
-  line-height: 1.8;
+  line-height: 1.8; /* Espaçamento entre linhas para facilitar leitura */
   margin-bottom: 25px;
 }
 
@@ -329,25 +347,30 @@
   margin: 12px 0;
 }
 
+/* Parágrafos com informação sobre pontos */
 .instrucoes-texto .pontos-info {
   font-size: 1.15rem;
   margin: 15px 0;
 }
 
+/* Destacar os valores de pontos */
 .instrucoes-texto .pontos-info strong {
   color: #6bc56b;
 }
 
+/* Quando são pontos negativos, usar vermelho */
 .instrucoes-texto .pontos-info.erro strong {
   color: #ff4444;
 }
 
+/* Contentor dos botões */
 .instrucoes-modal-buttons {
   display: flex;
   gap: 15px;
   margin-top: 25px;
 }
 
+/* Estilo dos botões */
 .instrucoes-modal-buttons button {
   flex: 1;
   padding: 12px 20px;
@@ -361,6 +384,7 @@
   letter-spacing: 1px;
 }
 
+/* Botão principal "JOGAR!" (verde chamativo) */
 .instrucoes-modal-buttons #instrucoesJogar {
   background: #4a9d4a;
   color: #0a0a0a;
@@ -372,6 +396,7 @@
   box-shadow: 0 0 15px rgba(107, 197, 107, 0.6);
 }
 
+/* Botão secundário "Não voltar a mostrar" */
 .instrucoes-modal-buttons #instrucoesNaoMostrar {
   background: #0a0a0a;
   color: #a8d5a8;
@@ -382,6 +407,7 @@
   border-color: #6bc56b;
 }
 
+/* === MODAL DE FIM DE JOGO === */
 .fim-jogo-modal {
   display: none;
   position: fixed;
@@ -389,8 +415,8 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.95);
-  z-index: 3000;
+  background: rgba(0, 0, 0, 0.95); /* Quase opaco para destacar a conquista */
+  z-index: 3000; /* Por cima de tudo */
   justify-content: center;
   align-items: center;
 }
@@ -399,6 +425,7 @@
   display: flex;
 }
 
+/* Caixa do modal */
 .fim-jogo-modal-content {
   background: #1a1a1a;
   border: 5px solid #4a9d4a;
@@ -406,10 +433,11 @@
   padding: 50px 60px;
   max-width: 600px;
   width: 90%;
-  box-shadow: 0 0 40px rgba(74, 157, 74, 0.8);
+  box-shadow: 0 0 40px rgba(74, 157, 74, 0.8); /* Brilho ainda mais forte */
   text-align: center;
 }
 
+/* Título de parabéns bem grande */
 .fim-jogo-modal-content h2 {
   color: #6bc56b;
   font-size: 3rem;
@@ -420,6 +448,7 @@
   text-shadow: 0 0 20px rgba(107, 197, 107, 0.8);
 }
 
+/* Mensagem de conclusão */
 .mensagem-final {
   color: #a8d5a8;
   font-family: "Pixelify Sans", sans-serif;
@@ -428,6 +457,7 @@
   line-height: 1.6;
 }
 
+/* Caixa que mostra a pontuação final */
 .pontuacao-final-display {
   background: rgba(74, 157, 74, 0.1);
   border: 4px solid #4a9d4a;
@@ -436,6 +466,7 @@
   margin: 30px 0;
 }
 
+/* Texto acima da pontuação */
 .pontuacao-final-display p {
   color: #a8d5a8;
   font-family: "Pixelify Sans", sans-serif;
@@ -445,6 +476,7 @@
   letter-spacing: 2px;
 }
 
+/* O número da pontuação final (bem grande e destacado) */
 .pontuacao-final-display span {
   display: block;
   color: #6bc56b;
@@ -455,6 +487,7 @@
   text-shadow: 0 0 25px rgba(107, 197, 107, 0.9);
 }
 
+/* Texto "PONTOS" */
 .pontuacao-final-display .pontos-texto {
   color: #6bc56b;
   font-size: 1.5rem;
@@ -463,10 +496,12 @@
   letter-spacing: 3px;
 }
 
+/* Contentor do botão */
 .fim-jogo-modal-buttons {
   margin-top: 30px;
 }
 
+/* Botão de voltar ao início */
 .fim-jogo-modal-buttons button {
   padding: 15px 40px;
   font-family: "Pixelify Sans", sans-serif;
@@ -482,8 +517,9 @@
   font-weight: bold;
 }
 
+/* Efeito hover bem vistoso */
 .fim-jogo-modal-buttons button:hover {
   background: #6bc56b;
   box-shadow: 0 0 25px rgba(107, 197, 107, 0.7);
-  transform: scale(1.05);
+  transform: scale(1.05); /* Aumenta ligeiramente */
 }
