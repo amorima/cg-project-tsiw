@@ -1,0 +1,164 @@
+/* Victory Popup Overlay */
+.victory-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease-in;
+}
+
+.victory-overlay.show {
+    display: flex;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Victory Popup */
+.victory-popup {
+    background-color: rgba(34, 68, 34, 0.95);
+    padding: 40px 50px;
+    border: 8px solid #2d5a2d;
+    box-shadow: inset -4px -4px 0 rgba(0, 0, 0, 0.5),
+                inset 4px 4px 0 rgba(255, 255, 255, 0.2),
+                -8px 8px 0 rgba(0, 0, 0, 0.5),
+                0 0 50px rgba(0, 255, 0, 0.3);
+    text-align: center;
+    animation: popupBounce 0.5s ease-out;
+    min-width: 400px;
+}
+
+@keyframes popupBounce {
+    0% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Victory Title - ARCADIA style */
+.victory-title {
+    font-family: "Pixelify Sans", sans-serif;
+    font-size: 72px;
+    color: #e8f5e9;
+    margin: 0 0 20px 0;
+    letter-spacing: 3px;
+    font-weight: bold;
+    animation: levitacaoBrilho 6s ease-in-out infinite;
+}
+
+@keyframes levitacaoBrilho {
+    0% {
+        transform: translateY(0) scale(1);
+        filter: drop-shadow(0 15px 30px rgba(255, 255, 255, 0.5)) brightness(1)
+            saturate(1.2);
+    }
+    50% {
+        transform: translateY(-15px) scale(1.15);
+        filter: drop-shadow(0 30px 60px rgba(255, 255, 255, 0.9)) brightness(1.3)
+            saturate(1.4);
+    }
+    100% {
+        transform: translateY(0) scale(1);
+        filter: drop-shadow(0 15px 30px rgba(255, 255, 255, 0.5)) brightness(1)
+            saturate(1.2);
+    }
+}
+
+/* Stats Container */
+.victory-stats {
+    margin: 30px 0;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.3);
+    border: 4px solid #2d5a2d;
+    border-radius: 4px;
+}
+
+.victory-stat {
+    font-family: "Pixelify Sans", sans-serif;
+    font-size: 18px;
+    color: #e8f5e9;
+    margin: 8px 0;
+    letter-spacing: 1px;
+}
+
+/* Button Container */
+.victory-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+/* Next Phase Button */
+.next-phase-button,
+.keep-collecting-button {
+    font-family: "Pixelify Sans", sans-serif;
+    font-size: 20px;
+    padding: 15px 30px;
+    background: linear-gradient(135deg, #4a8f4a 0%, #2d5a2d 100%);
+    color: #e8f5e9;
+    border: 4px solid #2d5a2d;
+    border-right: 4px solid #1a3a1a;
+    border-bottom: 4px solid #1a3a1a;
+    border-left: 4px solid #6bb66b;
+    border-top: 4px solid #6bb66b;
+    cursor: pointer;
+    transition: all 0.1s ease;
+    letter-spacing: 2px;
+    font-weight: bold;
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.4),
+                inset -1px -1px 0 rgba(0, 0, 0, 0.3);
+}
+
+.next-phase-button:hover,
+.keep-collecting-button:hover {
+    background: linear-gradient(135deg, #5fa55f 0%, #3d7a3d 100%);
+    box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.5),
+                inset -1px -1px 0 rgba(0, 0, 0, 0.4);
+    transform: translate(-2px, -2px);
+}
+
+.next-phase-button:active,
+.keep-collecting-button:active {
+    box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3),
+                inset 1px 1px 0 rgba(0, 0, 0, 0.5);
+    transform: translate(2px, 2px);
+    border: 4px solid #1a3a1a;
+    border-right: 4px solid #6bb66b;
+    border-bottom: 4px solid #6bb66b;
+    border-left: 4px solid #2d5a2d;
+    border-top: 4px solid #2d5a2d;
+}
+
+/* Keep Collecting button specific style (yellow/warning) */
+.keep-collecting-button {
+    background: linear-gradient(135deg, #d4a532 0%, #b8941f 100%);
+    border-color: #b8941f;
+    border-right: 4px solid #8a6f18;
+    border-bottom: 4px solid #8a6f18;
+    border-left: 4px solid #f0c050;
+    border-top: 4px solid #f0c050;
+}
+
+.keep-collecting-button:hover {
+    background: linear-gradient(135deg, #e8b840 0%, #cc9e25 100%);
+}

@@ -11,6 +11,39 @@ const W = canvas.width;
 const H = canvas.height;
 const keys = {'ArrowUp': false, 'ArrowDown': false, 'ArrowLeft': false, 'ArrowRight': false,' ':false, 'x':false, 'z':false};
 
+// Game state
+let isPaused = false;
+
+// Reusable pause/unpause functions
+function pauseGame() {
+    isPaused = true;
+}
+
+function unpauseGame() {
+    isPaused = false;
+}
+
+function togglePause() {
+    isPaused = !isPaused;
+}
+
+// Victory popup elements
+const victoryOverlay = document.getElementById('victoryOverlay');
+const nextPhaseBtn = document.getElementById('nextPhaseBtn');
+const keepCollectingBtn = document.getElementById('keepCollectingBtn');
+
+// Next phase button click handler
+nextPhaseBtn.addEventListener('click', () => {
+    window.location.href = '../html/jogo_ml5.html';
+});
+
+// Keep collecting button click handler
+keepCollectingBtn.addEventListener('click', () => {
+    unpauseGame();
+    // Don't reset completed flag - the goal will re-trigger only after player exits and re-enters
+    victoryOverlay.classList.remove('show');
+});
+
 // === GRID SYSTEM ===
 const GRID_COLS = 48;  // 48 columns
 const GRID_ROWS = 28;  // 28 rows
@@ -288,24 +321,50 @@ function loop (now) {
     if (dt > 0.05) dt = 0.05;
     ctx.clearRect(0, 0, W, H);
     
-    // Update camera to follow player
-    camera.update(player.pos.x, player.pos.y);
-    
-    // Update goal
-    goal.update(dt, player);
-    
-    // Check if player reached the goal
-    if (goal.checkCollision(player)) {
-        const counts = goal.saveToLocalStorage(player);
-        window.location.href = '../html/jogo_ml5.html';
+    // Only update game logic if not paused
+    if (!isPaused) {
+        // Update camera to follow player
+        camera.update(player.pos.x, player.pos.y);
+        
+        // Update goal
+        goal.update(dt, player);
+        
+        // Check if player reached the goal
+        if (goal.checkCollision(player)) {
+            pauseGame(); // Pause the game using reusable function
+            goal.completed = true; // Mark as completed to prevent multiple triggers
+            const counts = goal.saveToLocalStorage(player);
+            console.log('Level Complete!', counts);
+            
+            // Calculate total collected
+            const total = counts.papel + counts.vidro + counts.plastico + counts.lixo;
+            
+            // Update stats in the popup
+            document.getElementById('stat-papel').textContent = counts.papel;
+            document.getElementById('stat-vidro').textContent = counts.vidro;
+            document.getElementById('stat-plastico').textContent = counts.plastico;
+            document.getElementById('stat-lixo').textContent = counts.lixo;
+            document.getElementById('stat-total').querySelector('span').textContent = total;
+            
+            // Show "Keep Collecting" button only if not all residuos collected
+            if (total < 24) {
+                keepCollectingBtn.style.display = 'block';
+            } else {
+                keepCollectingBtn.style.display = 'none';
+            }
+            
+            // Show victory popup
+            victoryOverlay.classList.add('show');
+        }
     }
     
+    // Always render (even when paused)
     // Apply camera transform
     ctx.save();
     camera.apply(ctx);
 
     platforms.forEach(p => {
-        p.update(dt);
+        if (!isPaused) p.update(dt);
         p.render(ctx);
     });
     
@@ -313,14 +372,16 @@ function loop (now) {
     goal.render(ctx);
     
     residuos.forEach(r => {
-        r.update(dt);
+        if (!isPaused) r.update(dt);
         r.render(ctx);
     });
     boxes.forEach(b => {
-        b.update(dt, platforms, boxes);
+        if (!isPaused) b.update(dt, platforms, boxes);
         b.render(ctx, residuos); // Pass residuos for glow effect
     });
-    player.update(dt, keys, platforms, residuos, boxes);
+    if (!isPaused) {
+        player.update(dt, keys, platforms, residuos, boxes);
+    }
     player.render(ctx);
     
     // Restore camera transform (world space ends)

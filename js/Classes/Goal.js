@@ -11,6 +11,9 @@ export default class Goal {
         this.isActive = false;
         this.animationTimer = 0;
         this.pulseSpeed = 2; // Pulse animation speed
+        this.completed = false; // Flag to prevent multiple redirects
+        this.playerWasInside = false; // Track if player was inside on previous frame
+        this.hasTriggeredThisEntry = false; // Track if already triggered during this entry
     }
 
     getAABB() {
@@ -27,18 +30,42 @@ export default class Goal {
         
         // Goal becomes active when player has 12 or more residuos with at least one of each type
         this.isActive = total >= 12 && hasAllTypes;
+        
+        // Check if player is currently inside the goal
+        const playerAABB = player.getHitbox();
+        const goalAABB = this.getAABB();
+        const isCurrentlyInside = !(playerAABB.x + playerAABB.w < goalAABB.x || 
+                 playerAABB.x > goalAABB.x + goalAABB.w ||
+                 playerAABB.y + playerAABB.h < goalAABB.y || 
+                 playerAABB.y > goalAABB.y + goalAABB.h);
+        
+        // Reset trigger flags when player exits the goal
+        if (!isCurrentlyInside && this.playerWasInside) {
+            this.hasTriggeredThisEntry = false;
+            this.completed = false; // Allow re-triggering after exit
+            console.log('Player exited goal - reset trigger flags');
+        }
+        
+        this.playerWasInside = isCurrentlyInside;
     }
 
     checkCollision(player) {
-        if (!this.isActive) return false;
+        if (!this.isActive || this.completed || this.hasTriggeredThisEntry) return false;
         
         const playerAABB = player.getHitbox();
         const goalAABB = this.getAABB();
         
-        return !(playerAABB.x + playerAABB.w < goalAABB.x || 
+        const collision = !(playerAABB.x + playerAABB.w < goalAABB.x || 
                  playerAABB.x > goalAABB.x + goalAABB.w ||
                  playerAABB.y + playerAABB.h < goalAABB.y || 
                  playerAABB.y > goalAABB.y + goalAABB.h);
+        
+        if (collision) {
+            console.log('Goal collision detected! isActive:', this.isActive, 'completed:', this.completed);
+            this.hasTriggeredThisEntry = true; // Mark as triggered for this entry
+        }
+        
+        return collision;
     }
 
     render(ctx) {

@@ -8,6 +8,7 @@
         content="António Manuel Cruz Barreto Amorim; Gabriel de Sousa Paiva"
         />
         <link rel="stylesheet" href="../css/style.css" />
+        <link rel="stylesheet" href="../css/popup.css" />
         <title>ARCADIA</title>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -43,6 +44,25 @@
         <main class="arcade-menu">
             <canvas width="1060" height="600" id="game"></canvas>
         </main>
+        
+        <!-- Victory Popup -->
+        <div id="victoryOverlay" class="victory-overlay">
+            <div class="victory-popup">
+                <h1 class="victory-title">YOU DID IT!</h1>
+                <div class="victory-stats">
+                    <p class="victory-stat">Papel: <span id="stat-papel">0</span></p>
+                    <p class="victory-stat">Vidro: <span id="stat-vidro">0</span></p>
+                    <p class="victory-stat">Plástico: <span id="stat-plastico">0</span></p>
+                    <p class="victory-stat">Lixo: <span id="stat-lixo">0</span></p>
+                    <p class="victory-stat" id="stat-total">Total: <span>0</span>/24</p>
+                </div>
+                <div class="victory-buttons">
+                    <button id="keepCollectingBtn" class="keep-collecting-button" style="display: none;">KEEP COLLECTING</button>
+                    <button id="nextPhaseBtn" class="next-phase-button">NEXT PHASE</button>
+                </div>
+            </div>
+        </div>
+        
         <script type="module" src="../js/game.js"></script>
     </body>
 </html>
