@@ -44,6 +44,43 @@ keepCollectingBtn.addEventListener('click', () => {
     victoryOverlay.classList.remove('show');
 });
 
+// === INSTRUCTIONS MODAL ===
+// Initialize instructions modal that appears when entering the game
+function initInstrucoesModal() {
+    const modal = document.getElementById("instrucoesModal");
+    const jogarBtn = document.getElementById("instrucoesJogar");
+    const naoMostrarBtn = document.getElementById("instrucoesNaoMostrar");
+
+    // Check if user has already asked not to show instructions
+    const naoMostrarInstrucoes = localStorage.getItem("nao_mostrar_instrucoes_game");
+
+    // Show modal only if user hasn't disabled it
+    if (!naoMostrarInstrucoes || naoMostrarInstrucoes !== "true") {
+        modal.classList.add("active");
+    }
+
+    // Button to start playing
+    jogarBtn.addEventListener("click", () => {
+        modal.classList.remove("active");
+    });
+
+    // Button to not show instructions again
+    naoMostrarBtn.addEventListener("click", () => {
+        localStorage.setItem("nao_mostrar_instrucoes_game", "true");
+        modal.classList.remove("active");
+    });
+
+    // Close if clicking outside the modal
+    modal.addEventListener("click", (e) => {
+        if (e.target === modal) {
+            modal.classList.remove("active");
+        }
+    });
+}
+
+// Initialize instructions modal on page load
+initInstrucoesModal();
+
 // === GRID SYSTEM ===
 const GRID_COLS = 48;  // 48 columns
 const GRID_ROWS = 28;  // 28 rows
