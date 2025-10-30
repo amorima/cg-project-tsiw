@@ -509,8 +509,36 @@ function initDevMode() {
   });
 }
 
+function initInstrucoesModal() {
+  const modal = document.getElementById("instrucoesModal");
+  const jogarBtn = document.getElementById("instrucoesJogar");
+  const naoMostrarBtn = document.getElementById("instrucoesNaoMostrar");
+
+  const naoMostrarInstrucoes = localStorage.getItem("nao_mostrar_instrucoes");
+
+  if (!naoMostrarInstrucoes || naoMostrarInstrucoes !== "true") {
+    modal.classList.add("active");
+  }
+
+  jogarBtn.addEventListener("click", () => {
+    modal.classList.remove("active");
+  });
+
+  naoMostrarBtn.addEventListener("click", () => {
+    localStorage.setItem("nao_mostrar_instrucoes", "true");
+    modal.classList.remove("active");
+  });
+
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) {
+      modal.classList.remove("active");
+    }
+  });
+}
+
 window.addEventListener("DOMContentLoaded", () => {
   setup();
   initDevMode();
+  initInstrucoesModal();
   renderizarResiduos();
 });
