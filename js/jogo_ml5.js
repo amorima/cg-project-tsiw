@@ -344,6 +344,12 @@ function largarResiduo(handX, handY) {
     setTimeout(() => {
       residuo.elemento.remove();
       residuosAtivos = residuosAtivos.filter((r) => r !== residuo);
+
+      if (residuosAtivos.length === 0) {
+        setTimeout(() => {
+          mostrarModalFimJogo();
+        }, 500);
+      }
     }, 500);
 
     residuoAgarrado = null;
@@ -548,9 +554,27 @@ function initInstrucoesModal() {
   });
 }
 
+function mostrarModalFimJogo() {
+  const modal = document.getElementById("fimJogoModal");
+  const pontuacaoFinalValor = document.getElementById("pontuacaoFinalValor");
+
+  pontuacaoFinalValor.textContent = pontuacao;
+  modal.classList.add("active");
+}
+
+function initFimJogoModal() {
+  const modal = document.getElementById("fimJogoModal");
+  const voltarInicioBtn = document.getElementById("voltarInicio");
+
+  voltarInicioBtn.addEventListener("click", () => {
+    window.location.href = "../index.html";
+  });
+}
+
 window.addEventListener("DOMContentLoaded", () => {
   setup();
   initDevMode();
   initInstrucoesModal();
+  initFimJogoModal();
   renderizarResiduos();
 });
