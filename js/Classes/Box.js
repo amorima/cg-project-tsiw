@@ -99,14 +99,39 @@ export default class Box {
         return { x: this.pos.x - this.width / 2, y: this.pos.y - this.height / 2, w: this.width, h: this.height };
     }
 
-    render(ctx) {
+    render(ctx, residuos = []) {
         const tileset = Box.sharedTileset;
         const { x, y, w, h } = this.getAABB();
+
+        // Check if any uncollected residuos are behind this box (overlapping position)
+        let hasResiduoBehind = false;
+        if (residuos && residuos.length) {
+            for (const r of residuos) {
+                if (!r.collected) {
+                    const rAABB = r.getAABB();
+                    // Check if residuo overlaps with box
+                    if (!(rAABB.x + rAABB.w < x || rAABB.x > x + w || 
+                          rAABB.y + rAABB.h < y || rAABB.y > y + h)) {
+                        hasResiduoBehind = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        ctx.save();
+
+        // Apply glow effect if residuo is behind
+        if (hasResiduoBehind) {
+            ctx.shadowBlur = 20;
+            ctx.shadowColor = '#FFD700'; // Gold glow
+        }
 
         if (!tileset) {
             // Fallback to colored rectangle
             ctx.fillStyle = '#D2691E';
             ctx.fillRect(x, y, w, h);
+            ctx.restore();
             return;
         }
 
@@ -119,5 +144,7 @@ export default class Box {
 
         // Draw single tile scaled to box size
         ctx.drawImage(tileset, sx, sy, ts, ts, x, y, w, h);
+        
+        ctx.restore();
     }
 }

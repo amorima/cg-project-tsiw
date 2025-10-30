@@ -2,11 +2,32 @@ import Vector from './Vector.js';
 
 export default class Residuos {
     static TYPES = {
-        PLASTIC: { name: 'plastic', color: '#FFD700' },      // Gold/Yellow
-        PAPER: { name: 'paper', color: '#4169E1' },          // Royal Blue
-        GLASS: { name: 'glass', color: '#32CD32' },          // Lime Green
-        INDEFERENCIADO: { name: 'indeferenciado', color: '#808080' } // Gray
+        PLASTIC: { name: 'plastico', color: '#FFD700', image: null, imagePath: '../assets/img/residuos/plástico.png' },
+        PAPER: { name: 'papel', color: '#4169E1', image: null, imagePath: '../assets/img/residuos/papel.png' },
+        GLASS: { name: 'vidro', color: '#32CD32', image: null, imagePath: '../assets/img/residuos/vidro.png' },
+        INDEFERENCIADO: { name: 'lixo', color: '#808080', image: null, imagePath: '../assets/img/residuos/lixo.png' }
     };
+
+    static imagesLoaded = false;
+
+    static async loadImages() {
+        if (this.imagesLoaded) return;
+        
+        const loadPromises = Object.values(Residuos.TYPES).map(type => {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.onload = () => {
+                    type.image = img;
+                    resolve();
+                };
+                img.onerror = () => reject(new Error(`Failed to load ${type.imagePath}`));
+                img.src = type.imagePath;
+            });
+        });
+
+        await Promise.all(loadPromises);
+        this.imagesLoaded = true;
+    }
 
     constructor(x = 0, y = 0, width = 24, height = 24, type = 'PLASTIC'){
         this.pos = new Vector(x, y);
@@ -42,13 +63,48 @@ export default class Residuos {
         
         ctx.save();
         ctx.globalAlpha = alpha;
-        ctx.fillStyle = this.type.color;
-        ctx.fillRect(this.pos.x, this.pos.y, this.w, this.h);
         
-        // Add a border for better visibility
-        ctx.strokeStyle = '#000000';
-        ctx.lineWidth = 2;
-        ctx.strokeRect(this.pos.x, this.pos.y, this.w, this.h);
+        // Draw image if loaded, otherwise fallback to colored rectangle
+        if (this.type.image) {
+            // Maintain aspect ratio - fit image within the bounds
+            const img = this.type.image;
+            const imgAspect = img.width / img.height;
+            const targetAspect = this.w / this.h;
+            
+            let drawWidth = this.w;
+            let drawHeight = this.h;
+            let offsetX = 0;
+            let offsetY = 0;
+            
+            // Fit image maintaining aspect ratio
+            if (imgAspect > targetAspect) {
+                // Image is wider - fit to width
+                drawHeight = this.w / imgAspect;
+                offsetY = (this.h - drawHeight) / 2;
+            } else {
+                // Image is taller - fit to height
+                drawWidth = this.h * imgAspect;
+                offsetX = (this.w - drawWidth) / 2;
+            }
+            
+            ctx.imageSmoothingEnabled = true; // Use smooth rendering for better quality
+            ctx.drawImage(
+                this.type.image, 
+                this.pos.x + offsetX, 
+                this.pos.y + offsetY, 
+                drawWidth, 
+                drawHeight
+            );
+        } else {
+            ctx.fillStyle = this.type.color;
+            ctx.fillRect(this.pos.x, this.pos.y, this.w, this.h);
+            
+            // Add a border for better visibility
+            ctx.strokeStyle = '#000000';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(this.pos.x, this.pos.y, this.w, this.h);
+        }
+        
         ctx.restore();
     }
 

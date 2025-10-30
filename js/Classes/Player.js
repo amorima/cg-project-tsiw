@@ -229,6 +229,19 @@ export default class Player {
         this.playSound('power_up', 0.6);
     }
 
+    getResiduoCounts() {
+        const counts = { papel: 0, vidro: 0, plastico: 0, lixo: 0 };
+        for (const item of this.colected) {
+            if (item.type && item.type.name) {
+                const name = item.type.name;
+                if (name in counts) {
+                    counts[name]++;
+                }
+            }
+        }
+        return counts;
+    }
+
     _updateAnimation(dt) {
         const anim = this.animations[this.currentAnim];
         if (!anim || !anim.frames.length) return;

@@ -2,6 +2,7 @@ import Platform from './Classes/Platform.js';
 import Player from './Classes/Player.js';
 import Residuo from './Classes/Residuos.js';
 import Box from './Classes/Box.js';
+import Goal from './Classes/Goal.js';
 
 // Canvas Elements
 const canvas = document.querySelector("#game");
@@ -14,7 +15,6 @@ const keys = {'ArrowUp': false, 'ArrowDown': false, 'ArrowLeft': false, 'ArrowRi
 const GRID_COLS = 48;  // 48 columns
 const GRID_ROWS = 28;  // 28 rows
 const GRID_SIZE = 48;  // Each grid cell is 24x24 pixels (800/d48 ≈ 16.67, 600/28 ≈ 21.43, using 24 for clean division)
- // 96x96 grid for easier platform alignment
 
 // === DEBUG MODE ===
 let DEBUG_MODE = false;
@@ -56,19 +56,21 @@ const camera = {
 const MUSIC = new Audio('../assets/audio/time_for_adventure.mp3');
 MUSIC.loop = true;
 MUSIC.play()
-// Player starts at grid-aligned position (96 = 4 grid cells, 504 = 21 grid cells)
+
 const player = new Player(96, 504);
 await player.loadAudio('../assets/audio/jump.wav', 'jump');
 await player.loadAudio('../assets/audio/power_up.wav', 'power_up');
 await player.loadSprite('../assets/img/Player.png');
 
+// Load residuo images
+await Residuo.loadImages();
+
 // Load tileset for platforms and boxes
 const tileset = new Image();
-tileset.src = '../assets/img/Ground.png'; // Update path as needed
+tileset.src = '../assets/img/Ground.png';
 Platform.setTileset(tileset);
 Box.setTileset(tileset);
 
-// Enhanced Game Scene - Level 1: "The Recycling Facility" (Extended)
 const platforms = [
     // === SECTION 1: STARTING AREA (0-800) ===
     // Ground layer
@@ -164,65 +166,74 @@ const platforms = [
     new Platform(1968, 240, 48, 336),
 ];
 
-const residuos = [
-    // === SECTION 1 (0-800) ===
-    new Residuo(48, 528, 24, 24, 'PLASTIC'),
-    new Residuo(288, 528, 24, 24, 'PAPER'),
-    new Residuo(528, 528, 24, 24, 'GLASS'),
-    new Residuo(696, 528, 24, 24, 'INDEFERENCIADO'),
-    new Residuo(168, 432, 24, 24, 'PLASTIC'),
-    new Residuo(624, 432, 24, 24, 'PAPER'),
-    new Residuo(24, 336, 24, 24, 'GLASS'),
-    new Residuo(312, 360, 24, 24, 'INDEFERENCIADO'),
-    new Residuo(600, 312, 24, 24, 'PLASTIC'),
-    new Residuo(744, 384, 24, 24, 'PAPER'),
-    new Residuo(144, 240, 24, 24, 'GLASS'),
-    new Residuo(504, 216, 24, 24, 'INDEFERENCIADO'),
-    new Residuo(720, 264, 24, 24, 'PLASTIC'),
-    new Residuo(192, 96, 24, 24, 'PAPER'),
-    new Residuo(528, 120, 24, 24, 'GLASS'),
-    new Residuo(384, 144, 24, 24, 'INDEFERENCIADO'),
-    new Residuo(384, 456, 24, 24, 'PLASTIC'),
-    new Residuo(24, 144, 24, 24, 'PAPER'),
+// === RESIDUO SPAWN SYSTEM ===
+
+// 80 possible residuo positions (chosen to not overlap with platforms)
+const possibleResiduoPositions = [
+    // Section 1 (0-800) - 30 positions
+    { x: 50, y: 520 }, { x: 100, y: 520 }, { x: 200, y: 520 }, { x: 250, y: 520 },
+    { x: 300, y: 520 }, { x: 350, y: 520 }, { x: 500, y: 520 }, { x: 550, y: 520 },
+    { x: 650, y: 520 }, { x: 700, y: 520 }, { x: 100, y: 420 }, { x: 200, y: 420 },
+    { x: 250, y: 420 }, { x: 550, y: 420 }, { x: 650, y: 420 }, { x: 50, y: 330 },
+    { x: 260, y: 330 }, { x: 350, y: 330 }, { x: 550, y: 300 }, { x: 600, y: 300 },
+    { x: 700, y: 250 }, { x: 750, y: 250 }, { x: 120, y: 230 }, { x: 180, y: 230 },
+    { x: 450, y: 210 }, { x: 520, y: 210 }, { x: 700, y: 380 }, { x: 360, y: 480 },
+    { x: 480, y: 330 }, { x: 620, y: 380 },
     
-    // === SECTION 2 (800-1600) ===
-    new Residuo(888, 528, 24, 24, 'GLASS'),
-    new Residuo(1104, 528, 24, 24, 'INDEFERENCIADO'),
-    new Residuo(1392, 528, 24, 24, 'PLASTIC'),
-    new Residuo(888, 480, 24, 24, 'PAPER'),
-    new Residuo(984, 432, 24, 24, 'GLASS'),
-    new Residuo(1080, 384, 24, 24, 'INDEFERENCIADO'),
-    new Residuo(1176, 336, 24, 24, 'PLASTIC'),
-    new Residuo(888, 360, 24, 24, 'PAPER'),
-    new Residuo(1104, 312, 24, 24, 'GLASS'),
-    new Residuo(1368, 360, 24, 24, 'INDEFERENCIADO'),
-    new Residuo(936, 216, 24, 24, 'PLASTIC'),
-    new Residuo(1176, 168, 24, 24, 'PAPER'),
-    new Residuo(1416, 240, 24, 24, 'GLASS'),
-    new Residuo(984, 96, 24, 24, 'INDEFERENCIADO'),
-    new Residuo(1296, 120, 24, 24, 'PLASTIC'),
-    new Residuo(1248, 144, 24, 24, 'PAPER'),
+    // Section 2 (800-1600) - 30 positions
+    { x: 850, y: 520 }, { x: 900, y: 520 }, { x: 950, y: 520 }, { x: 1050, y: 520 },
+    { x: 1100, y: 520 }, { x: 1200, y: 520 }, { x: 1270, y: 520 }, { x: 1320, y: 520 },
+    { x: 1380, y: 520 }, { x: 1450, y: 520 }, { x: 1520, y: 520 }, { x: 900, y: 470 },
+    { x: 1000, y: 470 }, { x: 1450, y: 470 }, { x: 1000, y: 420 }, { x: 1450, y: 400 },
+    { x: 1080, y: 370 }, { x: 1180, y: 370 }, { x: 850, y: 350 }, { x: 930, y: 350 },
+    { x: 1030, y: 300 }, { x: 1130, y: 300 }, { x: 1180, y: 300 }, { x: 1320, y: 350 },
+    { x: 1380, y: 350 }, { x: 1420, y: 350 }, { x: 890, y: 210 }, { x: 950, y: 210 },
+    { x: 1130, y: 160 }, { x: 1200, y: 160 },
     
-    // === SECTION 3 (1600-2400) ===
-    new Residuo(1704, 528, 24, 24, 'GLASS'),
-    new Residuo(1896, 528, 24, 24, 'INDEFERENCIADO'),
-    new Residuo(2088, 528, 24, 24, 'PLASTIC'),
-    new Residuo(2304, 528, 24, 24, 'PAPER'),
-    new Residuo(1680, 432, 24, 24, 'GLASS'),
-    new Residuo(1848, 384, 24, 24, 'INDEFERENCIADO'),
-    new Residuo(1992, 336, 24, 24, 'PLASTIC'),
-    new Residuo(2136, 432, 24, 24, 'PAPER'),
-    new Residuo(2304, 480, 24, 24, 'GLASS'),
-    new Residuo(1752, 312, 24, 24, 'INDEFERENCIADO'),
-    new Residuo(1992, 264, 24, 24, 'PLASTIC'),
-    new Residuo(2184, 312, 24, 24, 'PAPER'),
-    new Residuo(1800, 168, 24, 24, 'GLASS'),
-    new Residuo(2064, 120, 24, 24, 'INDEFERENCIADO'),
-    new Residuo(2304, 168, 24, 24, 'PLASTIC'),
-    new Residuo(1776, 96, 24, 24, 'PAPER'),
-    new Residuo(2088, 72, 24, 24, 'GLASS'),
-    new Residuo(2184, 144, 24, 24, 'INDEFERENCIADO'),
+    // Section 3 (1600-2016) - 20 positions
+    { x: 1650, y: 520 }, { x: 1700, y: 520 }, { x: 1800, y: 520 }, { x: 1870, y: 520 },
+    { x: 1930, y: 520 }, { x: 1700, y: 420 }, { x: 1750, y: 420 }, { x: 1850, y: 470 },
+    { x: 1900, y: 470 }, { x: 1700, y: 300 }, { x: 1800, y: 300 }, { x: 1700, y: 380 },
+    { x: 1730, y: 300 }, { x: 1850, y: 380 }, { x: 1930, y: 330 }, { x: 1800, y: 250 },
+    { x: 1850, y: 250 }, { x: 1930, y: 250 }, { x: 1800, y: 160 }, { x: 1900, y: 160 }
 ];
+
+// Function to randomly select 24 positions with at least one of each type
+function spawnRandomResiduos() {
+    const types = ['PLASTIC', 'PAPER', 'GLASS', 'INDEFERENCIADO'];
+    const selectedPositions = [];
+    const residuos = [];
+    
+    // Shuffle the possible positions
+    const shuffledPositions = [...possibleResiduoPositions].sort(() => Math.random() - 0.5);
+    
+    // Select 24 positions
+    for (let i = 0; i < 24 && i < shuffledPositions.length; i++) {
+        selectedPositions.push(shuffledPositions[i]);
+    }
+    
+    // Ensure at least one of each type
+    for (let i = 0; i < types.length; i++) {
+        const pos = selectedPositions[i];
+        residuos.push(new Residuo(pos.x, pos.y, 32, 32, types[i]));
+    }
+    
+    // Fill remaining with random types
+    for (let i = types.length; i < selectedPositions.length; i++) {
+        const pos = selectedPositions[i];
+        const randomType = types[Math.floor(Math.random() * types.length)];
+        residuos.push(new Residuo(pos.x, pos.y, 32, 32, randomType));
+    }
+    
+    return residuos;
+}
+
+// Create residuos with random selection
+const residuos = spawnRandomResiduos();
+console.log(`Spawned ${residuos.length} residuos`);
+
+// Create Goal at the start of the level
+const goal = new Goal(0, 480, 48, 72);
 
 const boxes = [
     // === SECTION 1 (0-800) ===
@@ -280,6 +291,15 @@ function loop (now) {
     // Update camera to follow player
     camera.update(player.pos.x, player.pos.y);
     
+    // Update goal
+    goal.update(dt, player);
+    
+    // Check if player reached the goal
+    if (goal.checkCollision(player)) {
+        const counts = goal.saveToLocalStorage(player);
+        window.location.href = '../html/jogo_ml5.html';
+    }
+    
     // Apply camera transform
     ctx.save();
     camera.apply(ctx);
@@ -288,13 +308,17 @@ function loop (now) {
         p.update(dt);
         p.render(ctx);
     });
+    
+    // Render goal
+    goal.render(ctx);
+    
     residuos.forEach(r => {
         r.update(dt);
         r.render(ctx);
     });
     boxes.forEach(b => {
         b.update(dt, platforms, boxes);
-        b.render(ctx);
+        b.render(ctx, residuos); // Pass residuos for glow effect
     });
     player.update(dt, keys, platforms, residuos, boxes);
     player.render(ctx);
@@ -365,6 +389,14 @@ function loop (now) {
         const playerHB = player.getHitbox();
         ctx.strokeRect(playerHB.x, playerHB.y, playerHB.w, playerHB.h);
         
+        // Draw goal hitbox (magenta)
+        ctx.strokeStyle = goal.isActive ? '#FF00FF' : '#663366';
+        const goalAABB = goal.getAABB();
+        ctx.strokeRect(goalAABB.x, goalAABB.y, goalAABB.w, goalAABB.h);
+        ctx.fillStyle = goal.isActive ? '#FF00FF' : '#663366';
+        ctx.font = '10px monospace';
+        ctx.fillText('GOAL', goalAABB.x + 2, goalAABB.y + 10);
+        
         // Draw player center point
         ctx.fillStyle = '#FF0000';
         ctx.fillRect(player.pos.x - 2, player.pos.y - 2, 4, 4);
@@ -390,16 +422,13 @@ function loop (now) {
         ctx.fillText(`On Ground: ${player.onGround}`, 10, 80);
         
         // Count residuos by type
-        const typeCounts = { plastic: 0, paper: 0, glass: 0, indeferenciado: 0 };
-        residuos.forEach(r => {
-            if (r.collected && r.popUpTimer >= r.popUpDuration) {
-                typeCounts[r.type.name]++;
-            }
-        });
-        ctx.fillText(`Collected: ${player.colected.length}/${residuos.length}`, 10, 95);
-        ctx.fillText(`  Plastic: ${typeCounts.plastic} Paper: ${typeCounts.paper}`, 10, 110);
-        ctx.fillText(`  Glass: ${typeCounts.glass} Indeferenciado: ${typeCounts.indeferenciado}`, 10, 125);
+        const typeCounts = player.getResiduoCounts();
+        const totalCollected = typeCounts.papel + typeCounts.vidro + typeCounts.plastico + typeCounts.lixo;
+        ctx.fillText(`Collected: ${totalCollected}/${residuos.length}`, 10, 95);
+        ctx.fillText(`  Papel: ${typeCounts.papel} Vidro: ${typeCounts.vidro}`, 10, 110);
+        ctx.fillText(`  Plástico: ${typeCounts.plastico} Lixo: ${typeCounts.lixo}`, 10, 125);
         ctx.fillText(`Camera X: ${Math.round(camera.x)}`, 10, 140);
+        ctx.fillText(`Goal Active: ${goal.isActive}`, 10, 155);
     }
 
     requestAnimationFrame(loop);
