@@ -24,6 +24,7 @@ const RESIDUOS_CONFIG = {
 };
 
 let residuosAtivos = [];
+let residuoSelecionado = null;
 
 async function setup() {
   video = document.getElementById("videoCanvas");
@@ -90,6 +91,13 @@ function drawHands() {
     hands.forEach((hand) => {
       const keypoints = hand.keypoints;
 
+      const indicadorPonta = keypoints[8];
+      const indicadorX =
+        canvas.width - (indicadorPonta.x / 1280) * canvas.width;
+      const indicadorY = (indicadorPonta.y / 720) * canvas.height;
+
+      verificarColisaoResiduos(indicadorX, indicadorY);
+
       keypoints.forEach((point, index) => {
         const x = canvas.width - (point.x / 1280) * canvas.width;
         const y = (point.y / 720) * canvas.height;
@@ -114,6 +122,8 @@ function drawHands() {
 
       drawConnections(keypoints);
     });
+  } else {
+    limparSelecao();
   }
 }
 
@@ -161,6 +171,44 @@ function drawConnections(keypoints) {
     ctx.lineTo(x2, y2);
     ctx.stroke();
   });
+}
+
+function verificarColisaoResiduos(handX, handY) {
+  let residuoMaisProximo = null;
+  let menorDistancia = Infinity;
+
+  residuosAtivos.forEach((residuo) => {
+    const rect = residuo.elemento.getBoundingClientRect();
+    const residuoX = rect.left + rect.width / 2;
+    const residuoY = rect.top + rect.height / 2;
+
+    const distancia = Math.sqrt(
+      Math.pow(handX - residuoX, 2) + Math.pow(handY - residuoY, 2)
+    );
+
+    const raioColisao = 80;
+
+    if (distancia < raioColisao && distancia < menorDistancia) {
+      menorDistancia = distancia;
+      residuoMaisProximo = residuo;
+    }
+  });
+
+  if (residuoMaisProximo !== residuoSelecionado) {
+    limparSelecao();
+
+    if (residuoMaisProximo) {
+      residuoMaisProximo.elemento.classList.add("highlighted");
+      residuoSelecionado = residuoMaisProximo;
+    }
+  }
+}
+
+function limparSelecao() {
+  if (residuoSelecionado) {
+    residuoSelecionado.elemento.classList.remove("highlighted");
+    residuoSelecionado = null;
+  }
 }
 
 function carregarQuantidadesResiduos() {
