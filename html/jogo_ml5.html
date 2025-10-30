@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="authors"
+      content="António Manuel Cruz Barreto Amorim; Gabriel de Sousa Paiva"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="../assets/img/favicon/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="../assets/img/favicon/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="../assets/img/favicon/favicon-16x16.png"
+    />
+    <link rel="manifest" href="../assets/img/favicon/site.webmanifest" />
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/jogo_ml5.css" />
+    <title>ARCADIA - Jogo ML5</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://unpkg.com/ml5@latest/dist/ml5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-core"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-webgl"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/hand-pose-detection"></script>
+  </head>
+  <body>
+    <a href="../index.html" class="back-button">← VOLTAR</a>
+
+    <div id="pontuacao">
+      <h3>Pontuação</h3>
+      <p class="pontos">0</p>
+    </div>
+
+    <div id="gameContainer">
+      <div class="clouds">
+        <img
+          class="cloud cloud-1"
+          src="../assets/img/clouds/1.png"
+          alt="Nuvem 1"
+        />
+        <img
+          class="cloud cloud-2"
+          src="../assets/img/clouds/2.png"
+          alt="Nuvem 2"
+        />
+        <img
+          class="cloud cloud-3"
+          src="../assets/img/clouds/3.png"
+          alt="Nuvem 3"
+        />
+        <img
+          class="cloud cloud-4"
+          src="../assets/img/clouds/4.png"
+          alt="Nuvem 4"
+        />
+      </div>
+      <div class="ecopontos-container">
+        <img
+          class="ecoponto ecoponto-azul"
+          src="../assets/img/ecopontos/azul.png"
+          alt="Ecoponto Azul"
+          data-type="azul"
+        />
+        <img
+          class="ecoponto ecoponto-amarelo"
+          src="../assets/img/ecopontos/amarelo.png"
+          alt="Ecoponto Amarelo"
+          data-type="amarelo"
+        />
+        <img
+          class="ecoponto ecoponto-verde"
+          src="../assets/img/ecopontos/verde.png"
+          alt="Ecoponto Verde"
+          data-type="verde"
+        />
+        <img
+          class="ecoponto ecoponto-cinzento"
+          src="../assets/img/ecopontos/cinzento.png"
+          alt="Ecoponto Cinzento"
+          data-type="cinzento"
+        />
+      </div>
+      <video id="videoCanvas" autoplay playsinline></video>
+      <canvas id="handCanvas"></canvas>
+      <div id="residuosContainer"></div>
+    </div>
+
+    <div id="devModal" class="dev-modal">
+      <div class="dev-modal-content">
+        <h2>Modo Programador</h2>
+        <p>Define as quantidades de resíduos:</p>
+        <div class="dev-input-group">
+          <label for="papelQty">Papel:</label>
+          <input type="number" id="papelQty" min="0" max="20" value="5" />
+        </div>
+        <div class="dev-input-group">
+          <label for="vidroQty">Vidro:</label>
+          <input type="number" id="vidroQty" min="0" max="20" value="5" />
+        </div>
+        <div class="dev-input-group">
+          <label for="plasticoQty">Plástico:</label>
+          <input type="number" id="plasticoQty" min="0" max="20" value="5" />
+        </div>
+        <div class="dev-input-group">
+          <label for="lixoQty">Lixo:</label>
+          <input type="number" id="lixoQty" min="0" max="20" value="5" />
+        </div>
+        <div class="dev-modal-buttons">
+          <button id="devApply">Aplicar</button>
+          <button id="devClose">Fechar</button>
+          <button id="devClearStorage">Limpar Storage</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="instrucoesModal" class="instrucoes-modal">
+      <div class="instrucoes-modal-content">
+        <h2>COMO JOGAR</h2>
+        <div class="instrucoes-texto">
+          <p>
+            🎮 Usa as tuas mãos para apanhar os resíduos e coloca-os no ecoponto
+            correto!
+          </p>
+          <p>📸 É necessário acesso à webcam para detetar os teus gestos.</p>
+          <p>
+            👌 Junta os dedos para agarrar um resíduo e separa-os para largar.
+          </p>
+          <p class="pontos-info">
+            ✅ <strong>+5 pontos</strong> por cada resíduo separado corretamente
+          </p>
+          <p class="pontos-info erro">
+            ❌ <strong>-10 pontos</strong> se colocares no ecoponto errado
+          </p>
+        </div>
+        <div class="instrucoes-modal-buttons">
+          <button id="instrucoesJogar">JOGAR!</button>
+          <button id="instrucoesNaoMostrar">Não Voltar a Mostrar</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="fimJogoModal" class="fim-jogo-modal">
+      <div class="fim-jogo-modal-content">
+        <h2>PARABÉNS!</h2>
+        <p class="mensagem-final">Separaste todos os resíduos!</p>
+        <div class="pontuacao-final-display">
+          <p>A tua pontuação final é:</p>
+          <span id="pontuacaoFinalValor">0</span>
+          <p class="pontos-texto">PONTOS</p>
+        </div>
+        <div class="fim-jogo-modal-buttons">
+          <button id="voltarInicio">VOLTAR AO INÍCIO</button>
+        </div>
+      </div>
+    </div>
+
+    <footer class="arcade-footer">
+      © 2025 - ARCADIA - ESMAD - IPP - COMPUTAÇÃO GRÁFICA
+    </footer>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/jogo_ml5.js"></script>
+  </body>
+</html>
