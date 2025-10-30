@@ -1,55 +1,114 @@
+/**
+ * Classe Platform - Representa uma plataforma no jogo
+ * Pode ser sólida ou semi-sólida (oneway) e pode se mover
+ */
 export default class Platform {
-    static GRID_SIZE = 48; // Grid cell size in pixels
+    /** Tamanho de cada célula da grelha (em pixels) */
+    static GRID_SIZE = 48;
     
-    constructor(gridX, gridY, gridW, gridH, { type = 'solid', vx = 0, vy = 0, minGridX = 0, maxGridX = 0, minGridY = 0, maxGridY = 0 } = {}) {
-        // Convert grid coordinates to pixels
+    /**
+     * Cria uma nova plataforma
+     * @param {number} gridX - Posição X inicial na grelha
+     * @param {number} gridY - Posição Y inicial na grelha
+     * @param {number} gridW - Largura em células da grelha
+     * @param {number} gridH - Altura em células da grelha
+     * @param {Object} config - Configuração adicional
+     * @param {string} config.type - Tipo da plataforma ('solid' ou 'oneway')
+     * @param {number} config.vx - Velocidade horizontal (pixels/segundo)
+     * @param {number} config.vy - Velocidade vertical (pixels/segundo)
+     * @param {number} config.minGridX - Limite mínimo X na grelha para movimento
+     * @param {number} config.maxGridX - Limite máximo X na grelha para movimento
+     * @param {number} config.minGridY - Limite mínimo Y na grelha para movimento
+     * @param {number} config.maxGridY - Limite máximo Y na grelha para movimento
+     */
+    constructor(gridX, gridY, gridW, gridH, {
+        type = 'solid',
+        vx = 0,
+        vy = 0,
+        minGridX = 0,
+        maxGridX = 0,
+        minGridY = 0,
+        maxGridY = 0
+    } = {}) {
+        // Converte coordenadas da grelha para pixels
         this.x = gridX * Platform.GRID_SIZE;
         this.y = gridY * Platform.GRID_SIZE;
         this.w = Math.max(1, gridW * Platform.GRID_SIZE);
         this.h = Math.max(1, gridH * Platform.GRID_SIZE);
-        this.type = type; // 'solid' | 'oneway'
-        this.vx = vx;
-        this.vy = vy;
-        // Convert min/max grid coordinates to pixels
+        
+        // Tipo e movimento
+        this.type = type;  // 'solid' = sólida, 'oneway' = semi-sólida (atravessável por baixo)
+        this.vx = vx;      // Velocidade horizontal
+        this.vy = vy;      // Velocidade vertical
+        
+        // Limites de movimento (em pixels)
         this.minX = minGridX ? minGridX * Platform.GRID_SIZE : this.x;
         this.maxX = maxGridX ? maxGridX * Platform.GRID_SIZE : this.x;
         this.minY = minGridY ? minGridY * Platform.GRID_SIZE : this.y;
         this.maxY = maxGridY ? maxGridY * Platform.GRID_SIZE : this.y;
-        this.sourceTileSize = 16;
-        this.displayTileSize = 48;
+        
+        // Configurações de renderização
+        this.sourceTileSize = 16;    // Tamanho do tile na imagem original
+        this.displayTileSize = 48;   // Tamanho do tile ao renderizar
         this.tileset = null;
     }
 
+    /**
+     * Define o tileset compartilhado para todas as plataformas
+     * @param {Image} image - Imagem do tileset
+     * @static
+     */
     static setTileset(image) {
         Platform.sharedTileset = image;
     }
 
+    /**
+     * Atualiza a posição da plataforma (se estiver em movimento)
+     * @param {number} dt - Delta time (tempo desde o último frame em segundos)
+     */
     update(dt) {
         if (!dt) return;
         
+        // Inverte direção horizontal ao atingir limites
         if ((this.vx > 0 && this.x >= this.maxX) || (this.vx < 0 && this.x <= this.minX)) {
             this.vx = -this.vx;
         }
+        
+        // Inverte direção vertical ao atingir limites
         if ((this.vy > 0 && this.y >= this.maxY) || (this.vy < 0 && this.y <= this.minY)) {
             this.vy = -this.vy;
         }
         
+        // Atualiza posição
         this.x += this.vx * dt;
         this.y += this.vy * dt;
     }
 
+    /**
+     * Retorna a caixa delimitadora alinhada aos eixos (AABB)
+     * @returns {Object} Objeto com x, y, w, h
+     */
     getAABB() {
         return { x: this.x, y: this.y, w: this.w, h: this.h };
     }
 
+    /**
+     * Verifica se a plataforma é do tipo semi-sólida (oneway)
+     * @returns {boolean} True se for semi-sólida
+     */
     isOneWay() {
         return this.type === 'oneway';
     }
 
+    /**
+     * Renderiza a plataforma no canvas
+     * @param {CanvasRenderingContext2D} ctx - Contexto de renderização
+     */
     render(ctx) {
         const tileset = Platform.sharedTileset;
+        
+        // Se não há tileset, usa retângulos coloridos como fallback
         if (!tileset) {
-            // Fallback to colored rectangles
             ctx.fillStyle = this.type === 'oneway' ? 'rgba(139, 69, 19, 0.5)' : '#8B4513';
             ctx.fillRect(this.x, this.y, this.w, this.h);
             return;
@@ -62,22 +121,28 @@ export default class Platform {
         const tilesY = Math.ceil(this.h / dstSize);
 
         if (this.type === 'oneway') {
-            // Semi-solid platforms: use top-left 8x8 of tile 10, tiled 2x1 per display tile
-            const tileIndex = 9; // Tile 10 (index 9)
+            // Plataformas semi-sólidas: usa o tile 10 (8x8 pixels do canto superior esquerdo)
+            const tileIndex = 9;  // Tile 10 (índice começa em 0)
             const sx = (tileIndex % 16) * srcSize;
             const sy = Math.floor(tileIndex / 16) * srcSize;
             
+            // Desenha apenas a linha superior da plataforma
             for (let i = 0; i < tilesX; i++) {
-                // Draw two 8x8 tiles side by side in the top row only
+                // Desenha dois tiles 8x8 lado a lado para preencher cada célula
                 ctx.drawImage(tileset, sx, sy, 8, 8, this.x + i * dstSize, this.y, 24, 24);
                 ctx.drawImage(tileset, sx, sy, 8, 8, this.x + i * dstSize + 24, this.y, 24, 24);
             }
         } else {
-            // Solid platforms: tile 0 (row 1) for top, tile 16 (row 2) for fill
+            // Plataformas sólidas: tile 0 (linha 1) para topo, tile 16 (linha 2) para preenchimento
             for (let j = 0; j < tilesY; j++) {
                 for (let i = 0; i < tilesX; i++) {
-                    const sy = j === 0 ? 0 : srcSize;
-                    ctx.drawImage(tileset, 0, sy, srcSize, srcSize, this.x + i * dstSize, this.y + j * dstSize, dstSize, dstSize);
+                    const sy = j === 0 ? 0 : srcSize;  // Primeira linha usa tile do topo
+                    ctx.drawImage(
+                        tileset,
+                        0, sy, srcSize, srcSize,
+                        this.x + i * dstSize, this.y + j * dstSize,
+                        dstSize, dstSize
+                    );
                 }
             }
         }
