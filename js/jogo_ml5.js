@@ -467,6 +467,7 @@ function initDevMode() {
   const modal = document.getElementById("devModal");
   const applyBtn = document.getElementById("devApply");
   const closeBtn = document.getElementById("devClose");
+  const clearStorageBtn = document.getElementById("devClearStorage");
 
   document.addEventListener("keydown", (e) => {
     if (e.key.toLowerCase() === "d") {
@@ -500,6 +501,19 @@ function initDevMode() {
 
   closeBtn.addEventListener("click", () => {
     modal.classList.remove("active");
+  });
+
+  clearStorageBtn.addEventListener("click", () => {
+    if (
+      confirm(
+        "Tens a certeza que queres limpar todo o localStorage? Isto apagará todas as configurações guardadas."
+      )
+    ) {
+      localStorage.clear();
+      alert("localStorage limpo com sucesso!");
+      modal.classList.remove("active");
+      location.reload();
+    }
   });
 
   modal.addEventListener("click", (e) => {

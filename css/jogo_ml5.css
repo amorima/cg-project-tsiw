@@ -270,6 +270,15 @@
   background: #1a1a1a;
 }
 
+.dev-modal-buttons #devClearStorage {
+  background: #8b0000;
+  color: #fff;
+}
+
+.dev-modal-buttons #devClearStorage:hover {
+  background: #a00000;
+}
+
 .instrucoes-modal {
   display: none;
   position: fixed;
