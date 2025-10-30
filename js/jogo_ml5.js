@@ -4,6 +4,27 @@ let canvas;
 let ctx;
 let hands = [];
 
+const RESIDUOS_CONFIG = {
+  papel: {
+    img: "../assets/img/residuos/papel.png",
+    ecoponto: "azul",
+  },
+  vidro: {
+    img: "../assets/img/residuos/vidro.png",
+    ecoponto: "verde",
+  },
+  plastico: {
+    img: "../assets/img/residuos/plástico.png",
+    ecoponto: "amarelo",
+  },
+  lixo: {
+    img: "../assets/img/residuos/lixo.png",
+    ecoponto: "cinzento",
+  },
+};
+
+let residuosAtivos = [];
+
 async function setup() {
   video = document.getElementById("videoCanvas");
   canvas = document.getElementById("handCanvas");
@@ -142,4 +163,117 @@ function drawConnections(keypoints) {
   });
 }
 
-window.addEventListener("DOMContentLoaded", setup);
+function carregarQuantidadesResiduos() {
+  const quantidades = {
+    papel: parseInt(localStorage.getItem("residuos_papel")) || 0,
+    vidro: parseInt(localStorage.getItem("residuos_vidro")) || 0,
+    plastico: parseInt(localStorage.getItem("residuos_plastico")) || 0,
+    lixo: parseInt(localStorage.getItem("residuos_lixo")) || 0,
+  };
+
+  return quantidades;
+}
+
+function renderizarResiduos() {
+  const container = document.getElementById("residuosContainer");
+  container.innerHTML = "";
+  residuosAtivos = [];
+
+  const quantidades = carregarQuantidadesResiduos();
+  const containerHeight = window.innerHeight / 3;
+  const containerWidth = window.innerWidth;
+
+  const numSlots = 4;
+  const slotWidth = containerWidth / numSlots;
+
+  const tipos = ["papel", "vidro", "plastico", "lixo"];
+  const tiposAleatorios = [...tipos].sort(() => Math.random() - 0.5);
+
+  tiposAleatorios.forEach((tipo, slotIndex) => {
+    const quantidade = quantidades[tipo];
+    const config = RESIDUOS_CONFIG[tipo];
+
+    const slotCenterX = slotIndex * slotWidth + slotWidth / 2;
+
+    for (let i = 0; i < quantidade; i++) {
+      const img = document.createElement("img");
+      img.src = config.img;
+      img.className = "residuo";
+      img.dataset.tipo = tipo;
+      img.dataset.ecoponto = config.ecoponto;
+
+      const baseY = containerHeight - 100;
+
+      const col = i % 4;
+      const row = Math.floor(i / 4);
+
+      const x = slotCenterX - 60 + col * 30;
+      const y = baseY - row * 25;
+
+      img.style.left = `${x}px`;
+      img.style.bottom = `${containerHeight - y}px`;
+
+      container.appendChild(img);
+
+      residuosAtivos.push({
+        elemento: img,
+        tipo: tipo,
+        ecoponto: config.ecoponto,
+        x: x,
+        y: y,
+      });
+    }
+  });
+}
+
+function initDevMode() {
+  const modal = document.getElementById("devModal");
+  const applyBtn = document.getElementById("devApply");
+  const closeBtn = document.getElementById("devClose");
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key.toLowerCase() === "d") {
+      modal.classList.toggle("active");
+
+      if (modal.classList.contains("active")) {
+        const quantidades = carregarQuantidadesResiduos();
+        document.getElementById("papelQty").value = quantidades.papel;
+        document.getElementById("vidroQty").value = quantidades.vidro;
+        document.getElementById("plasticoQty").value = quantidades.plastico;
+        document.getElementById("lixoQty").value = quantidades.lixo;
+      }
+    }
+  });
+
+  applyBtn.addEventListener("click", () => {
+    const papel = parseInt(document.getElementById("papelQty").value) || 0;
+    const vidro = parseInt(document.getElementById("vidroQty").value) || 0;
+    const plastico =
+      parseInt(document.getElementById("plasticoQty").value) || 0;
+    const lixo = parseInt(document.getElementById("lixoQty").value) || 0;
+
+    localStorage.setItem("residuos_papel", papel);
+    localStorage.setItem("residuos_vidro", vidro);
+    localStorage.setItem("residuos_plastico", plastico);
+    localStorage.setItem("residuos_lixo", lixo);
+
+    renderizarResiduos();
+    modal.classList.remove("active");
+  });
+
+  closeBtn.addEventListener("click", () => {
+    modal.classList.remove("active");
+  });
+
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) {
+      modal.classList.remove("active");
+    }
+  });
+}
+
+window.addEventListener("DOMContentLoaded", () => {
+  setup();
+  initDevMode();
+  renderizarResiduos();
+});

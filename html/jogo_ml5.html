@@ -94,6 +94,34 @@
       </div>
       <video id="videoCanvas" autoplay playsinline></video>
       <canvas id="handCanvas"></canvas>
+      <div id="residuosContainer"></div>
+    </div>
+
+    <div id="devModal" class="dev-modal">
+      <div class="dev-modal-content">
+        <h2>Modo Programador</h2>
+        <p>Define as quantidades de resíduos:</p>
+        <div class="dev-input-group">
+          <label for="papelQty">Papel:</label>
+          <input type="number" id="papelQty" min="0" max="20" value="5" />
+        </div>
+        <div class="dev-input-group">
+          <label for="vidroQty">Vidro:</label>
+          <input type="number" id="vidroQty" min="0" max="20" value="5" />
+        </div>
+        <div class="dev-input-group">
+          <label for="plasticoQty">Plástico:</label>
+          <input type="number" id="plasticoQty" min="0" max="20" value="5" />
+        </div>
+        <div class="dev-input-group">
+          <label for="lixoQty">Lixo:</label>
+          <input type="number" id="lixoQty" min="0" max="20" value="5" />
+        </div>
+        <div class="dev-modal-buttons">
+          <button id="devApply">Aplicar</button>
+          <button id="devClose">Fechar</button>
+        </div>
+      </div>
     </div>
 
     <footer class="arcade-footer">
