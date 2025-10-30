@@ -8,18 +8,22 @@ const RESIDUOS_CONFIG = {
   papel: {
     img: "../assets/img/residuos/papel.png",
     ecoponto: "azul",
+    sound: "../assets/sound/papel.mp3",
   },
   vidro: {
     img: "../assets/img/residuos/vidro.png",
     ecoponto: "verde",
+    sound: "../assets/sound/vidro.mp3",
   },
   plastico: {
     img: "../assets/img/residuos/plástico.png",
     ecoponto: "amarelo",
+    sound: "../assets/sound/plastico.mp3",
   },
   lixo: {
     img: "../assets/img/residuos/lixo.png",
     ecoponto: "cinzento",
+    sound: "../assets/sound/lixo.mp3",
   },
 };
 
@@ -337,6 +341,7 @@ function largarResiduo(handX, handY) {
 
     if (ecopontoCerto) {
       adicionarPontos(5);
+      reproduzirSom(residuo.tipo);
     } else {
       adicionarPontos(-10);
     }
@@ -373,6 +378,15 @@ function largarResiduo(handX, handY) {
     residuoAgarrado = null;
     posicaoOriginal = null;
   }
+}
+
+function reproduzirSom(tipoResiduo) {
+  const soundPath = RESIDUOS_CONFIG[tipoResiduo].sound;
+  const audio = new Audio(soundPath);
+  audio.volume = 0.5;
+  audio.play().catch((error) => {
+    console.log("Erro ao reproduzir som:", error);
+  });
 }
 
 function adicionarPontos(pontos) {
