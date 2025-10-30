@@ -34,7 +34,7 @@ export default class Residuos {
         // Convert grid coordinates to pixels
         const pixelX = gridX * Residuos.GRID_SIZE;
         const pixelY = gridY * Residuos.GRID_SIZE;
-        this.pos = new Vector(pixelX, pixelY);
+        this.pos = new Vector(pixelX + 9, pixelY - 16);
         this.w = gridW * Residuos.GRID_SIZE;
         this.h = gridH * Residuos.GRID_SIZE;
         this.collected = false;
