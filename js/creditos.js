@@ -1,7 +1,8 @@
-// Função para carregar e processar o README do GitHub
+// Função para ir buscar e processar o ficheiro README do repositório GitHub
 async function loadCredits() {
   try {
-    // Buscar o README do repositório
+    // Fazer um pedido para obter o README.md do repositório
+    // Usamos o raw.githubusercontent.com porque dá-nos o ficheiro em texto puro
     const response = await fetch(
       "https://raw.githubusercontent.com/amorima/cg-project-tsiw/main/README.md"
     );
@@ -12,51 +13,55 @@ async function loadCredits() {
 
     const markdown = await response.text();
 
-    // Processar o markdown e converter para HTML
+    // Converter o markdown para HTML para mostrar na página
     const htmlContent = processMarkdown(markdown);
 
-    // Atualizar o contentor de créditos
+    // Colocar o conteúdo no contentor de créditos
     const creditsContainer = document.getElementById("creditsContainer");
     creditsContainer.innerHTML = "<h1>CRÉDITOS</h1>" + htmlContent;
   } catch (error) {
     console.error("Erro ao carregar créditos:", error);
+    // Se houver erro, mostrar uma mensagem ao utilizador
     const creditsContainer = document.getElementById("creditsContainer");
     creditsContainer.innerHTML =
       '<h1>CRÉDITOS</h1><p style="color: #ff6b6b;">Erro ao carregar conteúdo. Tente novamente mais tarde.</p>';
   }
 }
 
-// Função para converter markdown básico para HTML
+// Função que converte markdown básico para HTML
+// Não usei uma biblioteca externa para manter o projeto mais simples
+// Função que converte markdown básico para HTML
+// Não usei uma biblioteca externa para manter o projeto mais simples
 function processMarkdown(markdown) {
   let html = markdown;
 
-  // Remover o título principal (#)
+  // Remover o título principal (# ARCADIA) porque já temos um no HTML
   html = html.replace(/^# ARCADIA\n/gm, "");
 
-  // Converter títulos de secção (## para h2)
+  // Converter títulos de secção (##) em elementos h2 dentro de secções
   html = html.replace(
     /^## (.+)$/gm,
     '<section class="credits-section"><h2>$1</h2>'
   );
 
-  // Fechar as secções antes de um novo título ou fim
+  // Fechar as secções antes de um novo título ou no fim
   html = html.replace(
     /<section class="credits-section"><h2>/g,
     '</section><section class="credits-section"><h2>'
   );
   html = html + "</section>";
 
-  // Remover secções vazias
+  // Remover secções vazias que possam ter ficado
   html = html.replace(
     /<\/section><section class="credits-section"><\/section>/g,
     ""
   );
 
-  // Converter parágrafos (linhas que não são listas, títulos, etc.)
+  // Converter parágrafos normais em elementos <p>
   html = html
     .split("\n")
     .map((line) => {
-      // Skip linhas vazias, listas e já processadas
+      // Saltar linhas vazias, listas e linhas que já têm HTML
       if (
         !line.trim() ||
         line.startsWith("-") ||
@@ -65,11 +70,11 @@ function processMarkdown(markdown) {
       ) {
         return line;
       }
-      // Skip linhas que já são HTML
+      // Não processar se já for HTML
       if (line.includes("<")) {
         return line;
       }
-      // Converter para parágrafo se não estiver vazio
+      // Converter para parágrafo se for texto normal
       if (line.trim() && !line.startsWith("#")) {
         return "<p>" + line.trim() + "</p>";
       }
@@ -77,29 +82,30 @@ function processMarkdown(markdown) {
     })
     .join("\n");
 
-  // Converter listas não ordenadas
+  // Converter listas não ordenadas (linhas que começam com - ou *)
   html = html.replace(/^\s*[-*]\s+(.+)$/gm, "<li>$1</li>");
   html = html.replace(/(<li>.+<\/li>\n?)+/g, (match) => {
     return "<ul>\n" + match + "</ul>\n";
   });
 
-  // Converter listas ordenadas (números)
+  // Converter listas ordenadas (linhas que começam com números)
   html = html.replace(/^\s*(\d+)\.\s+(.+)$/gm, "<li>$2</li>");
 
-  // Converter negrito
+  // Converter texto em negrito (**texto** ou __texto__)
   html = html.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
   html = html.replace(/__(.+?)__/g, "<strong>$1</strong>");
 
-  // Remover múltiplas quebras de linha
+  // Remover quebras de linha múltiplas
   html = html.replace(/\n\n+/g, "\n");
 
-  // Limpar seções vazias finais
+  // Limpar secções vazias que possam ter sobrado
   html = html.replace(/<section class="credits-section"><\/section>/g, "");
 
   return html;
 }
 
-// Adicionar secção de instituição no final
+// Adicionar uma secção extra com informação da instituição
+// Adicionar uma secção extra com informação da instituição
 function addInstitutionSection() {
   const creditsContainer = document.getElementById("creditsContainer");
   const institutionSection = document.createElement("section");
@@ -111,9 +117,10 @@ function addInstitutionSection() {
   creditsContainer.appendChild(institutionSection);
 }
 
-// Carregar créditos quando a página está pronta
+// Carregar os créditos quando a página fica pronta
 document.addEventListener("DOMContentLoaded", () => {
   loadCredits();
-  // Tentar atualizar a cada 5 minutos (300000ms)
-  setInterval(loadCredits, 300000);
+  // Tentar atualizar de 5 em 5 minutos caso o README seja alterado
+  // Isto é útil durante o desenvolvimento do projeto
+  setInterval(loadCredits, 300000); // 300000ms = 5 minutos
 });
