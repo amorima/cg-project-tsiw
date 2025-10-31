@@ -297,20 +297,22 @@ function verificarDedosJuntos(keypoints) {
 
   const pontas = [indicador, medio, anelar, mindinho];
 
-  // Verificar se todos os dedos estão perto do polegar
-  let todasProximas = true;
+  // Contar quantos dedos estão perto do polegar
+  let dedosProximos = 0;
   pontas.forEach((ponta) => {
     const distancia = Math.sqrt(
       Math.pow(polegar.x - ponta.x, 2) + Math.pow(polegar.y - ponta.y, 2)
     );
 
-    // Se algum dedo estiver longe do polegar, não estão juntos
-    if (distancia > 80) {
-      todasProximas = false;
+    // Se o dedo estiver perto do polegar, incrementar contador
+    if (distancia <= 80) {
+      dedosProximos++;
     }
   });
 
-  return todasProximas;
+  // Consideramos dedos "juntos" se pelo menos 3 dos 4 dedos estiverem perto do polegar
+  // Isto permite alguma flexibilidade mas evita solturas acidentais
+  return dedosProximos >= 3;
 }
 
 // Função chamada quando juntamos os dedos perto de um resíduo
