@@ -143,11 +143,8 @@
 
 /* Quando estamos perto de um ecoponto com um resíduo, destacamos o ecoponto */
 .ecoponto.highlighted {
-  filter: drop-shadow(0 0 30px rgba(74, 157, 74, 0.9))
-    drop-shadow(0 0 60px rgba(74, 157, 74, 0.7))
-    drop-shadow(0 10px 20px rgba(0, 0, 0, 0.3));
-  transform: scale(1.1); /* Aumenta ligeiramente */
-  transition: all 0.2s ease;
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 20px #fff);
 }
 
 /* Painel de pontuação centrado no topo - Design brutal */
@@ -666,4 +663,23 @@
     transform: scale(1);
     opacity: 1;
   }
+}
+
+/* Estilo personalizado para o cursor do rato */
+#mouseCursor {
+  position: fixed;
+  width: 30px;
+  height: 30px;
+  border: 3px solid #4a9d4a;
+  background-color: rgba(74, 157, 74, 0.5);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 10000;
+  transition: transform 0.1s ease, background-color 0.1s ease;
+}
+
+#mouseCursor.grabbing {
+  transform: translate(-50%, -50%) scale(0.7);
+  background-color: rgba(107, 197, 107, 0.8);
 }

@@ -38,7 +38,11 @@ let ecopontoSelecionado = null; // O ecoponto que está destacado (quando estamo
 let pontuacao = 0; // A pontuação atual do jogador
 let posicaoOriginal = null; // Guarda a posição inicial de um resíduo para o caso de largarmos fora de um ecoponto
 
-// Função que inicializa tudo o que é preciso para o jogo funcionar
+// Variáveis para o modo de controlo com o rato
+let isMouseMode = false;
+let mouseCursor;
+let isMouseDown = false;
+
 // Função que inicializa tudo o que é preciso para o jogo funcionar
 async function setup() {
   // Buscar os elementos HTML que vamos usar
@@ -80,6 +84,72 @@ async function setup() {
     });
   } catch (error) {
     console.error("Erro ao aceder à webcam:", error);
+    alert(
+      "Não foi possível aceder à webcam. O jogo continuará com os controlos do rato."
+    );
+    isMouseMode = true;
+    initMouseControls();
+  }
+}
+
+// Inicializa os controlos do rato como alternativa à webcam
+function initMouseControls() {
+  // Esconde os elementos de vídeo e canvas que não são necessários
+  video.style.display = "none";
+  canvas.style.display = "none";
+
+  // Cria um elemento para servir de cursor customizado
+  mouseCursor = document.createElement("div");
+  mouseCursor.id = "mouseCursor";
+  document.body.appendChild(mouseCursor);
+  document.body.style.cursor = "none"; // Esconde o cursor real do sistema
+
+  // Adiciona os listeners para os eventos do rato
+  window.addEventListener("mousemove", handleMouseMove);
+  window.addEventListener("mousedown", handleMouseDown);
+  window.addEventListener("mouseup", handleMouseUp);
+}
+
+// Gere o movimento do rato
+function handleMouseMove(event) {
+  const mouseX = event.clientX;
+  const mouseY = event.clientY;
+
+  // Move o cursor customizado
+  mouseCursor.style.left = `${mouseX}px`;
+  mouseCursor.style.top = `${mouseY}px`;
+
+  // Se não estivermos a agarrar um resíduo, verifica a colisão com os resíduos
+  if (!residuoAgarrado) {
+    verificarColisaoResiduos(mouseX, mouseY);
+  } else {
+    // Se estivermos a agarrar, move o resíduo e verifica a colisão com os ecopontos
+    moverResiduoAgarrado(mouseX, mouseY);
+    verificarColisaoEcopontos(mouseX, mouseY);
+  }
+}
+
+// Gere o clique do rato (pressionar)
+function handleMouseDown(event) {
+  if (event.button !== 0) return; // Apenas para o botão esquerdo
+  isMouseDown = true;
+  mouseCursor.classList.add("grabbing"); // Animação de agarrar no cursor
+
+  // Se houver um resíduo selecionado, agarra-o
+  if (residuoSelecionado) {
+    agarrarResiduo();
+  }
+}
+
+// Gere o clique do rato (largar)
+function handleMouseUp(event) {
+  if (event.button !== 0) return; // Apenas para o botão esquerdo
+  isMouseDown = false;
+  mouseCursor.classList.remove("grabbing"); // Remove a animação de agarrar
+
+  // Se estivermos a agarrar um resíduo, larga-o
+  if (residuoAgarrado) {
+    largarResiduo(event.clientX, event.clientY);
   }
 }
 
@@ -340,10 +410,17 @@ function moverResiduoAgarrado(handX, handY) {
   const elemento = residuoAgarrado.elemento;
   const canvasRect = canvas.getBoundingClientRect();
 
-  // Atualizar a posição do resíduo para seguir a mão
-  // O transform centra o resíduo no ponto da mão
-  elemento.style.left = `${canvasRect.left + handX}px`;
-  elemento.style.top = `${canvasRect.top + handY}px`;
+  // Se estivermos em modo rato, as coordenadas já são relativas à janela
+  if (isMouseMode) {
+    elemento.style.left = `${handX}px`;
+    elemento.style.top = `${handY}px`;
+  } else {
+    // No modo webcam, as coordenadas são relativas ao canvas
+    elemento.style.left = `${canvasRect.left + handX}px`;
+    elemento.style.top = `${canvasRect.top + handY}px`;
+  }
+
+  // Atualizar a posição do resíduo para seguir a mão/rato
   elemento.style.bottom = "auto";
   elemento.style.transform = "translate(-50%, -50%)";
 }
@@ -416,7 +493,7 @@ function largarResiduo(handX, handY) {
           mostrarModalFimJogo();
         }, 500);
       }
-    }, 5300);
+    }, 500); // Reduzido para 500ms para uma resposta mais rápida
 
     residuoAgarrado = null;
     posicaoOriginal = null;
