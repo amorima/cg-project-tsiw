@@ -40,6 +40,25 @@ const victoryOverlay = document.getElementById("victoryOverlay");
 const nextPhaseBtn = document.getElementById("nextPhaseBtn");
 const keepCollectingBtn = document.getElementById("keepCollectingBtn");
 
+// Residuo counter UI elements
+const uiPapel = document.getElementById("ui-papel");
+const uiVidro = document.getElementById("ui-vidro");
+const uiPlastico = document.getElementById("ui-plastico");
+const uiLixo = document.getElementById("ui-lixo");
+const uiTotal = document.getElementById("ui-total");
+
+// Function to update the residuo counter UI
+function updateResiduoUI() {
+  const counts = player.getResiduoCounts();
+  const total = counts.papel + counts.vidro + counts.plastico + counts.lixo;
+  
+  uiPapel.textContent = counts.papel;
+  uiVidro.textContent = counts.vidro;
+  uiPlastico.textContent = counts.plastico;
+  uiLixo.textContent = counts.lixo;
+  uiTotal.textContent = `${total}/24`;
+}
+
 // Next phase button click handler
 nextPhaseBtn.addEventListener("click", () => {
   window.location.href = "../html/jogo_ml5.html";
@@ -361,6 +380,9 @@ function loop(now) {
     player.update(dt, keys, platforms, residuos, boxes);
   }
   player.render(ctx);
+
+  // Update the residuo counter UI
+  updateResiduoUI();
 
   // Restore camera transform (world space ends)
   ctx.restore();

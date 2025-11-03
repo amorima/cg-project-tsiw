@@ -59,6 +59,38 @@
       />
     </div>
     <a href="../index.html" class="back-button">← VOLTAR</a>
+    
+    <!-- Residuo Collection Counter UI -->
+    <div class="residuo-counter">
+      <h3>RESÍDUOS</h3>
+      <div class="residuo-stats">
+        <div class="residuo-stat">
+          <span class="residuo-stat-icon">📄</span>
+          <span class="residuo-stat-label">Papel</span>
+          <span class="residuo-stat-count" id="ui-papel">0</span>
+        </div>
+        <div class="residuo-stat">
+          <span class="residuo-stat-icon">🍾</span>
+          <span class="residuo-stat-label">Vidro</span>
+          <span class="residuo-stat-count" id="ui-vidro">0</span>
+        </div>
+        <div class="residuo-stat">
+          <span class="residuo-stat-icon">🥤</span>
+          <span class="residuo-stat-label">Plástico</span>
+          <span class="residuo-stat-count" id="ui-plastico">0</span>
+        </div>
+        <div class="residuo-stat">
+          <span class="residuo-stat-icon">🗑️</span>
+          <span class="residuo-stat-label">Lixo</span>
+          <span class="residuo-stat-count" id="ui-lixo">0</span>
+        </div>
+        <div class="residuo-stat total">
+          <span class="residuo-stat-label">TOTAL</span>
+          <span class="residuo-stat-count" id="ui-total">0/24</span>
+        </div>
+      </div>
+    </div>
+
     <main class="arcade-menu">
       <canvas width="1060" height="600" id="game"></canvas>
     </main>
@@ -106,10 +138,10 @@
             class="keep-collecting-button"
             style="display: none"
           >
-            KEEP COLLECTING
+            CONTINUAR A COLETAR
           </button>
           <button id="nextPhaseBtn" class="next-phase-button">
-            NEXT PHASE
+            PROXIMA FASE
           </button>
         </div>
       </div>
