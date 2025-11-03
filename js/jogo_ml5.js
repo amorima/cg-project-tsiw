@@ -218,7 +218,8 @@ function drawConnections(keypoints) {
   ];
 
   ctx.strokeStyle = "#4a9d4a";
-  ctx.lineWidth = 3;
+  ctx.lineWidth = 15;
+  ctx.lineCap = "round";
 
   // Desenhar cada ligação
   connections.forEach(([start, end]) => {
@@ -394,18 +395,7 @@ function largarResiduo(handX, handY) {
 
     // Adicionar classes para a animação de desaparecimento
     residuo.elemento.classList.remove("grabbed");
-    residuo.elemento.classList.add("fadeout");
-
-    // Animar o resíduo a ir para dentro do ecoponto
-    const ecopontoRect = ecopontoSelecionado.elemento.getBoundingClientRect();
-    const targetX = ecopontoRect.left + ecopontoRect.width / 2;
-    const targetY = ecopontoRect.top + ecopontoRect.height;
-
-    residuo.elemento.style.position = "absolute";
-    residuo.elemento.style.transition =
-      "left 0.3s ease, top 0.3s ease, opacity 0.5s ease, transform 0.5s ease";
-    residuo.elemento.style.left = `${targetX}px`;
-    residuo.elemento.style.top = `${targetY}px`;
+    residuo.elemento.classList.add("dropanimation");
 
     // Dar pontos ou retirar dependendo se acertámos
     if (ecopontoCerto) {
@@ -426,7 +416,7 @@ function largarResiduo(handX, handY) {
           mostrarModalFimJogo();
         }, 500);
       }
-    }, 500);
+    }, 5300);
 
     residuoAgarrado = null;
     posicaoOriginal = null;
