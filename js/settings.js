@@ -1,9 +1,10 @@
-// settings.js
-
 document.addEventListener("DOMContentLoaded", () => {
   const muteButton = document.getElementById("muteButton");
   const clearDataButton = document.getElementById("clearDataButton");
-  const quickTestButton = document.getElementById("quickTestButton");
+  const quickTestButtonWebcam = document.getElementById(
+    "quickTestButtonWebcam"
+  );
+  const quickTestButtonMouse = document.getElementById("quickTestButtonMouse");
   const clearDataModal = document.getElementById("clearDataModal");
   const confirmClearBtn = document.getElementById("confirmClearBtn");
   const cancelClearBtn = document.getElementById("cancelClearBtn");
@@ -69,17 +70,32 @@ document.addEventListener("DOMContentLoaded", () => {
     return Math.floor(Math.random() * 5) + 1;
   }
 
-  // Botão para ir para a segunda fase com dados de teste
-  if (quickTestButton) {
-    quickTestButton.addEventListener("click", () => {
-      // Gera valores aleatórios para cada tipo de resíduo
-      localStorage.setItem("residuos_papel", gerarQuantidadeAleatoria());
-      localStorage.setItem("residuos_vidro", gerarQuantidadeAleatoria());
-      localStorage.setItem("residuos_plastico", gerarQuantidadeAleatoria());
-      localStorage.setItem("residuos_lixo", gerarQuantidadeAleatoria());
+  // Função para preparar e navegar para a segunda fase
+  function irParaSegundaFase(modo) {
+    // Gera valores aleatórios para cada tipo de resíduo
+    localStorage.setItem("residuos_papel", gerarQuantidadeAleatoria());
+    localStorage.setItem("residuos_vidro", gerarQuantidadeAleatoria());
+    localStorage.setItem("residuos_plastico", gerarQuantidadeAleatoria());
+    localStorage.setItem("residuos_lixo", gerarQuantidadeAleatoria());
 
-      // Navega para a segunda fase
-      window.location.href = "../html/jogo_ml5.html";
+    // Define o modo de jogo (webcam ou rato)
+    localStorage.setItem("modo_jogo", modo);
+
+    // Navega para a segunda fase
+    window.location.href = "../html/jogo_ml5.html";
+  }
+
+  // Botão para ir para a segunda fase com webcam
+  if (quickTestButtonWebcam) {
+    quickTestButtonWebcam.addEventListener("click", () => {
+      irParaSegundaFase("webcam");
+    });
+  }
+
+  // Botão para ir para a segunda fase com rato
+  if (quickTestButtonMouse) {
+    quickTestButtonMouse.addEventListener("click", () => {
+      irParaSegundaFase("mouse");
     });
   }
 });

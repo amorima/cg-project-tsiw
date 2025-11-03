@@ -42,7 +42,7 @@
 /* Contentor dos 4 ecopontos na parte inferior */
 .ecopontos-container {
   position: absolute;
-  bottom: 300px;
+  bottom: 220px;
   left: 50%;
   transform: translateX(-50%); /* Centrar horizontalmente */
   display: flex;
@@ -79,7 +79,7 @@
   width: 100%;
   height: 33.33vh; /* Terço inferior */
   z-index: 35; /* Por cima dos ecopontos mas por baixo do canvas das mãos */
-  pointer-events: none; /* O contentor não bloqueia cliques */
+  pointer-events: none; /* O contentor não bloqueia cliques, mas os filhos podem ter pointer-events: auto */
 }
 
 /* Estilo de cada resíduo individual */

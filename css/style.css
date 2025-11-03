@@ -440,6 +440,20 @@ body {
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
+.settings-buttons-group {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.settings-buttons-group .menu-button {
+  flex: 1;
+  min-width: 150px;
+  max-width: 220px;
+}
+
 .settings-section .menu-button {
   width: 220px;
 }

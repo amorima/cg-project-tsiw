@@ -45,6 +45,16 @@ let isMouseDown = false;
 
 // Função que inicializa tudo o que é preciso para o jogo funcionar
 async function setup() {
+  // Verificar se foi definido um modo de jogo específico
+  const modoDefinido = localStorage.getItem("modo_jogo");
+
+  // Se o utilizador escolheu o modo rato, iniciar com o rato
+  if (modoDefinido === "mouse") {
+    isMouseMode = true;
+    initMouseControls();
+    return;
+  }
+
   // Buscar os elementos HTML que vamos usar
   video = document.getElementById("videoCanvas");
   canvas = document.getElementById("handCanvas");
@@ -94,6 +104,21 @@ async function setup() {
 
 // Inicializa os controlos do rato como alternativa à webcam
 function initMouseControls() {
+  // Buscar os elementos HTML que vamos usar
+  video = document.getElementById("videoCanvas");
+  canvas = document.getElementById("handCanvas");
+  ctx = canvas.getContext("2d");
+
+  // Fazer o canvas ocupar o ecrã todo
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  // Se redimensionarmos a janela, ajustamos o canvas também
+  window.addEventListener("resize", () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+
   // Esconde os elementos de vídeo e canvas que não são necessários
   video.style.display = "none";
   canvas.style.display = "none";
@@ -108,10 +133,14 @@ function initMouseControls() {
   window.addEventListener("mousemove", handleMouseMove);
   window.addEventListener("mousedown", handleMouseDown);
   window.addEventListener("mouseup", handleMouseUp);
+
+  console.log("Modo rato inicializado com sucesso");
 }
 
 // Gere o movimento do rato
 function handleMouseMove(event) {
+  if (!mouseCursor) return; // Garantir que o cursor foi inicializado
+
   const mouseX = event.clientX;
   const mouseY = event.clientY;
 
@@ -133,7 +162,9 @@ function handleMouseMove(event) {
 function handleMouseDown(event) {
   if (event.button !== 0) return; // Apenas para o botão esquerdo
   isMouseDown = true;
-  mouseCursor.classList.add("grabbing"); // Animação de agarrar no cursor
+  if (mouseCursor) {
+    mouseCursor.classList.add("grabbing"); // Animação de agarrar no cursor
+  }
 
   // Se houver um resíduo selecionado, agarra-o
   if (residuoSelecionado) {
@@ -145,7 +176,9 @@ function handleMouseDown(event) {
 function handleMouseUp(event) {
   if (event.button !== 0) return; // Apenas para o botão esquerdo
   isMouseDown = false;
-  mouseCursor.classList.remove("grabbing"); // Remove a animação de agarrar
+  if (mouseCursor) {
+    mouseCursor.classList.remove("grabbing"); // Remove a animação de agarrar
+  }
 
   // Se estivermos a agarrar um resíduo, larga-o
   if (residuoAgarrado) {
@@ -377,7 +410,7 @@ function verificarDedosJuntos(keypoints) {
   });
 
   // Consideramos dedos "juntos" se pelo menos 3 dos 4 dedos estiverem perto do polegar
-  // Isto permite alguma flexibilidade mas evita solturas acidentais
+  // Isto permite alguma flexibilidade mas evita largadas acidentais
   return dedosProximos >= 3;
 }
 
@@ -408,21 +441,21 @@ function moverResiduoAgarrado(handX, handY) {
   if (!residuoAgarrado) return;
 
   const elemento = residuoAgarrado.elemento;
-  const canvasRect = canvas.getBoundingClientRect();
 
   // Se estivermos em modo rato, as coordenadas já são relativas à janela
   if (isMouseMode) {
     elemento.style.left = `${handX}px`;
     elemento.style.top = `${handY}px`;
+    elemento.style.bottom = "auto";
+    elemento.style.transform = "translate(-50%, -50%)";
   } else {
     // No modo webcam, as coordenadas são relativas ao canvas
+    const canvasRect = canvas.getBoundingClientRect();
     elemento.style.left = `${canvasRect.left + handX}px`;
     elemento.style.top = `${canvasRect.top + handY}px`;
+    elemento.style.bottom = "auto";
+    elemento.style.transform = "translate(-50%, -50%)";
   }
-
-  // Atualizar a posição do resíduo para seguir a mão/rato
-  elemento.style.bottom = "auto";
-  elemento.style.transform = "translate(-50%, -50%)";
 }
 
 // Verifica se estamos perto de algum ecoponto enquanto seguramos um resíduo
@@ -503,11 +536,18 @@ function largarResiduo(handX, handY) {
     residuo.elemento.classList.remove("grabbed");
 
     if (posicaoOriginal) {
-      residuo.elemento.style.position = "absolute";
-      residuo.elemento.style.transition = "left 0.3s ease, top 0.3s ease";
+      // Restaurar a posição original mantendo o position correto
+      residuo.elemento.style.position = posicaoOriginal.position;
       residuo.elemento.style.left = posicaoOriginal.left;
       residuo.elemento.style.top = posicaoOriginal.top || "auto";
-      residuo.elemento.style.bottom = posicaoOriginal.bottom;
+      residuo.elemento.style.bottom = posicaoOriginal.bottom || "auto";
+
+      // Aplicar transição suave de retorno
+      residuo.elemento.style.transition =
+        "left 0.3s ease, top 0.3s ease, bottom 0.3s ease";
+
+      // Forçar reflow para que a transição seja aplicada
+      void residuo.elemento.offsetWidth;
 
       // Remover a transição depois da animação
       setTimeout(() => {
@@ -626,7 +666,8 @@ function renderizarResiduos() {
       const y = baseY - row * 25;
 
       img.style.left = `${x}px`;
-      img.style.bottom = `${80 - (baseY - y)}px`;
+      img.style.top = `${y}px`;
+      img.style.position = "fixed";
 
       container.appendChild(img);
 
