@@ -135,6 +135,7 @@ const camera = {
 // Game Creation
 const player = new Player(1.5, 10.5); // Grid coordinates: x=2, y=10.5 -> pixels: x=96, y=504
 await player.loadAudio("../assets/sound/power_up.wav", "power_up");
+await player.loadAudio("../assets/sound/jump.wav", "jump");
 await player.loadSprite("../assets/img/Player.png");
 
 // Load residuo images
