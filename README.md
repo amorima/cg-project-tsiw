@@ -15,6 +15,10 @@ O nome combina três conceitos:
 - António Manuel Cruz Barreto Amorim – 40240119
 - Gabriel de Sousa Paiva – 40240137
 
+## Docente
+
+- Prof. Doutora Teresa Cristina de Sousa Azevedo Terroso
+
 ## Como Funciona
 
 O jogo desenvolve-se em duas fases:
@@ -40,3 +44,21 @@ Projeto em fase inicial de desenvolvimento para a disciplina de Computação Gr�
 - Creative Commons — Attribution-NoDerivs 3.0 Unported — CC BY-ND 3.0
 - Free Download / Stream: https://www.audiolibrary.com.co/lucjo/arcade
 - Music promoted by Audio Library https://youtu.be/30c838orSWo
+
+### World Sprites
+
+- SPRITES by analogStudios: platforms and coin (https://analogstudios.itch.io/four-seasons-platformer-sprites)
+- SPRITES by RottingPixels: world_tileset and fruit (https://rottingpixels.itch.io/four-seasons-platformer-tileset-16x16free)
+- SOUNDS by Brackeys, Asbjørn Thirslund
+
+## Character Sprites
+
+- Created and published by: Penzilla Design (Company number: 42597104)
+- 2500 Valby, DK
+- Contact: PenzillaDesign@gmail.com
+- Website: PenzillaDesign.com
+
+## Font - Pixelify
+
+- Copyright 2021 The Pixelify Sans Project Authors (https://github.com/eifetx/Pixelify-Sans)
+- This Font Software is licensed under the SIL Open Font License, Version 1.1 . This license is copied below, and is also available with a FAQ at: https://openfontlicense.org
