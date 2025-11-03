@@ -10,23 +10,23 @@
     <link
       rel="apple-touch-icon"
       sizes="180x180"
-      href="./assets/img/favicon/apple-touch-icon.png"
+      href="../assets/img/favicon/apple-touch-icon.png"
     />
     <link
       rel="icon"
       type="image/png"
       sizes="32x32"
-      href="./assets/img/favicon/favicon-32x32.png"
+      href="../assets/img/favicon/favicon-32x32.png"
     />
     <link
       rel="icon"
       type="image/png"
       sizes="16x16"
-      href="./assets/img/favicon/favicon-16x16.png"
+      href="../assets/img/favicon/favicon-16x16.png"
     />
-    <link rel="manifest" href="./assets/img/favicon/site.webmanifest" />
-    <link rel="stylesheet" href="./css/style.css" />
-    <title>ARCADIA</title>
+    <link rel="manifest" href="../assets/img/favicon/site.webmanifest" />
+    <link rel="stylesheet" href="../css/style.css" />
+    <title>ARCADIA - Opções</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -38,38 +38,43 @@
     <div class="clouds">
       <img
         class="cloud cloud-1"
-        src="./assets/img/clouds/1.png"
+        src="../assets/img/clouds/1.png"
         alt="Nuvem 1"
       />
       <img
         class="cloud cloud-2"
-        src="./assets/img/clouds/2.png"
+        src="../assets/img/clouds/2.png"
         alt="Nuvem 2"
       />
       <img
         class="cloud cloud-3"
-        src="./assets/img/clouds/3.png"
+        src="../assets/img/clouds/3.png"
         alt="Nuvem 3"
       />
       <img
         class="cloud cloud-4"
-        src="./assets/img/clouds/4.png"
+        src="../assets/img/clouds/4.png"
         alt="Nuvem 4"
       />
     </div>
-    <img class="logo" src="./assets/img/logo.png" alt="ARCADIA Logo" />
 
-    <nav class="arcade-menu">
-      <a href="./html/game.html" class="menu-button menu-link">JOGAR</a>
-      <button class="menu-button">INSTRUÇÕES</button>
-      <a href="./html/settings.html" class="menu-button menu-link">OPÇÕES</a>
-      <a href="./html/creditos.html" class="menu-button menu-link">CRÉDITOS</a>
-    </nav>
+    <a href="../index.html" class="back-button">← VOLTAR</a>
+
+    <div class="settings-container">
+      <h1>OPÇÕES</h1>
+      <div class="settings-content">
+        <div class="settings-section">
+          <h2>Som</h2>
+          <button id="muteButton" class="menu-button">Desativar Som</button>
+        </div>
+      </div>
+    </div>
 
     <footer class="arcade-footer">
       © 2025 - ARCADIA - ESMAD - IPP - COMPUTAÇÃO GRÁFICA
     </footer>
 
-    <script src="./js/main.js"></script>
+    <script src="../js/main.js"></script>
+    <script src="../js/settings.js"></script>
   </body>
 </html>

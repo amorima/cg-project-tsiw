@@ -1,107 +1,121 @@
 <!DOCTYPE html>
 <html lang="pt">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta
-        name="authors"
-        content="António Manuel Cruz Barreto Amorim; Gabriel de Sousa Paiva"
-        />
-        <link
-            rel="apple-touch-icon"
-            sizes="180x180"
-            href="../assets/img/favicon/apple-touch-icon.png"
-            />
-            <link
-            rel="icon"
-            type="image/png"
-            sizes="32x32"
-            href="../assets/img/favicon/favicon-32x32.png"
-            />
-            <link
-            rel="icon"
-            type="image/png"
-            sizes="16x16"
-            href="../assets/img/favicon/favicon-16x16.png"
-            />
-            <link rel="manifest" href="../assets/img/favicon/site.webmanifest" />
-        <link rel="stylesheet" href="../css/style.css" />
-        <link rel="stylesheet" href="../css/popup.css" />
-        <title>ARCADIA</title>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link
-        href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap"
-        rel="stylesheet"
-        />
-    </head>
-    <body>
-        <div class="clouds">
-            <img
-                class="cloud cloud-1"
-                src="../assets/img/clouds/1.png"
-                alt="Nuvem 1"
-            />
-            <img
-                class="cloud cloud-2"
-                src="../assets/img/clouds/2.png"
-                alt="Nuvem 2"
-            />
-            <img
-                class="cloud cloud-3"
-                src="../assets/img/clouds/3.png"
-                alt="Nuvem 3"
-            />
-            <img
-                class="cloud cloud-4"
-                src="../assets/img/clouds/4.png"
-                alt="Nuvem 4"
-            />
-        </div>
-        <a href="../index.html" class="back-button">← VOLTAR</a>
-        <main class="arcade-menu">
-            <canvas width="1060" height="600" id="game"></canvas>
-        </main>
-        
-        <!-- Instructions Popup -->
-        <div id="instrucoesModal" class="instrucoes-modal">
-            <div class="instrucoes-modal-content">
-                <h2>COMO JOGAR</h2>
-                <div class="instrucoes-texto">
-                    <p>🎮 Usa as setas do teclado para movimentar o jogador!</p>
-                    <p>⬆️ <strong>Seta para Cima</strong> - Salta</p>
-                    <p>⬅️➡️ <strong>Setas Esquerda/Direita</strong> - Move-te</p>
-                    <p>📦 <strong>Barra de Espaço</strong> - Agarra e larga caixas</p>
-                    <p>🎯 <strong>Objetivo:</strong> Recolhe todos os resíduos e chega à porta para avançar para a próxima fase!</p>
-                    <p class="pontos-info">
-                        ✨ Usa as caixas para alcançar locais mais altos!
-                    </p>
-                </div>
-                <div class="instrucoes-modal-buttons">
-                    <button id="instrucoesJogar">JOGAR!</button>
-                    <button id="instrucoesNaoMostrar">Não Voltar a Mostrar</button>
-                </div>
-            </div>
-        </div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="authors"
+      content="António Manuel Cruz Barreto Amorim; Gabriel de Sousa Paiva"
+    />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="../assets/img/favicon/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="../assets/img/favicon/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="../assets/img/favicon/favicon-16x16.png"
+    />
+    <link rel="manifest" href="../assets/img/favicon/site.webmanifest" />
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/popup.css" />
+    <title>ARCADIA</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="clouds">
+      <img
+        class="cloud cloud-1"
+        src="../assets/img/clouds/1.png"
+        alt="Nuvem 1"
+      />
+      <img
+        class="cloud cloud-2"
+        src="../assets/img/clouds/2.png"
+        alt="Nuvem 2"
+      />
+      <img
+        class="cloud cloud-3"
+        src="../assets/img/clouds/3.png"
+        alt="Nuvem 3"
+      />
+      <img
+        class="cloud cloud-4"
+        src="../assets/img/clouds/4.png"
+        alt="Nuvem 4"
+      />
+    </div>
+    <a href="../index.html" class="back-button">← VOLTAR</a>
+    <main class="arcade-menu">
+      <canvas width="1060" height="600" id="game"></canvas>
+    </main>
 
-        <!-- Victory Popup -->
-        <div id="victoryOverlay" class="victory-overlay">
-            <div class="victory-popup">
-                <h1 class="victory-title">PARABÉNS!</h1>
-                <div class="victory-stats">
-                    <p class="victory-stat">Papel: <span id="stat-papel">0</span></p>
-                    <p class="victory-stat">Vidro: <span id="stat-vidro">0</span></p>
-                    <p class="victory-stat">Plástico: <span id="stat-plastico">0</span></p>
-                    <p class="victory-stat">Lixo: <span id="stat-lixo">0</span></p>
-                    <p class="victory-stat" id="stat-total">Total: <span>0</span>/24</p>
-                </div>
-                <div class="victory-buttons">
-                    <button id="keepCollectingBtn" class="keep-collecting-button" style="display: none;">KEEP COLLECTING</button>
-                    <button id="nextPhaseBtn" class="next-phase-button">NEXT PHASE</button>
-                </div>
-            </div>
+    <!-- Instructions Popup -->
+    <div id="instrucoesModal" class="instrucoes-modal">
+      <div class="instrucoes-modal-content">
+        <h2>COMO JOGAR</h2>
+        <div class="instrucoes-texto">
+          <p>🎮 Usa as setas do teclado para movimentar o jogador!</p>
+          <p>⬆️ <strong>Seta para Cima</strong> - Salta</p>
+          <p>⬅️➡️ <strong>Setas Esquerda/Direita</strong> - Move-te</p>
+          <p>📦 <strong>Barra de Espaço</strong> - Agarra e larga caixas</p>
+          <p>
+            🎯 <strong>Objetivo:</strong> Recolhe todos os resíduos e chega à
+            porta para avançar para a próxima fase!
+          </p>
+          <p class="pontos-info">
+            ✨ Usa as caixas para alcançar locais mais altos!
+          </p>
         </div>
-        
-        <script type="module" src="../js/game.js"></script>
-    </body>
+        <div class="instrucoes-modal-buttons">
+          <button id="instrucoesJogar">JOGAR!</button>
+          <button id="instrucoesNaoMostrar">Não Voltar a Mostrar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Victory Popup -->
+    <div id="victoryOverlay" class="victory-overlay">
+      <div class="victory-popup">
+        <h1 class="victory-title">PARABÉNS!</h1>
+        <div class="victory-stats">
+          <p class="victory-stat">Papel: <span id="stat-papel">0</span></p>
+          <p class="victory-stat">Vidro: <span id="stat-vidro">0</span></p>
+          <p class="victory-stat">
+            Plástico: <span id="stat-plastico">0</span>
+          </p>
+          <p class="victory-stat">Lixo: <span id="stat-lixo">0</span></p>
+          <p class="victory-stat" id="stat-total">Total: <span>0</span>/24</p>
+        </div>
+        <div class="victory-buttons">
+          <button
+            id="keepCollectingBtn"
+            class="keep-collecting-button"
+            style="display: none"
+          >
+            KEEP COLLECTING
+          </button>
+          <button id="nextPhaseBtn" class="next-phase-button">
+            NEXT PHASE
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="../js/game.js"></script>
+    <script src="../js/main.js"></script>
+  </body>
 </html>
