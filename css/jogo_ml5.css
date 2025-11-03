@@ -42,7 +42,7 @@
 /* Contentor dos 4 ecopontos na parte inferior */
 .ecopontos-container {
   position: absolute;
-  bottom: 250px;
+  bottom: 300px;
   left: 50%;
   transform: translateX(-50%); /* Centrar horizontalmente */
   display: flex;
@@ -100,13 +100,12 @@
 /* Efeito hover para aumentar ligeiramente quando passamos por cima */
 .residuo:hover {
   transform: scale(1.1);
+  filter: drop-shadow(0 0 20px rgba(255, 255, 255, 1));
 }
 
-/* Quando a mão está perto do resíduo, destacamos com brilho amarelo */
+/* Quando a mão está perto do resíduo, destacamos com brilho branco como os ecopontos */
 .residuo.highlighted {
-  filter: drop-shadow(0 0 20px rgba(255, 255, 0, 0.8))
-    drop-shadow(0 0 40px rgba(255, 255, 0, 0.6))
-    drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+  filter: drop-shadow(0 0 20px rgba(255, 255, 255, 1));
   transform: scale(1.15); /* Aumentamos um pouco mais */
   transition: all 0.1s ease; /* Transição rápida para resposta imediata */
 }

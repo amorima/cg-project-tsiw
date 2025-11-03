@@ -584,24 +584,27 @@ function renderizarResiduos() {
   residuosAtivos = [];
 
   const quantidades = carregarQuantidadesResiduos();
-  // Usar o terço inferior do ecrã para colocar os resíduos
-  const containerHeight = window.innerHeight / 3;
   const containerWidth = window.innerWidth;
 
   // Dividir o espaço em 4 "colunas" (uma para cada tipo de resíduo)
+  // Centradas na mesma posição dos ecopontos
   const numSlots = 4;
-  const slotWidth = containerWidth / numSlots;
+  const centerX = containerWidth / 2;
+  const slotGap = 80; // Mesmo espaço que os resíduos
+  const slotWidth = ((numSlots - 1) * slotGap) / numSlots;
 
   const tipos = ["papel", "vidro", "plastico", "lixo"];
   // Baralhar os tipos para aparecerem em ordem aleatória
   const tiposAleatorios = [...tipos].sort(() => Math.random() - 0.5);
 
+  // Posicionar cada tipo de resíduo centrado na mesma coluna do respetivo ecoponto
   tiposAleatorios.forEach((tipo, slotIndex) => {
     const quantidade = quantidades[tipo];
     const config = RESIDUOS_CONFIG[tipo];
 
-    // Calcular o centro desta coluna
-    const slotCenterX = slotIndex * slotWidth + slotWidth / 2;
+    // Calcular o centro desta coluna alinhado com os ecopontos
+    const offset = (slotIndex - (numSlots - 1) / 2) * (280 + slotGap);
+    const slotCenterX = centerX + offset;
 
     // Criar cada resíduo deste tipo
     for (let i = 0; i < quantidade; i++) {
@@ -611,7 +614,8 @@ function renderizarResiduos() {
       img.dataset.tipo = tipo;
       img.dataset.ecoponto = config.ecoponto;
 
-      const baseY = containerHeight - 100;
+      // Posicionar na parte inferior do ecrã
+      const baseY = window.innerHeight - 120;
 
       // Organizar os resíduos em grelha dentro da sua coluna
       // Máximo de 4 por linha, depois sobem
@@ -622,7 +626,7 @@ function renderizarResiduos() {
       const y = baseY - row * 25;
 
       img.style.left = `${x}px`;
-      img.style.bottom = `${containerHeight - y}px`;
+      img.style.bottom = `${80 - (baseY - y)}px`;
 
       container.appendChild(img);
 
