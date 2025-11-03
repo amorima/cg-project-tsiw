@@ -192,121 +192,163 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.8); /* Fundo escuro semitransparente */
+  background: rgba(0, 0, 0, 0.8);
   z-index: 1000;
   justify-content: center;
   align-items: center;
 }
 
-/* Quando está ativo, mostramos com flexbox para centrar */
 .dev-modal.active {
   display: flex;
 }
 
-/* Caixa do modal */
 .dev-modal-content {
-  background: #1a1a1a;
-  border: 2px solid #4a9d4a;
-  border-radius: 8px;
-  padding: 20px;
-  max-width: 350px;
+  background-color: rgba(34, 68, 34, 0.95);
+  border: 8px solid #2d5a2d;
+  box-shadow: inset -4px -4px 0 rgba(0, 0, 0, 0.5),
+    inset 4px 4px 0 rgba(255, 255, 255, 0.2), -8px 8px 0 rgba(0, 0, 0, 0.5),
+    0 0 50px rgba(0, 255, 0, 0.3);
+  padding: 40px 50px;
+  max-width: 500px;
   width: 90%;
+  animation: popupBounce 0.5s ease-out;
 }
 
-/* Título do modal */
 .dev-modal-content h2 {
-  color: #a8d5a8;
-  font-size: 1.4rem;
-  margin-bottom: 15px;
+  font-family: "Pixelify Sans", sans-serif;
+  color: #e8f5e9;
+  font-size: 36px;
+  margin: 0 0 30px 0;
   text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  font-weight: bold;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-/* Esconder o parágrafo de descrição (não é necessário) */
 .dev-modal-content p {
   display: none;
 }
 
-/* Cada linha de input (label + campo) */
 .dev-input-group {
+  margin-bottom: 15px;
+  padding: 10px;
+  background-color: rgba(0, 0, 0, 0.3);
+  border: 2px solid #2d5a2d;
+  border-radius: 4px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
 }
 
-/* Label de cada tipo de resíduo */
 .dev-input-group label {
-  color: #a8d5a8;
-  font-size: 1rem;
-  flex: 1;
-}
-
-/* Campo de input para os números */
-.dev-input-group input {
-  background: #0a0a0a;
-  border: 1px solid #4a9d4a;
-  border-radius: 3px;
-  padding: 5px 10px;
-  color: #a8d5a8;
+  color: #e8f5e9;
   font-family: "Pixelify Sans", sans-serif;
-  font-size: 1rem;
-  width: 60px;
-  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
 }
 
-/* Quando o campo está focado */
+.dev-input-group input {
+  background: linear-gradient(135deg, #4a8f4a 0%, #2d5a2d 100%);
+  border: 4px solid #2d5a2d;
+  border-right: 4px solid #1a3a1a;
+  border-bottom: 4px solid #1a3a1a;
+  border-left: 4px solid #6bb66b;
+  border-top: 4px solid #6bb66b;
+  padding: 8px 12px;
+  color: #e8f5e9;
+  font-family: "Pixelify Sans", sans-serif;
+  font-size: 16px;
+  width: 80px;
+  text-align: center;
+  cursor: pointer;
+}
+
 .dev-input-group input:focus {
   outline: none;
-  border-color: #6bc56b; /* Borda mais clara */
+  background: linear-gradient(135deg, #5fa55f 0%, #3d7a3d 100%);
 }
 
-/* Contentor dos botões do modal */
 .dev-modal-buttons {
   display: flex;
-  gap: 10px;
-  margin-top: 15px;
+  gap: 15px;
+  margin-top: 30px;
 }
 
-/* Estilo base dos botões */
 .dev-modal-buttons button {
   flex: 1;
-  padding: 8px 15px;
   font-family: "Pixelify Sans", sans-serif;
-  font-size: 0.9rem;
-  border: 1px solid #4a9d4a;
-  border-radius: 4px;
+  font-size: 18px;
+  padding: 15px 25px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.1s ease;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: bold;
+  border: 4px solid #2d5a2d;
 }
 
-/* Botão de aplicar (verde) */
 .dev-modal-buttons #devApply {
-  background: #4a9d4a;
-  color: #0a0a0a;
+  background: linear-gradient(135deg, #4a8f4a 0%, #2d5a2d 100%);
+  color: #e8f5e9;
+  border-right: 4px solid #1a3a1a;
+  border-bottom: 4px solid #1a3a1a;
+  border-left: 4px solid #6bb66b;
+  border-top: 4px solid #6bb66b;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.4), inset -1px -1px 0 rgba(0, 0, 0, 0.3);
 }
 
 .dev-modal-buttons #devApply:hover {
-  background: #5bb05b;
+  background: linear-gradient(135deg, #5fa55f 0%, #3d7a3d 100%);
+  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.5), inset -1px -1px 0 rgba(0, 0, 0, 0.4);
+  transform: translate(-2px, -2px);
 }
 
-/* Botão de fechar (escuro) */
+.dev-modal-buttons #devApply:active {
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3), inset 1px 1px 0 rgba(0, 0, 0, 0.5);
+  transform: translate(2px, 2px);
+}
+
 .dev-modal-buttons #devClose {
-  background: #0a0a0a;
-  color: #a8d5a8;
+  background: linear-gradient(135deg, #2d5a2d 0%, #1a3a1a 100%);
+  color: #a5d6a7;
+  border-right: 4px solid #0d1f0d;
+  border-bottom: 4px solid #0d1f0d;
+  border-left: 4px solid #4a8f4a;
+  border-top: 4px solid #4a8f4a;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.4), inset -1px -1px 0 rgba(0, 0, 0, 0.3);
 }
 
 .dev-modal-buttons #devClose:hover {
-  background: #1a1a1a;
+  background: linear-gradient(135deg, #3d7a3d 0%, #2a4a2a 100%);
+  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.5), inset -1px -1px 0 rgba(0, 0, 0, 0.4);
+  transform: translate(-2px, -2px);
 }
 
-/* Botão de limpar storage (vermelho) */
+.dev-modal-buttons #devClose:active {
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3), inset 1px 1px 0 rgba(0, 0, 0, 0.5);
+  transform: translate(2px, 2px);
+}
+
 .dev-modal-buttons #devClearStorage {
-  background: #8b0000;
-  color: #fff;
+  background: linear-gradient(135deg, #d84444 0%, #b83232 100%);
+  color: #e8f5e9;
+  border-right: 4px solid #8b1f1f;
+  border-bottom: 4px solid #8b1f1f;
+  border-left: 4px solid #e74c3c;
+  border-top: 4px solid #e74c3c;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.4), inset -1px -1px 0 rgba(0, 0, 0, 0.3);
 }
 
 .dev-modal-buttons #devClearStorage:hover {
-  background: #a00000;
+  background: linear-gradient(135deg, #e85555 0%, #cc4040 100%);
+  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.5), inset -1px -1px 0 rgba(0, 0, 0, 0.4);
+  transform: translate(-2px, -2px);
+}
+
+.dev-modal-buttons #devClearStorage:active {
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3), inset 1px 1px 0 rgba(0, 0, 0, 0.5);
+  transform: translate(2px, 2px);
 }
 
 /* === MODAL DE INSTRUÇÕES === */
@@ -317,8 +359,8 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.9); /* Fundo mais escuro que o modal de dev */
-  z-index: 2000; /* Por cima do modal de dev */
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 2000;
   justify-content: center;
   align-items: center;
 }
@@ -327,100 +369,119 @@
   display: flex;
 }
 
-/* Caixa do modal de instruções */
 .instrucoes-modal-content {
-  background: #1a1a1a;
-  border: 4px solid #4a9d4a; /* Borda mais grossa */
-  border-radius: 12px;
-  padding: 30px;
-  max-width: 600px;
+  background-color: rgba(34, 68, 34, 0.95);
+  border: 8px solid #2d5a2d;
+  box-shadow: inset -4px -4px 0 rgba(0, 0, 0, 0.5),
+    inset 4px 4px 0 rgba(255, 255, 255, 0.2), -8px 8px 0 rgba(0, 0, 0, 0.5),
+    0 0 50px rgba(0, 255, 0, 0.4);
+  padding: 40px 50px;
+  max-width: 700px;
   width: 90%;
-  box-shadow: 0 0 30px rgba(74, 157, 74, 0.6); /* Brilho verde mais forte */
+  animation: popupBounce 0.5s ease-out;
 }
 
-/* Título grande e vistoso */
 .instrucoes-modal-content h2 {
-  color: #6bc56b;
-  font-size: 2rem;
-  margin: 0 0 20px 0;
-  text-align: center;
   font-family: "Pixelify Sans", sans-serif;
+  color: #e8f5e9;
+  font-size: 48px;
+  margin: 0 0 30px 0;
+  text-align: center;
   text-transform: uppercase;
-  letter-spacing: 3px;
-  text-shadow: 0 0 10px rgba(107, 197, 107, 0.5);
+  letter-spacing: 4px;
+  font-weight: bold;
+  text-shadow: 4px 4px 0 rgba(0, 0, 0, 0.5);
 }
 
-/* Texto das instruções */
 .instrucoes-texto {
-  color: #a8d5a8;
+  color: #e8f5e9;
   font-family: "Pixelify Sans", sans-serif;
-  font-size: 1.1rem;
-  line-height: 1.8; /* Espaçamento entre linhas para facilitar leitura */
-  margin-bottom: 25px;
+  font-size: 18px;
+  line-height: 1.8;
+  margin-bottom: 30px;
+  padding: 20px;
+  background-color: rgba(0, 0, 0, 0.3);
+  border: 4px solid #2d5a2d;
+  border-radius: 4px;
 }
 
 .instrucoes-texto p {
-  margin: 12px 0;
-}
-
-/* Parágrafos com informação sobre pontos */
-.instrucoes-texto .pontos-info {
-  font-size: 1.15rem;
   margin: 15px 0;
 }
 
-/* Destacar os valores de pontos */
-.instrucoes-texto .pontos-info strong {
-  color: #6bc56b;
+.instrucoes-texto .pontos-info {
+  font-size: 20px;
+  margin: 20px 0;
+  padding: 10px;
+  background-color: rgba(74, 143, 74, 0.2);
+  border-left: 4px solid #4a8f4a;
 }
 
-/* Quando são pontos negativos, usar vermelho */
-.instrucoes-texto .pontos-info.erro strong {
-  color: #ff4444;
-}
-
-/* Contentor dos botões */
-.instrucoes-modal-buttons {
-  display: flex;
-  gap: 15px;
-  margin-top: 25px;
-}
-
-/* Estilo dos botões */
-.instrucoes-modal-buttons button {
-  flex: 1;
-  padding: 12px 20px;
-  font-family: "Pixelify Sans", sans-serif;
-  font-size: 1rem;
-  border: 2px solid #4a9d4a;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-/* Botão principal "JOGAR!" (verde chamativo) */
-.instrucoes-modal-buttons #instrucoesJogar {
-  background: #4a9d4a;
-  color: #0a0a0a;
+.instrucoes-texto strong {
+  color: #a5d6a7;
   font-weight: bold;
 }
 
-.instrucoes-modal-buttons #instrucoesJogar:hover {
-  background: #6bc56b;
-  box-shadow: 0 0 15px rgba(107, 197, 107, 0.6);
+.instrucoes-modal-buttons {
+  display: flex;
+  gap: 15px;
+  margin-top: 30px;
 }
 
-/* Botão secundário "Não voltar a mostrar" */
+.instrucoes-modal-buttons button {
+  flex: 1;
+  font-family: "Pixelify Sans", sans-serif;
+  font-size: 18px;
+  padding: 15px 25px;
+  cursor: pointer;
+  transition: all 0.1s ease;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: bold;
+}
+
+.instrucoes-modal-buttons #instrucoesJogar {
+  background: linear-gradient(135deg, #4a8f4a 0%, #2d5a2d 100%);
+  color: #e8f5e9;
+  border: 4px solid #2d5a2d;
+  border-right: 4px solid #1a3a1a;
+  border-bottom: 4px solid #1a3a1a;
+  border-left: 4px solid #6bb66b;
+  border-top: 4px solid #6bb66b;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.4), inset -1px -1px 0 rgba(0, 0, 0, 0.3);
+}
+
+.instrucoes-modal-buttons #instrucoesJogar:hover {
+  background: linear-gradient(135deg, #5fa55f 0%, #3d7a3d 100%);
+  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.5), inset -1px -1px 0 rgba(0, 0, 0, 0.4);
+  transform: translate(-2px, -2px);
+}
+
+.instrucoes-modal-buttons #instrucoesJogar:active {
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3), inset 1px 1px 0 rgba(0, 0, 0, 0.5);
+  transform: translate(2px, 2px);
+}
+
 .instrucoes-modal-buttons #instrucoesNaoMostrar {
-  background: #0a0a0a;
-  color: #a8d5a8;
+  background: linear-gradient(135deg, #2d5a2d 0%, #1a3a1a 100%);
+  color: #a5d6a7;
+  border: 4px solid #1a3a1a;
+  border-right: 4px solid #0d1f0d;
+  border-bottom: 4px solid #0d1f0d;
+  border-left: 4px solid #4a8f4a;
+  border-top: 4px solid #4a8f4a;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.4), inset -1px -1px 0 rgba(0, 0, 0, 0.3);
 }
 
 .instrucoes-modal-buttons #instrucoesNaoMostrar:hover {
-  background: #2a2a2a;
-  border-color: #6bc56b;
+  background: linear-gradient(135deg, #3d7a3d 0%, #2a4a2a 100%);
+  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.5), inset -1px -1px 0 rgba(0, 0, 0, 0.4);
+  transform: translate(-2px, -2px);
+}
+
+.instrucoes-modal-buttons #instrucoesNaoMostrar:active {
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3), inset 1px 1px 0 rgba(0, 0, 0, 0.5);
+  transform: translate(2px, 2px);
 }
 
 /* === MODAL DE FIM DE JOGO === */
@@ -431,8 +492,8 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.95); /* Quase opaco para destacar a conquista */
-  z-index: 3000; /* Por cima de tudo */
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 3000;
   justify-content: center;
   align-items: center;
 }
@@ -441,101 +502,138 @@
   display: flex;
 }
 
-/* Caixa do modal */
 .fim-jogo-modal-content {
-  background: #1a1a1a;
-  border: 5px solid #4a9d4a;
-  border-radius: 15px;
-  padding: 50px 60px;
-  max-width: 600px;
-  width: 90%;
-  box-shadow: 0 0 40px rgba(74, 157, 74, 0.8); /* Brilho ainda mais forte */
+  background-color: rgba(34, 68, 34, 0.95);
+  border: 8px solid #2d5a2d;
+  box-shadow: inset -4px -4px 0 rgba(0, 0, 0, 0.5),
+    inset 4px 4px 0 rgba(255, 255, 255, 0.2), -8px 8px 0 rgba(0, 0, 0, 0.5),
+    0 0 50px rgba(0, 255, 0, 0.3);
+  padding: 40px 50px;
+  min-width: 400px;
+  animation: popupBounce 0.5s ease-out;
   text-align: center;
 }
 
-/* Título de parabéns bem grande */
 .fim-jogo-modal-content h2 {
-  color: #6bc56b;
-  font-size: 3rem;
+  font-family: "Pixelify Sans", sans-serif;
+  font-size: 72px;
+  color: #e8f5e9;
   margin: 0 0 20px 0;
-  font-family: "Pixelify Sans", sans-serif;
-  text-transform: uppercase;
-  letter-spacing: 5px;
-  text-shadow: 0 0 20px rgba(107, 197, 107, 0.8);
-}
-
-/* Mensagem de conclusão */
-.mensagem-final {
-  color: #a8d5a8;
-  font-family: "Pixelify Sans", sans-serif;
-  font-size: 1.3rem;
-  margin: 0 0 30px 0;
-  line-height: 1.6;
-}
-
-/* Caixa que mostra a pontuação final */
-.pontuacao-final-display {
-  background: rgba(74, 157, 74, 0.1);
-  border: 4px solid #4a9d4a;
-  border-radius: 12px;
-  padding: 30px;
-  margin: 30px 0;
-}
-
-/* Texto acima da pontuação */
-.pontuacao-final-display p {
-  color: #a8d5a8;
-  font-family: "Pixelify Sans", sans-serif;
-  font-size: 1.2rem;
-  margin: 0 0 15px 0;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-}
-
-/* O número da pontuação final (bem grande e destacado) */
-.pontuacao-final-display span {
-  display: block;
-  color: #6bc56b;
-  font-family: "Pixelify Sans", sans-serif;
-  font-size: 4.5rem;
-  font-weight: bold;
-  margin: 15px 0;
-  text-shadow: 0 0 25px rgba(107, 197, 107, 0.9);
-}
-
-/* Texto "PONTOS" */
-.pontuacao-final-display .pontos-texto {
-  color: #6bc56b;
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin: 15px 0 0 0;
   letter-spacing: 3px;
+  font-weight: bold;
+  animation: levitacaoBrilho 6s ease-in-out infinite;
 }
 
-/* Contentor do botão */
-.fim-jogo-modal-buttons {
-  margin-top: 30px;
+@keyframes levitacaoBrilho {
+  0% {
+    transform: translateY(0) scale(1);
+    filter: drop-shadow(0 15px 30px rgba(255, 255, 255, 0.5)) brightness(1)
+      saturate(1.2);
+  }
+  50% {
+    transform: translateY(-15px) scale(1.15);
+    filter: drop-shadow(0 30px 60px rgba(255, 255, 255, 0.9)) brightness(1.3)
+      saturate(1.4);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    filter: drop-shadow(0 15px 30px rgba(255, 255, 255, 0.5)) brightness(1)
+      saturate(1.2);
+  }
 }
 
-/* Botão de voltar ao início */
-.fim-jogo-modal-buttons button {
-  padding: 15px 40px;
+.mensagem-final {
   font-family: "Pixelify Sans", sans-serif;
-  font-size: 1.2rem;
-  border: 3px solid #4a9d4a;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  text-transform: uppercase;
+  color: #e8f5e9;
+  font-size: 18px;
+  margin: 30px 0;
+  letter-spacing: 1px;
+}
+
+.pontuacao-final-display {
+  margin: 30px 0;
+  padding: 20px;
+  background-color: rgba(0, 0, 0, 0.3);
+  border: 4px solid #2d5a2d;
+  border-radius: 4px;
+}
+
+.pontuacao-final-display p {
+  font-family: "Pixelify Sans", sans-serif;
+  font-size: 18px;
+  color: #e8f5e9;
+  margin: 8px 0;
+  letter-spacing: 1px;
+}
+
+.pontuacao-final-display span {
+  font-family: "Pixelify Sans", sans-serif;
+  font-size: 72px;
+  color: #6bb66b;
+  margin: 15px 0;
   letter-spacing: 2px;
-  background: #4a9d4a;
-  color: #0a0a0a;
   font-weight: bold;
 }
 
-/* Efeito hover bem vistoso */
+.pontuacao-final-display .pontos-texto {
+  font-family: "Pixelify Sans", sans-serif;
+  font-size: 18px;
+  color: #e8f5e9;
+  margin: 15px 0 0 0;
+  letter-spacing: 1px;
+}
+
+.fim-jogo-modal-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.fim-jogo-modal-buttons button {
+  font-family: "Pixelify Sans", sans-serif;
+  font-size: 20px;
+  padding: 15px 30px;
+  background: linear-gradient(135deg, #4a8f4a 0%, #2d5a2d 100%);
+  color: #e8f5e9;
+  border: 4px solid #2d5a2d;
+  border-right: 4px solid #1a3a1a;
+  border-bottom: 4px solid #1a3a1a;
+  border-left: 4px solid #6bb66b;
+  border-top: 4px solid #6bb66b;
+  cursor: pointer;
+  transition: all 0.1s ease;
+  letter-spacing: 2px;
+  font-weight: bold;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.4), inset -1px -1px 0 rgba(0, 0, 0, 0.3);
+}
+
 .fim-jogo-modal-buttons button:hover {
-  background: #6bc56b;
-  box-shadow: 0 0 25px rgba(107, 197, 107, 0.7);
-  transform: scale(1.05); /* Aumenta ligeiramente */
+  background: linear-gradient(135deg, #5fa55f 0%, #3d7a3d 100%);
+  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.5), inset -1px -1px 0 rgba(0, 0, 0, 0.4);
+  transform: translate(-2px, -2px);
+}
+
+.fim-jogo-modal-buttons button:active {
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.3), inset 1px 1px 0 rgba(0, 0, 0, 0.5);
+  transform: translate(2px, 2px);
+  border: 4px solid #1a3a1a;
+  border-right: 4px solid #6bb66b;
+  border-bottom: 4px solid #6bb66b;
+  border-left: 4px solid #2d5a2d;
+  border-top: 4px solid #2d5a2d;
+}
+
+@keyframes popupBounce {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
