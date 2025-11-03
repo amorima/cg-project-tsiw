@@ -38,9 +38,23 @@ let ecopontoSelecionado = null; // O ecoponto que está destacado (quando estamo
 let pontuacao = 0; // A pontuação atual do jogador
 let posicaoOriginal = null; // Guarda a posição inicial de um resíduo para o caso de largarmos fora de um ecoponto
 
-// Função que inicializa tudo o que é preciso para o jogo funcionar
+// Variáveis para o modo de controlo com o rato
+let isMouseMode = false;
+let mouseCursor;
+let isMouseDown = false;
+
 // Função que inicializa tudo o que é preciso para o jogo funcionar
 async function setup() {
+  // Verificar se foi definido um modo de jogo específico
+  const modoDefinido = localStorage.getItem("modo_jogo");
+
+  // Se o utilizador escolheu o modo rato, iniciar com o rato
+  if (modoDefinido === "mouse") {
+    isMouseMode = true;
+    initMouseControls();
+    return;
+  }
+
   // Buscar os elementos HTML que vamos usar
   video = document.getElementById("videoCanvas");
   canvas = document.getElementById("handCanvas");
@@ -80,10 +94,98 @@ async function setup() {
     });
   } catch (error) {
     console.error("Erro ao aceder à webcam:", error);
+    alert(
+      "Não foi possível aceder à webcam. O jogo continuará com os controlos do rato."
+    );
+    isMouseMode = true;
+    initMouseControls();
   }
 }
 
-// Inicializa o sistema de deteção de mãos usando o MediaPipe
+// Inicializa os controlos do rato como alternativa à webcam
+function initMouseControls() {
+  // Buscar os elementos HTML que vamos usar
+  video = document.getElementById("videoCanvas");
+  canvas = document.getElementById("handCanvas");
+  ctx = canvas.getContext("2d");
+
+  // Fazer o canvas ocupar o ecrã todo
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  // Se redimensionarmos a janela, ajustamos o canvas também
+  window.addEventListener("resize", () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+
+  // Esconde os elementos de vídeo e canvas que não são necessários
+  video.style.display = "none";
+  canvas.style.display = "none";
+
+  // Cria um elemento para servir de cursor customizado
+  mouseCursor = document.createElement("div");
+  mouseCursor.id = "mouseCursor";
+  document.body.appendChild(mouseCursor);
+  document.body.style.cursor = "none"; // Esconde o cursor real do sistema
+
+  // Adiciona os listeners para os eventos do rato
+  window.addEventListener("mousemove", handleMouseMove);
+  window.addEventListener("mousedown", handleMouseDown);
+  window.addEventListener("mouseup", handleMouseUp);
+
+  console.log("Modo rato inicializado com sucesso");
+}
+
+// Gere o movimento do rato
+function handleMouseMove(event) {
+  if (!mouseCursor) return; // Garantir que o cursor foi inicializado
+
+  const mouseX = event.clientX;
+  const mouseY = event.clientY;
+
+  // Move o cursor customizado
+  mouseCursor.style.left = `${mouseX}px`;
+  mouseCursor.style.top = `${mouseY}px`;
+
+  // Se não estivermos a agarrar um resíduo, verifica a colisão com os resíduos
+  if (!residuoAgarrado) {
+    verificarColisaoResiduos(mouseX, mouseY);
+  } else {
+    // Se estivermos a agarrar, move o resíduo e verifica a colisão com os ecopontos
+    moverResiduoAgarrado(mouseX, mouseY);
+    verificarColisaoEcopontos(mouseX, mouseY);
+  }
+}
+
+// Gere o clique do rato (pressionar)
+function handleMouseDown(event) {
+  if (event.button !== 0) return; // Apenas para o botão esquerdo
+  isMouseDown = true;
+  if (mouseCursor) {
+    mouseCursor.classList.add("grabbing"); // Animação de agarrar no cursor
+  }
+
+  // Se houver um resíduo selecionado, agarra-o
+  if (residuoSelecionado) {
+    agarrarResiduo();
+  }
+}
+
+// Gere o clique do rato (largar)
+function handleMouseUp(event) {
+  if (event.button !== 0) return; // Apenas para o botão esquerdo
+  isMouseDown = false;
+  if (mouseCursor) {
+    mouseCursor.classList.remove("grabbing"); // Remove a animação de agarrar
+  }
+
+  // Se estivermos a agarrar um resíduo, larga-o
+  if (residuoAgarrado) {
+    largarResiduo(event.clientX, event.clientY);
+  }
+}
+
 // Inicializa o sistema de deteção de mãos usando o MediaPipe
 async function initHandDetection() {
   // Escolher o modelo MediaPipeHands que é bastante preciso
@@ -91,7 +193,7 @@ async function initHandDetection() {
   const detectorConfig = {
     runtime: "mediapipe", // Usar a versão MediaPipe
     solutionPath: "https://cdn.jsdelivr.net/npm/@mediapipe/hands",
-    maxHands: 2, // Detetar até 2 mãos ao mesmo tempo
+    maxHands: 1, // Detetar até 2 mãos ao mesmo tempo (Apenas uma para evitar o bug do teleporte)
     modelType: "full", // Modelo completo, mais preciso que o "lite"
   };
 
@@ -111,7 +213,6 @@ async function detectHands() {
   requestAnimationFrame(detectHands);
 }
 
-// Função principal que desenha as mãos e trata da lógica de interação
 // Função principal que desenha as mãos e trata da lógica de interação
 function drawHands() {
   // Limpar o canvas antes de desenhar as novas posições
@@ -190,7 +291,6 @@ function drawHands() {
 }
 
 // Desenha as linhas que ligam os pontos da mão para formar o esqueleto
-// Desenha as linhas que ligam os pontos da mão para formar o esqueleto
 function drawConnections(keypoints) {
   // Array com os pares de pontos que devem ser ligados
   // Por exemplo, [0,1] liga o pulso ao início do polegar
@@ -221,7 +321,8 @@ function drawConnections(keypoints) {
   ];
 
   ctx.strokeStyle = "#4a9d4a";
-  ctx.lineWidth = 3;
+  ctx.lineWidth = 15;
+  ctx.lineCap = "round";
 
   // Desenhar cada ligação
   connections.forEach(([start, end]) => {
@@ -243,7 +344,6 @@ function drawConnections(keypoints) {
   });
 }
 
-// Verifica se a mão está perto de algum resíduo e destaca-o
 // Verifica se a mão está perto de algum resíduo e destaca-o
 function verificarColisaoResiduos(handX, handY) {
   let residuoMaisProximo = null;
@@ -286,7 +386,6 @@ function verificarColisaoResiduos(handX, handY) {
 }
 
 // Verifica se os dedos estão juntos (gesto de "pinça" para agarrar)
-// Verifica se os dedos estão juntos (gesto de "pinça" para agarrar)
 function verificarDedosJuntos(keypoints) {
   // Buscar as pontas de cada dedo
   const polegar = keypoints[4];
@@ -311,11 +410,10 @@ function verificarDedosJuntos(keypoints) {
   });
 
   // Consideramos dedos "juntos" se pelo menos 3 dos 4 dedos estiverem perto do polegar
-  // Isto permite alguma flexibilidade mas evita solturas acidentais
+  // Isto permite alguma flexibilidade mas evita largadas acidentais
   return dedosProximos >= 3;
 }
 
-// Função chamada quando juntamos os dedos perto de um resíduo
 // Função chamada quando juntamos os dedos perto de um resíduo
 function agarrarResiduo() {
   if (!residuoSelecionado) return;
@@ -339,46 +437,46 @@ function agarrarResiduo() {
 }
 
 // Move o resíduo agarrado para seguir a posição da mão
-// Move o resíduo agarrado para seguir a posição da mão
 function moverResiduoAgarrado(handX, handY) {
   if (!residuoAgarrado) return;
 
   const elemento = residuoAgarrado.elemento;
-  const canvasRect = canvas.getBoundingClientRect();
 
-  // Atualizar a posição do resíduo para seguir a mão
-  // O transform centra o resíduo no ponto da mão
-  elemento.style.left = `${canvasRect.left + handX}px`;
-  elemento.style.top = `${canvasRect.top + handY}px`;
-  elemento.style.bottom = "auto";
-  elemento.style.transform = "translate(-50%, -50%)";
+  // Se estivermos em modo rato, as coordenadas já são relativas à janela
+  if (isMouseMode) {
+    elemento.style.left = `${handX}px`;
+    elemento.style.top = `${handY}px`;
+    elemento.style.bottom = "auto";
+    elemento.style.transform = "translate(-50%, -50%)";
+  } else {
+    // No modo webcam, as coordenadas são relativas ao canvas
+    const canvasRect = canvas.getBoundingClientRect();
+    elemento.style.left = `${canvasRect.left + handX}px`;
+    elemento.style.top = `${canvasRect.top + handY}px`;
+    elemento.style.bottom = "auto";
+    elemento.style.transform = "translate(-50%, -50%)";
+  }
 }
 
-// Verifica se estamos perto de algum ecoponto enquanto seguramos um resíduo
 // Verifica se estamos perto de algum ecoponto enquanto seguramos um resíduo
 function verificarColisaoEcopontos(handX, handY) {
   const ecopontos = document.querySelectorAll(".ecoponto");
   let ecopontoMaisProximo = null;
-  let menorDistancia = Infinity;
 
-  // Verificar a distância para cada ecoponto
+  // Verificar colisão retangular para cada ecoponto
   ecopontos.forEach((ecoponto) => {
     const rect = ecoponto.getBoundingClientRect();
-    const ecopontoX = rect.left + rect.width / 2;
-    const ecopontoY = rect.top + rect.height / 2;
 
-    const distancia = Math.sqrt(
-      Math.pow(handX - ecopontoX, 2) + Math.pow(handY - ecopontoY, 2)
-    );
+    // Expandir a área de colisão em 50px em todas as direções
+    const margem = 50;
+    const dentroX = handX >= rect.left - margem && handX <= rect.right + margem;
+    const dentroY = handY >= rect.top - margem && handY <= rect.bottom + margem;
 
-    // Raio maior para os ecopontos porque são alvos grandes
-    const raioColisao = 150;
-
-    if (distancia < raioColisao && distancia < menorDistancia) {
-      menorDistancia = distancia;
+    // Se a mão está dentro da área expandida do ecoponto
+    if (dentroX && dentroY) {
       ecopontoMaisProximo = {
         elemento: ecoponto,
-        tipo: ecoponto.dataset.type, // azul, amarelo, verde ou cinzento
+        tipo: ecoponto.dataset.type,
       };
     }
   });
@@ -395,7 +493,6 @@ function verificarColisaoEcopontos(handX, handY) {
 }
 
 // Função chamada quando abrimos os dedos (soltar o resíduo)
-// Função chamada quando abrimos os dedos (soltar o resíduo)
 function largarResiduo(handX, handY) {
   if (!residuoAgarrado) return;
 
@@ -408,18 +505,7 @@ function largarResiduo(handX, handY) {
 
     // Adicionar classes para a animação de desaparecimento
     residuo.elemento.classList.remove("grabbed");
-    residuo.elemento.classList.add("fadeout");
-
-    // Animar o resíduo a ir para dentro do ecoponto
-    const ecopontoRect = ecopontoSelecionado.elemento.getBoundingClientRect();
-    const targetX = ecopontoRect.left + ecopontoRect.width / 2;
-    const targetY = ecopontoRect.top + ecopontoRect.height;
-
-    residuo.elemento.style.position = "absolute";
-    residuo.elemento.style.transition =
-      "left 0.3s ease, top 0.3s ease, opacity 0.5s ease, transform 0.5s ease";
-    residuo.elemento.style.left = `${targetX}px`;
-    residuo.elemento.style.top = `${targetY}px`;
+    residuo.elemento.classList.add("dropanimation");
 
     // Dar pontos ou retirar dependendo se acertámos
     if (ecopontoCerto) {
@@ -440,7 +526,7 @@ function largarResiduo(handX, handY) {
           mostrarModalFimJogo();
         }, 500);
       }
-    }, 500);
+    }, 500); // Reduzido para 500ms para uma resposta mais rápida
 
     residuoAgarrado = null;
     posicaoOriginal = null;
@@ -450,11 +536,18 @@ function largarResiduo(handX, handY) {
     residuo.elemento.classList.remove("grabbed");
 
     if (posicaoOriginal) {
-      residuo.elemento.style.position = "absolute";
-      residuo.elemento.style.transition = "left 0.3s ease, top 0.3s ease";
+      // Restaurar a posição original mantendo o position correto
+      residuo.elemento.style.position = posicaoOriginal.position;
       residuo.elemento.style.left = posicaoOriginal.left;
       residuo.elemento.style.top = posicaoOriginal.top || "auto";
-      residuo.elemento.style.bottom = posicaoOriginal.bottom;
+      residuo.elemento.style.bottom = posicaoOriginal.bottom || "auto";
+
+      // Aplicar transição suave de retorno
+      residuo.elemento.style.transition =
+        "left 0.3s ease, top 0.3s ease, bottom 0.3s ease";
+
+      // Forçar reflow para que a transição seja aplicada
+      void residuo.elemento.offsetWidth;
 
       // Remover a transição depois da animação
       setTimeout(() => {
@@ -467,7 +560,6 @@ function largarResiduo(handX, handY) {
   }
 }
 
-// Toca o som associado ao tipo de resíduo quando acertamos
 // Toca o som associado ao tipo de resíduo quando acertamos
 function reproduzirSom(tipoResiduo) {
   const soundPath = RESIDUOS_CONFIG[tipoResiduo].sound;
@@ -497,7 +589,6 @@ function adicionarPontos(pontos) {
 }
 
 // Remove o destaque do resíduo selecionado
-// Remove o destaque do resíduo selecionado
 function limparSelecao() {
   if (residuoSelecionado) {
     residuoSelecionado.elemento.classList.remove("highlighted");
@@ -513,8 +604,6 @@ function limparEcopontoSelecionado() {
   }
 }
 
-// Carrega as quantidades de resíduos guardadas no localStorage
-// Isto permite configurar quantos resíduos de cada tipo aparecem no jogo
 // Carrega as quantidades de resíduos guardadas no localStorage
 // Isto permite configurar quantos resíduos de cada tipo aparecem no jogo
 function carregarQuantidadesResiduos() {
@@ -535,24 +624,27 @@ function renderizarResiduos() {
   residuosAtivos = [];
 
   const quantidades = carregarQuantidadesResiduos();
-  // Usar o terço inferior do ecrã para colocar os resíduos
-  const containerHeight = window.innerHeight / 3;
   const containerWidth = window.innerWidth;
 
   // Dividir o espaço em 4 "colunas" (uma para cada tipo de resíduo)
+  // Centradas na mesma posição dos ecopontos
   const numSlots = 4;
-  const slotWidth = containerWidth / numSlots;
+  const centerX = containerWidth / 2;
+  const slotGap = 80; // Mesmo espaço que os resíduos
+  const slotWidth = ((numSlots - 1) * slotGap) / numSlots;
 
   const tipos = ["papel", "vidro", "plastico", "lixo"];
   // Baralhar os tipos para aparecerem em ordem aleatória
   const tiposAleatorios = [...tipos].sort(() => Math.random() - 0.5);
 
+  // Posicionar cada tipo de resíduo centrado na mesma coluna do respetivo ecoponto
   tiposAleatorios.forEach((tipo, slotIndex) => {
     const quantidade = quantidades[tipo];
     const config = RESIDUOS_CONFIG[tipo];
 
-    // Calcular o centro desta coluna
-    const slotCenterX = slotIndex * slotWidth + slotWidth / 2;
+    // Calcular o centro desta coluna alinhado com os ecopontos
+    const offset = (slotIndex - (numSlots - 1) / 2) * (280 + slotGap);
+    const slotCenterX = centerX + offset;
 
     // Criar cada resíduo deste tipo
     for (let i = 0; i < quantidade; i++) {
@@ -562,7 +654,8 @@ function renderizarResiduos() {
       img.dataset.tipo = tipo;
       img.dataset.ecoponto = config.ecoponto;
 
-      const baseY = containerHeight - 100;
+      // Posicionar na parte inferior do ecrã
+      const baseY = window.innerHeight - 120;
 
       // Organizar os resíduos em grelha dentro da sua coluna
       // Máximo de 4 por linha, depois sobem
@@ -573,7 +666,8 @@ function renderizarResiduos() {
       const y = baseY - row * 25;
 
       img.style.left = `${x}px`;
-      img.style.bottom = `${containerHeight - y}px`;
+      img.style.top = `${y}px`;
+      img.style.position = "fixed";
 
       container.appendChild(img);
 
@@ -589,8 +683,6 @@ function renderizarResiduos() {
   });
 }
 
-// Modo de programador para testar o jogo com diferentes quantidades
-// Ativa-se premindo a tecla "D"
 // Modo de programador para testar o jogo com diferentes quantidades
 // Ativa-se premindo a tecla "D"
 function initDevMode() {
@@ -659,7 +751,6 @@ function initDevMode() {
 }
 
 // Inicializa o modal de instruções que aparece quando entramos no jogo
-// Inicializa o modal de instruções que aparece quando entramos no jogo
 function initInstrucoesModal() {
   const modal = document.getElementById("instrucoesModal");
   const jogarBtn = document.getElementById("instrucoesJogar");
@@ -692,7 +783,6 @@ function initInstrucoesModal() {
   });
 }
 
-// Mostra o modal de fim de jogo com a pontuação final
 // Mostra o modal de fim de jogo com a pontuação final
 function mostrarModalFimJogo() {
   const modal = document.getElementById("fimJogoModal");
