@@ -90,7 +90,7 @@ async function initHandDetection() {
   const detectorConfig = {
     runtime: "mediapipe", // Usar a versão MediaPipe
     solutionPath: "https://cdn.jsdelivr.net/npm/@mediapipe/hands",
-    maxHands: 2, // Detetar até 2 mãos ao mesmo tempo
+    maxHands: 1, // Detetar até 2 mãos ao mesmo tempo (Apenas uma para evitar o bug do teleporte)
     modelType: "full", // Modelo completo, mais preciso que o "lite"
   };
 
@@ -351,26 +351,21 @@ function moverResiduoAgarrado(handX, handY) {
 function verificarColisaoEcopontos(handX, handY) {
   const ecopontos = document.querySelectorAll(".ecoponto");
   let ecopontoMaisProximo = null;
-  let menorDistancia = Infinity;
 
-  // Verificar a distância para cada ecoponto
+  // Verificar colisão retangular para cada ecoponto
   ecopontos.forEach((ecoponto) => {
     const rect = ecoponto.getBoundingClientRect();
-    const ecopontoX = rect.left + rect.width / 2;
-    const ecopontoY = rect.top + rect.height / 2;
 
-    const distancia = Math.sqrt(
-      Math.pow(handX - ecopontoX, 2) + Math.pow(handY - ecopontoY, 2)
-    );
+    // Expandir a área de colisão em 50px em todas as direções
+    const margem = 50;
+    const dentroX = handX >= rect.left - margem && handX <= rect.right + margem;
+    const dentroY = handY >= rect.top - margem && handY <= rect.bottom + margem;
 
-    // Raio maior para os ecopontos porque são alvos grandes
-    const raioColisao = 150;
-
-    if (distancia < raioColisao && distancia < menorDistancia) {
-      menorDistancia = distancia;
+    // Se a mão está dentro da área expandida do ecoponto
+    if (dentroX && dentroY) {
       ecopontoMaisProximo = {
         elemento: ecoponto,
-        tipo: ecoponto.dataset.type, // azul, amarelo, verde ou cinzento
+        tipo: ecoponto.dataset.type,
       };
     }
   });
