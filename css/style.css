@@ -47,6 +47,10 @@ body {
   align-items: flex-start;
 }
 
+body:has(.instrucoes-container) {
+  padding-bottom: 80px;
+}
+
 /* Animação em CSS efeito respiração */
 @keyframes levitacaoBrilho {
   0% {
@@ -578,5 +582,260 @@ body {
   100% {
     transform: scale(1);
     opacity: 1;
+  }
+}
+
+/* Instruções Página */
+.instrucoes-container {
+  width: 90%;
+  max-width: 900px;
+  margin: 30px auto;
+  background-color: rgba(22, 42, 22, 0.8);
+  border: 8px solid #2d5a2d;
+  padding: 40px;
+  box-shadow: inset -4px -4px 0 rgba(0, 0, 0, 0.5),
+    inset 4px 4px 0 rgba(255, 255, 255, 0.1), -8px 8px 0 rgba(0, 0, 0, 0.5),
+    0 0 50px rgba(0, 255, 0, 0.2);
+}
+
+.instrucoes-container h1 {
+  font-family: "Pixelify Sans", sans-serif;
+  font-size: 36px;
+  color: #6bb66b;
+  text-align: center;
+  margin: 0 0 30px 0;
+  text-shadow: 4px 4px 0 rgba(0, 0, 0, 0.5);
+  letter-spacing: 2px;
+}
+
+.instrucoes-secao {
+  margin-bottom: 30px;
+  padding: 20px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border: 4px solid #2d5a2d;
+  border-radius: 4px;
+}
+
+.instrucoes-secao h2 {
+  font-family: "Pixelify Sans", sans-serif;
+  font-size: 22px;
+  color: #a5d6a7;
+  margin: 0 0 15px 0;
+  letter-spacing: 1px;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
+  border-bottom: 2px solid #4a8f4a;
+  padding-bottom: 8px;
+}
+
+.instrucoes-secao h3 {
+  font-family: "Pixelify Sans", sans-serif;
+  font-size: 16px;
+  color: #c8e6c9;
+  margin: 15px 0 8px 0;
+  letter-spacing: 0.5px;
+  font-weight: bold;
+}
+
+.instrucoes-secao p,
+.instrucoes-secao li {
+  font-family: "Pixelify Sans", sans-serif;
+  font-size: 14px;
+  color: #e8f5e9;
+  line-height: 1.6;
+  margin: 8px 0;
+}
+
+.instrucoes-secao ul,
+.instrucoes-secao ol {
+  margin: 12px 0;
+  padding-left: 25px;
+}
+
+.instrucoes-secao li {
+  margin: 6px 0;
+}
+
+.instrucoes-item {
+  background-color: rgba(74, 143, 74, 0.1);
+  border-left: 3px solid #4a8f4a;
+  padding: 12px;
+  margin: 12px 0;
+  border-radius: 2px;
+  font-size: 14px;
+  color: #e8f5e9;
+}
+
+.instrucoes-item strong {
+  color: #a5d6a7;
+  font-weight: bold;
+}
+
+.instrucoes-item p {
+  color: #e8f5e9;
+  margin: 0;
+}
+
+.pontos-positivos {
+  background-color: rgba(107, 197, 107, 0.1);
+  border-left: 3px solid #6bb66b;
+}
+
+.pontos-negativos {
+  background-color: rgba(255, 68, 68, 0.15);
+  border-left: 3px solid #ff4444;
+}
+
+.pontos-negativos strong {
+  color: #ffaaaa;
+  font-weight: bold;
+}
+
+.pontos-negativos p {
+  color: #ffaaaa;
+}
+
+.modo-seletor {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin: 15px 0;
+}
+
+.modo-card {
+  padding: 15px;
+  background-color: rgba(74, 143, 74, 0.15);
+  border: 2px solid #2d5a2d;
+  border-radius: 3px;
+  text-align: center;
+}
+
+.modo-card h4 {
+  font-family: "Pixelify Sans", sans-serif;
+  font-size: 16px;
+  color: #6bb66b;
+  margin: 0 0 10px 0;
+  letter-spacing: 1px;
+}
+
+.modo-card p {
+  font-size: 13px;
+  color: #c8e6c9;
+  margin: 0;
+}
+
+.tabela-residuos {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 15px 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  font-size: 13px;
+}
+
+.tabela-residuos th,
+.tabela-residuos td {
+  padding: 10px;
+  text-align: center;
+  border: 2px solid #2d5a2d;
+  color: #e8f5e9;
+  font-family: "Pixelify Sans", sans-serif;
+}
+
+.tabela-residuos th {
+  background-color: rgba(74, 143, 74, 0.3);
+  color: #a5d6a7;
+  font-weight: bold;
+}
+
+.tabela-residuos tr:hover {
+  background-color: rgba(74, 143, 74, 0.15);
+}
+
+.ecoponto-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 2px;
+  font-weight: bold;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+}
+
+.azul {
+  background-color: rgba(100, 200, 255, 0.3);
+  color: #64c8ff;
+  border: 1px solid #64c8ff;
+}
+
+.verde {
+  background-color: rgba(100, 200, 100, 0.3);
+  color: #64c864;
+  border: 1px solid #64c864;
+}
+
+.amarelo {
+  background-color: rgba(255, 200, 100, 0.3);
+  color: #ffc864;
+  border: 1px solid #ffc864;
+}
+
+.cinzento {
+  background-color: rgba(150, 150, 150, 0.3);
+  color: #b0b0b0;
+  border: 1px solid #b0b0b0;
+}
+
+.botoes-voltar {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 30px;
+  margin-bottom: 80px;
+  flex-wrap: wrap;
+}
+
+.botoes-voltar a {
+  text-decoration: none;
+}
+
+@media (max-width: 768px) {
+  .instrucoes-container {
+    width: 95%;
+    padding: 25px 15px;
+  }
+
+  .instrucoes-container h1 {
+    font-size: 28px;
+    margin-bottom: 20px;
+  }
+
+  .instrucoes-secao {
+    margin-bottom: 20px;
+    padding: 15px;
+  }
+
+  .instrucoes-secao h2 {
+    font-size: 18px;
+  }
+
+  .instrucoes-secao p,
+  .instrucoes-secao li {
+    font-size: 13px;
+  }
+
+  .modo-seletor {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .tabela-residuos {
+    font-size: 12px;
+  }
+
+  .tabela-residuos th,
+  .tabela-residuos td {
+    padding: 8px 5px;
+  }
+
+  .botoes-voltar {
+    margin-bottom: 80px;
   }
 }
