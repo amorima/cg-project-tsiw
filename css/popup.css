@@ -316,7 +316,8 @@
 .residuo-counter {
     position: fixed;
     top: 20px;
-    right: 20px;
+    left: 50%;
+    transform: translateX(-50%);
     background-color: rgba(34, 68, 34, 0.95);
     padding: 15px 20px;
     border: 6px solid #2d5a2d;
@@ -341,7 +342,7 @@
 
 .residuo-stats {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: 8px;
 }
 
@@ -358,8 +359,8 @@
     border-radius: 2px;
 }
 
-.residuo-stat-icon {
-    font-size: 18px;
+.residuo-stat-icon img{
+    height: 24px;
     margin-right: 8px;
 }
 
@@ -375,7 +376,6 @@
 }
 
 .residuo-stat.total {
-    margin-top: 5px;
     background-color: rgba(74, 143, 74, 0.3);
     border-color: #4a8f4a;
     font-size: 16px;
@@ -393,7 +393,7 @@ body:has(#game) .arcade-menu {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: transparent;
+    background-color: rgba(34, 68, 34, 0.8);
     padding: 0;
     border: none;
     box-shadow: none;
