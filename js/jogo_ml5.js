@@ -43,7 +43,10 @@ let isMouseMode = false;
 let mouseCursor;
 let isMouseDown = false;
 
-// Função que inicializa tudo o que é preciso para o jogo funcionar
+/**
+ * Inicializa o sistema de jogo, configurando webcam e deteção de mãos ou modo rato
+ * @async
+ */
 async function setup() {
   // Verificar se foi definido um modo de jogo específico
   const modoDefinido = localStorage.getItem("modo_jogo");
@@ -102,7 +105,9 @@ async function setup() {
   }
 }
 
-// Inicializa os controlos do rato como alternativa à webcam
+/**
+ * Inicializa os controlos do rato como alternativa à webcam
+ */
 function initMouseControls() {
   // Buscar os elementos HTML que vamos usar
   video = document.getElementById("videoCanvas");
@@ -137,7 +142,10 @@ function initMouseControls() {
   console.log("Modo rato inicializado com sucesso");
 }
 
-// Gere o movimento do rato
+/**
+ * Processa o movimento do rato e atualiza a posição do cursor e resíduos
+ * @param {MouseEvent} event - Evento de movimento do rato
+ */
 function handleMouseMove(event) {
   if (!mouseCursor) return; // Garantir que o cursor foi inicializado
 
@@ -158,7 +166,10 @@ function handleMouseMove(event) {
   }
 }
 
-// Gere o clique do rato (pressionar)
+/**
+ * Processa o clique do botão esquerdo do rato
+ * @param {MouseEvent} event - Evento de pressionar o botão do rato
+ */
 function handleMouseDown(event) {
   if (event.button !== 0) return; // Apenas para o botão esquerdo
   isMouseDown = true;
@@ -172,7 +183,10 @@ function handleMouseDown(event) {
   }
 }
 
-// Gere o clique do rato (largar)
+/**
+ * Processa a libertação do botão esquerdo do rato
+ * @param {MouseEvent} event - Evento de libertar o botão do rato
+ */
 function handleMouseUp(event) {
   if (event.button !== 0) return; // Apenas para o botão esquerdo
   isMouseDown = false;
@@ -186,7 +200,10 @@ function handleMouseUp(event) {
   }
 }
 
-// Inicializa o sistema de deteção de mãos usando o MediaPipe
+/**
+ * Inicializa o sistema de deteção de mãos usando o MediaPipe
+ * @async
+ */
 async function initHandDetection() {
   // Escolher o modelo MediaPipeHands que é bastante preciso
   const model = handPoseDetection.SupportedModels.MediaPipeHands;
@@ -201,7 +218,10 @@ async function initHandDetection() {
   console.log("Detetor de mãos inicializado");
 }
 
-// Esta função corre continuamente para detetar as mãos em cada frame
+/**
+ * Loop contínuo de deteção de mãos em cada frame
+ * @async
+ */
 async function detectHands() {
   // Só tenta detetar se o vídeo estiver pronto (readyState 4 = tudo carregado)
   if (handDetector && video.readyState === 4) {
@@ -209,11 +229,12 @@ async function detectHands() {
     drawHands(); // Desenhar as mãos detetadas
   }
 
-  // Chama-se a si própria no próximo frame de animação, criando um loop contínuo
   requestAnimationFrame(detectHands);
 }
 
-// Função principal que desenha as mãos e trata da lógica de interação
+/**
+ * Desenha as mãos detetadas no canvas e processa a interação com resíduos
+ */
 function drawHands() {
   // Limpar o canvas antes de desenhar as novas posições
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -290,7 +311,10 @@ function drawHands() {
   }
 }
 
-// Desenha as linhas que ligam os pontos da mão para formar o esqueleto
+/**
+ * Desenha as linhas que ligam os pontos da mão para formar o esqueleto
+ * @param {Array} keypoints - Array com os 21 pontos da mão detetados pelo MediaPipe
+ */
 function drawConnections(keypoints) {
   // Array com os pares de pontos que devem ser ligados
   // Por exemplo, [0,1] liga o pulso ao início do polegar
@@ -344,7 +368,11 @@ function drawConnections(keypoints) {
   });
 }
 
-// Verifica se a mão está perto de algum resíduo e destaca-o
+/**
+ * Verifica proximidade da mão com resíduos e destaca o mais próximo
+ * @param {number} handX - Coordenada X da posição da mão
+ * @param {number} handY - Coordenada Y da posição da mão
+ */
 function verificarColisaoResiduos(handX, handY) {
   let residuoMaisProximo = null;
   let menorDistancia = Infinity;
@@ -385,7 +413,11 @@ function verificarColisaoResiduos(handX, handY) {
   }
 }
 
-// Verifica se os dedos estão juntos (gesto de "pinça" para agarrar)
+/**
+ * Deteta o gesto de pinça verificando a proximidade dos dedos ao polegar
+ * @param {Array} keypoints - Array com os 21 pontos da mão detetados pelo MediaPipe
+ * @returns {boolean} True se pelo menos 3 dedos estiverem próximos do polegar
+ */
 function verificarDedosJuntos(keypoints) {
   // Buscar as pontas de cada dedo
   const polegar = keypoints[4];
@@ -409,12 +441,12 @@ function verificarDedosJuntos(keypoints) {
     }
   });
 
-  // Consideramos dedos "juntos" se pelo menos 3 dos 4 dedos estiverem perto do polegar
-  // Isto permite alguma flexibilidade mas evita largadas acidentais
   return dedosProximos >= 3;
 }
 
-// Função chamada quando juntamos os dedos perto de um resíduo
+/**
+ * Agarra o resíduo selecionado e prepara para movimentação
+ */
 function agarrarResiduo() {
   if (!residuoSelecionado) return;
 
@@ -436,7 +468,11 @@ function agarrarResiduo() {
   residuoSelecionado = null;
 }
 
-// Move o resíduo agarrado para seguir a posição da mão
+/**
+ * Move o resíduo agarrado para seguir a posição da mão ou rato
+ * @param {number} handX - Coordenada X da posição da mão ou rato
+ * @param {number} handY - Coordenada Y da posição da mão ou rato
+ */
 function moverResiduoAgarrado(handX, handY) {
   if (!residuoAgarrado) return;
 
@@ -458,7 +494,11 @@ function moverResiduoAgarrado(handX, handY) {
   }
 }
 
-// Verifica se estamos perto de algum ecoponto enquanto seguramos um resíduo
+/**
+ * Verifica proximidade da mão com ecopontos enquanto segura um resíduo
+ * @param {number} handX - Coordenada X da posição da mão
+ * @param {number} handY - Coordenada Y da posição da mão
+ */
 function verificarColisaoEcopontos(handX, handY) {
   const ecopontos = document.querySelectorAll(".ecoponto");
   let ecopontoMaisProximo = null;
@@ -492,7 +532,11 @@ function verificarColisaoEcopontos(handX, handY) {
   }
 }
 
-// Função chamada quando abrimos os dedos (soltar o resíduo)
+/**
+ * Larga o resíduo agarrado no ecoponto ou devolve à posição original
+ * @param {number} handX - Coordenada X da posição da mão
+ * @param {number} handY - Coordenada Y da posição da mão
+ */
 function largarResiduo(handX, handY) {
   if (!residuoAgarrado) return;
 
@@ -560,7 +604,10 @@ function largarResiduo(handX, handY) {
   }
 }
 
-// Toca o som associado ao tipo de resíduo quando acertamos
+/**
+ * Reproduz o som associado ao tipo de resíduo
+ * @param {string} tipoResiduo - Tipo do resíduo (papel, vidro, plastico, lixo)
+ */
 function reproduzirSom(tipoResiduo) {
   const soundPath = RESIDUOS_CONFIG[tipoResiduo].sound;
   const audio = new Audio(soundPath);
@@ -570,7 +617,10 @@ function reproduzirSom(tipoResiduo) {
   });
 }
 
-// Atualiza a pontuação no ecrã
+/**
+ * Atualiza a pontuação e aplica feedback visual
+ * @param {number} pontos - Quantidade de pontos a adicionar (pode ser negativo)
+ */
 function adicionarPontos(pontos) {
   pontuacao += pontos;
   const pontuacaoElemento = document.querySelector("#pontuacao .pontos");
@@ -588,7 +638,9 @@ function adicionarPontos(pontos) {
   }
 }
 
-// Remove o destaque do resíduo selecionado
+/**
+ * Remove o destaque visual do resíduo selecionado
+ */
 function limparSelecao() {
   if (residuoSelecionado) {
     residuoSelecionado.elemento.classList.remove("highlighted");
@@ -596,7 +648,9 @@ function limparSelecao() {
   }
 }
 
-// Remove o destaque do ecoponto selecionado
+/**
+ * Remove o destaque visual do ecoponto selecionado
+ */
 function limparEcopontoSelecionado() {
   if (ecopontoSelecionado) {
     ecopontoSelecionado.elemento.classList.remove("highlighted");
@@ -604,8 +658,10 @@ function limparEcopontoSelecionado() {
   }
 }
 
-// Carrega as quantidades de resíduos guardadas no localStorage
-// Isto permite configurar quantos resíduos de cada tipo aparecem no jogo
+/**
+ * Carrega as quantidades configuradas de cada tipo de resíduo do localStorage
+ * @returns {Object} Objeto com as quantidades de papel, vidro, plástico e lixo
+ */
 function carregarQuantidadesResiduos() {
   const quantidades = {
     papel: parseInt(localStorage.getItem("residuos_papel")) || 0,
@@ -617,7 +673,9 @@ function carregarQuantidadesResiduos() {
   return quantidades;
 }
 
-// Cria e posiciona todos os resíduos no ecrã
+/**
+ * Cria e posiciona todos os resíduos no ecrã organizados em colunas
+ */
 function renderizarResiduos() {
   const container = document.getElementById("residuosContainer");
   container.innerHTML = ""; // Limpar resíduos anteriores
@@ -689,8 +747,10 @@ function renderizarResiduos() {
   });
 }
 
-// Modo de programador para testar o jogo com diferentes quantidades
-// Ativa-se premindo a tecla "D"
+/**
+ * Inicializa o modo de desenvolvimento para testes com diferentes quantidades
+ * Ativa-se premindo a tecla "D"
+ */
 function initDevMode() {
   const modal = document.getElementById("devModal");
   const applyBtn = document.getElementById("devApply");
@@ -756,7 +816,9 @@ function initDevMode() {
   });
 }
 
-// Inicializa o modal de instruções que aparece quando entramos no jogo
+/**
+ * Inicializa o modal de instruções baseado no modo de jogo selecionado
+ */
 function initInstrucoesModal() {
   // Determinar qual modal mostrar baseado no modo de jogo
   const modoDefinido = localStorage.getItem("modo_jogo");
@@ -826,7 +888,9 @@ function initInstrucoesModal() {
   }
 }
 
-// Mostra o modal de fim de jogo com a pontuação final
+/**
+ * Apresenta o modal de fim de jogo com a pontuação final
+ */
 function mostrarModalFimJogo() {
   const modal = document.getElementById("fimJogoModal");
   const pontuacaoFinalValor = document.getElementById("pontuacaoFinalValor");
@@ -835,7 +899,9 @@ function mostrarModalFimJogo() {
   modal.classList.add("active");
 }
 
-// Configura o botão de voltar ao início no modal de fim de jogo
+/**
+ * Configura os eventos do modal de fim de jogo
+ */
 function initFimJogoModal() {
   const modal = document.getElementById("fimJogoModal");
   const voltarInicioBtn = document.getElementById("voltarInicio");

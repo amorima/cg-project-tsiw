@@ -2,7 +2,7 @@
 
 ## O Projeto
 
-ARCADIA será um jogo de plataformas que visa sensibilizar e fomentar hábitos de reciclagem através de uma experiência lúdica e interativa.
+ARCADIA é um jogo de plataformas que sensibiliza e promove hábitos de reciclagem através de uma experiência lúdica e interativa.
 
 O nome combina três conceitos:
 
@@ -21,20 +21,28 @@ O nome combina três conceitos:
 
 ## Como Funciona
 
-O jogo desenvolve-se em duas fases:
+O jogo funciona em duas fases:
 
-1. **Fase de Recolha**: Navega entre plataformas para apanhar resíduos (papel, plástico, vidro e matéria orgânica)
-2. **Fase de Separação**: Utiliza gestos para colocar os resíduos recolhidos nos ecopontos correctos
+1. **Fase de Recolha**: Navegas entre plataformas para apanhares resíduos (papel, plástico, vidro e matéria orgânica)
+2. **Fase de Separação**: Utilizas gestos para colocares os resíduos recolhidos nos ecopontos correctos
+
+## Tecnologias Utilizadas
+
+- **HTML5 e CSS3**: Estrutura e estilização da interface
+- **JavaScript**: Lógica do jogo e interações
+- **Canvas API**: Renderização gráfica dos elementos
+- **TensorFlow**: Biblioteca de machine learning usada para executar modelos de reconhecimento de gestos por visão computacional, convertendo dados de entrada da câmara em classificações de gesto.
+- **MediaPipe Hands**: Solução da Google para deteção e tracking de mãos em tempo real, fornece 21 pontos de referência por mão que facilitam a análise e reconhecimento de gestos.
+- **Web API**: APIs do navegador, como MediaDevices.getUserMedia para captura de vídeo e Web Audio API para gestão de áudio, usadas para obter entrada da câmara e fornecer feedback sonoro.
 
 ## Elementos Técnicos
 
 - Sprites e plataformas com deteção de colisões
-- Reconhecimento de gestos com ML5.js
-- Interação por teclado e câmara
+- Interação por teclado, rato e câmara
 
 ## Estado
 
-Projeto em fase inicial de desenvolvimento para a disciplina de Computação Gráfica.
+Projeto concluído na disciplina de Computação Gráfica. O jogo apresenta todas as funcionalidades planeadas: navegação em plataformas, recolha de resíduos, reconhecimento de gestos e colocação correcta dos resíduos nos ecopontos.
 
 ## Atribuição
 
