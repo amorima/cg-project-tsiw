@@ -30,13 +30,14 @@ async function loadCredits() {
 
 // Função que converte markdown básico para HTML
 // Não usei uma biblioteca externa para manter o projeto mais simples
-// Função que converte markdown básico para HTML
-// Não usei uma biblioteca externa para manter o projeto mais simples
 function processMarkdown(markdown) {
   let html = markdown;
 
   // Remover o título principal (# ARCADIA) porque já temos um no HTML
   html = html.replace(/^# ARCADIA\n/gm, "");
+
+  // Converter títulos de nível 3 (###) em elementos h3
+  html = html.replace(/^### (.+)$/gm, "<h3>$1</h3>");
 
   // Converter títulos de secção (##) em elementos h2 dentro de secções
   html = html.replace(

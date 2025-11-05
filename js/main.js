@@ -29,9 +29,6 @@ function setupAudio() {
   const playPromise = audio.play();
   if (playPromise !== undefined) {
     playPromise.catch((error) => {
-      console.log(
-        "A reprodução automática foi bloqueada. É necessária a interação do utilizador para iniciar a música."
-      );
       // Adiciona um ouvinte de eventos para tocar a música na primeira interação do utilizador
       const playOnClick = () => {
         audio.play();

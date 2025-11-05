@@ -88,7 +88,6 @@ export default class Goal {
         if (!isCurrentlyInside && this.playerWasInside) {
             this.hasTriggeredThisEntry = false;
             this.completed = false;  // Permite reentrar apos sair da meta
-            console.log('Jogador saiu do objetivo - flags resetadas');
         }
         
         this.playerWasInside = isCurrentlyInside;
@@ -111,7 +110,6 @@ export default class Goal {
         const collision = this._checkAABBCollision(playerAABB, goalAABB);
         
         if (collision) {
-            console.log('Colisão com objetivo detectada! isActive:', this.isActive, 'completed:', this.completed);
             this.hasTriggeredThisEntry = true;  // Marca como acionado nesta entrada
         }
         
@@ -157,7 +155,6 @@ export default class Goal {
         localStorage.setItem('residuos_plastico', counts.plastico.toString());
         localStorage.setItem('residuos_lixo', counts.lixo.toString());
         
-        console.log('Resíduos salvos no localStorage:', counts);
         return counts;
     }
 }

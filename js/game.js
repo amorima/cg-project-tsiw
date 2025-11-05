@@ -330,8 +330,6 @@ function loop(now) {
       pauseGame(); // Pause the game using reusable function
       goal.completed = true; // Mark as completed to prevent multiple triggers
       const counts = goal.saveToLocalStorage(player);
-      console.log("Level Complete!", counts);
-
       // Calculate total collected
       const total = counts.papel + counts.vidro + counts.plastico + counts.lixo;
 
@@ -537,7 +535,6 @@ document.onkeydown = (e) => {
     // Toggle debug mode with 'd' key
     if (e.key === "d") {
       DEBUG_MODE = !DEBUG_MODE;
-      console.log("DEBUG_MODE:", DEBUG_MODE);
     }
     keys[e.key] = true;
   }

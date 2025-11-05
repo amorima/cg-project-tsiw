@@ -758,35 +758,72 @@ function initDevMode() {
 
 // Inicializa o modal de instruções que aparece quando entramos no jogo
 function initInstrucoesModal() {
-  const modal = document.getElementById("instrucoesModal");
-  const jogarBtn = document.getElementById("instrucoesJogar");
-  const naoMostrarBtn = document.getElementById("instrucoesNaoMostrar");
+  // Determinar qual modal mostrar baseado no modo de jogo
+  const modoDefinido = localStorage.getItem("modo_jogo");
 
-  // Verificar se o utilizador já pediu para não mostrar as instruções
-  const naoMostrarInstrucoes = localStorage.getItem("nao_mostrar_instrucoes");
+  if (modoDefinido === "mouse") {
+    // Modal para modo rato
+    const modal = document.getElementById("instrucoesModalMouse");
+    const jogarBtn = document.getElementById("instrucoesJogarMouse");
+    const naoMostrarBtn = document.getElementById("instrucoesNaoMostrarMouse");
 
-  // Mostrar o modal só se o utilizador não tiver desativado
-  if (!naoMostrarInstrucoes || naoMostrarInstrucoes !== "true") {
-    modal.classList.add("active");
-  }
+    // Verificar se o utilizador já pediu para não mostrar as instruções
+    const naoMostrarInstrucoes = localStorage.getItem("nao_mostrar_instrucoes");
 
-  // Botão para começar a jogar
-  jogarBtn.addEventListener("click", () => {
-    modal.classList.remove("active");
-  });
-
-  // Botão para não voltar a mostrar as instruções
-  naoMostrarBtn.addEventListener("click", () => {
-    localStorage.setItem("nao_mostrar_instrucoes", "true");
-    modal.classList.remove("active");
-  });
-
-  // Fechar se clicarmos fora do modal
-  modal.addEventListener("click", (e) => {
-    if (e.target === modal) {
-      modal.classList.remove("active");
+    // Mostrar o modal só se o utilizador não tiver desativado
+    if (!naoMostrarInstrucoes || naoMostrarInstrucoes !== "true") {
+      modal.classList.add("active");
     }
-  });
+
+    // Botão para começar a jogar
+    jogarBtn.addEventListener("click", () => {
+      modal.classList.remove("active");
+    });
+
+    // Botão para não voltar a mostrar as instruções
+    naoMostrarBtn.addEventListener("click", () => {
+      localStorage.setItem("nao_mostrar_instrucoes", "true");
+      modal.classList.remove("active");
+    });
+
+    // Fechar se clicarmos fora do modal
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) {
+        modal.classList.remove("active");
+      }
+    });
+  } else {
+    // Modal para modo webcam
+    const modal = document.getElementById("instrucoesModal");
+    const jogarBtn = document.getElementById("instrucoesJogar");
+    const naoMostrarBtn = document.getElementById("instrucoesNaoMostrar");
+
+    // Verificar se o utilizador já pediu para não mostrar as instruções
+    const naoMostrarInstrucoes = localStorage.getItem("nao_mostrar_instrucoes");
+
+    // Mostrar o modal só se o utilizador não tiver desativado
+    if (!naoMostrarInstrucoes || naoMostrarInstrucoes !== "true") {
+      modal.classList.add("active");
+    }
+
+    // Botão para começar a jogar
+    jogarBtn.addEventListener("click", () => {
+      modal.classList.remove("active");
+    });
+
+    // Botão para não voltar a mostrar as instruções
+    naoMostrarBtn.addEventListener("click", () => {
+      localStorage.setItem("nao_mostrar_instrucoes", "true");
+      modal.classList.remove("active");
+    });
+
+    // Fechar se clicarmos fora do modal
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) {
+        modal.classList.remove("active");
+      }
+    });
+  }
 }
 
 // Mostra o modal de fim de jogo com a pontuação final
