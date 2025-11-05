@@ -1,3 +1,11 @@
+/* Desabilitar seleção de texto durante o jogo para evitar seleções acidentais ao arrastar */
+body {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
 /* Contentor principal do jogo que ocupa todo o ecrã */
 #gameContainer {
   position: fixed;
@@ -90,6 +98,9 @@
   pointer-events: auto; /* Os resíduos podem ser clicados/interagidos */
   transition: transform 0.2s ease;
   filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+  user-select: none; /* Previne seleção de texto */
+  -webkit-user-drag: none; /* Previne drag padrão do navegador */
+  -webkit-user-select: none; /* Para Safari/Chrome */
 }
 
 /* O resíduo de lixo é ligeiramente maior porque a imagem é maior */

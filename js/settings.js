@@ -42,7 +42,6 @@ document.addEventListener("DOMContentLoaded", () => {
       // Limpa todo o localStorage
       localStorage.clear();
       clearDataModal.classList.remove("show");
-      alert("Dados limpados com sucesso! A página será recarregada.");
       // Recarrega a página
       location.reload();
     });

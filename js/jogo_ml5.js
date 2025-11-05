@@ -669,6 +669,12 @@ function renderizarResiduos() {
       img.style.top = `${y}px`;
       img.style.position = "fixed";
 
+      // Prevenir seleção de imagem ao clicar com o rato
+      img.addEventListener("dragstart", (e) => {
+        e.preventDefault();
+        return false;
+      });
+
       container.appendChild(img);
 
       // Adicionar à lista de resíduos ativos
