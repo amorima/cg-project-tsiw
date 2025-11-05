@@ -23,6 +23,8 @@ export default class Goal {
         this.pos = new Vector(gridX * Goal.GRID_SIZE, gridY * Goal.GRID_SIZE);
         this.w = gridW * Goal.GRID_SIZE;
         this.h = gridH * Goal.GRID_SIZE;
+        this.img = new Image()
+        this.img.src = '../../assets/img/meta.png'
         
         // Estado e animação
         this.isActive = false;           // Se a meta está ativo (pronto para completar)
@@ -129,27 +131,16 @@ export default class Goal {
         if (this.isActive) {
             // Objetivo ativo - brilho verde com pulso
             ctx.shadowBlur = 30 * pulse;
-            ctx.shadowColor = '#00FF00';
+            ctx.shadowColor = '#FFF';
             ctx.fillStyle = `rgba(0, 255, 0, ${0.5 + pulse * 0.3})`;
         } else {
             // Objetivo inativo - cinza
             ctx.fillStyle = 'rgba(128, 128, 128, 0.5)';
         }
         
-        // Desenha marcador do objetivo
-        ctx.fillRect(this.pos.x, this.pos.y, this.w, this.h);
-        
-        // Desenha borda
-        ctx.strokeStyle = this.isActive ? '#00FF00' : '#666666';
-        ctx.lineWidth = 3;
-        ctx.strokeRect(this.pos.x, this.pos.y, this.w, this.h);
         
         // Desenha símbolo de bandeira/marcador
-        ctx.fillStyle = this.isActive ? '#FFFFFF' : '#333333';
-        ctx.font = 'bold 32px Arial';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText('🏁', this.pos.x + this.w / 2, this.pos.y + this.h / 2);
+        ctx.drawImage(this.img,this.pos.x,this.pos.y)
         
         ctx.restore();
     }

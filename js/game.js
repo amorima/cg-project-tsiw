@@ -300,7 +300,7 @@ function spawnRandomResiduos() {
 // Create residuos with random selection
 const residuos = spawnRandomResiduos();
 // Create Goal at the start of the level
-const goal = new Goal(41, 10, 1, 1.5); // Grid: x=0, y=10, w=1, h=1.5 -> pixels: x=0, y=480, w=48, h=72
+const goal = new Goal(41, 10.5, 1, 1); // Grid: x=0, y=10, w=1, h=1.5 -> pixels: x=0, y=480, w=48, h=72
 
 const boxes = [
   new Box(21.5, 8.5, 1, 1),
