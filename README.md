@@ -44,6 +44,15 @@ O jogo funciona em duas fases:
 
 Projeto concluído na disciplina de Computação Gráfica. O jogo apresenta todas as funcionalidades planeadas: navegação em plataformas, recolha de resíduos, reconhecimento de gestos e colocação correcta dos resíduos nos ecopontos.
 
+## Wiki do Projeto
+
+- URL: https://deepwiki.com/amorima/cg-project-tsiw
+- Wiki do projecto com documentação do projecto, instruções de execução, listagem de recursos e histórico de alterações.
+
+## Deploy
+
+- Jogo disponível online em: https://cg-project-tsiw.vercel.app/
+
 ## Atribuição
 
 ### Background Music
@@ -58,6 +67,18 @@ Projeto concluído na disciplina de Computação Gráfica. O jogo apresenta toda
 - SPRITES by analogStudios: platforms and coin (https://analogstudios.itch.io/four-seasons-platformer-sprites)
 - SPRITES by RottingPixels: world_tileset and fruit (https://rottingpixels.itch.io/four-seasons-platformer-tileset-16x16free)
 - SOUNDS by Brackeys, Asbjørn Thirslund
+
+### Sons dos Resíduos
+
+- Sons dos resíduos: obtidos em Pixabay (https://pixabay.com/sound-effects/search/)
+
+### Resíduos (assets) - Pixel art
+
+- Os assets de resíduos em pixel art foram criados com o auxílio de ferramentas generativas.
+
+### Assistência por inteligência artificial
+
+- Inteligência artificial foi utilizada para auxiliar na depuração de código, na elaboração de soluções práticas, na escrita de CSS de apoio e na verificação e validação de comentários.
 
 ## Character Sprites
 
